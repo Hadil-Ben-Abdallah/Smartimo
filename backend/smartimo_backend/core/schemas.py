@@ -100,6 +100,8 @@ class UserSchema(BaseModel):
     user_id: Optional[int] = Field(default=None, alias='user_id')
     name: str
     email: str
+    cin: str
+    birth_date: str
     phone: str
     address: str
     user_type: str

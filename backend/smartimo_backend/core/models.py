@@ -87,6 +87,8 @@ class User(models.Model):
     user_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
+    cin = models.CharField(max_length=8)
+    birth_date = models.DateTimeField(auto_now=True)
     phone = models.CharField(max_length=20)
     address = models.CharField(max_length=250)
     user_type = models.CharField(max_length=50, choices=USER_TYPES, default='client')
