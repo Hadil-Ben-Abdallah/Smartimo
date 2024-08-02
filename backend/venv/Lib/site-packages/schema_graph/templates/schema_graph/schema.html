@@ -1,0 +1,35 @@
+{% load static %}<!doctype html>
+<html>
+  <head>
+    <script defer src='{% static "schema_graph/main.js" %}'></script>
+    <script>
+      window.schema = {{ schema|safe }};
+      window.edgeModifiers = {
+        "one-to-one": {arrows: {middle: {enabled: true, scaleFactor: 0.9, type: 'bar'}}},
+        "subclass": {dashes: true, arrows: 'to', label: 'Subclass'},
+        "proxy": {dashes: true, arrows: 'to', label: 'Proxy'},
+        "many-to-many": {arrows: 'from;to'},
+        "foreign-key": {arrows: 'to'},
+      };
+      window.nodeModifiers = {
+        "abstract": {shapeProperties: {borderDashes: true}},
+        "proxy": {color: {background: 'white'}},
+      };
+    </script>
+    <style>
+      html {
+        overflow-y: auto !important; /* Override vuetify */
+        font-family: "Roboto", sans-serif;
+      }
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="schema-graph-app"></div>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+  </body>
+</html>

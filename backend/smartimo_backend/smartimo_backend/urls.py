@@ -1,0 +1,23 @@
+from django.contrib import admin
+from django.urls import path, include
+from schema_graph.views import Schema
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path("schema/", Schema.as_view()),
+    path('api/core/', include('core.urls')),
+    path('api/property-listing/', include('property_listing.urls')),
+    path('api/client-management/', include('client_management.urls')),
+    path('api/rental-lease-management/', include('rental_lease_management.urls')),
+    path('api/sales-management/', include('sales_management.urls')),
+    path('api/document-management/', include('document_management.urls')),
+    path('api/financial-management/', include('financial_management.urls')),
+    path('api/task-calendar-management/', include('task_calendar_management.urls')),
+    path('api/communication-tools/', include('communication_tools.urls')),
+]
+
+
+
+
+
+
