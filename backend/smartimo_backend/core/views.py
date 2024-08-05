@@ -1,6 +1,6 @@
 from ninja import Router
-from .models import Property, Notification, ClientInteraction,Communication, PropertyListing, FinancialReport, SalesOpportunity, Resource, User, Vendor
-from .schemas import PropertySchema, NotificationSchema, ClientInteractionSchema, CommunicationSchema, PropertyListingSchema, FinancialReportSchema, SalesOpportunitySchema, ResourceSchema, UserSchema, VendorSchema
+from .models import Property, Notification, ClientInteraction,Communication, FinancialReport, SalesOpportunity, Resource, User, Vendor
+from .schemas import PropertySchema, NotificationSchema, ClientInteractionSchema, CommunicationSchema, FinancialReportSchema, SalesOpportunitySchema, ResourceSchema, UserSchema, VendorSchema
 
 router = Router()
 
@@ -54,15 +54,15 @@ def create_communication(request, data: CommunicationSchema):
 #     lease_agreement_instance = LeaseAgreement.objects.create(**lease_agreement_data)
 #     return lease_agreement_instance
 
-@router.get("/get-property-listings/", response=list[PropertyListingSchema])
-def list_property_listings(request):
-    return list(PropertyListing.objects.all())
+# @router.get("/get-property-listings/", response=list[PropertyListingSchema])
+# def list_property_listings(request):
+#     return list(PropertyListing.objects.all())
 
-@router.post("/set-property-listings/", response=PropertyListingSchema)
-def create_property_listing(request, data: PropertyListingSchema):
-    property_listing_data = data.dict(exclude={'property_listing_id'})
-    property_listing_instance = PropertyListing.objects.create(**property_listing_data)
-    return property_listing_instance
+# @router.post("/set-property-listings/", response=PropertyListingSchema)
+# def create_property_listing(request, data: PropertyListingSchema):
+#     property_listing_data = data.dict(exclude={'property_listing_id'})
+#     property_listing_instance = PropertyListing.objects.create(**property_listing_data)
+#     return property_listing_instance
 
 @router.get("/get-financial-reports/", response=list[FinancialReportSchema])
 def list_financial_reports(request):

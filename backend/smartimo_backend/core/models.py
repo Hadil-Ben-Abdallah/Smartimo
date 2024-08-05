@@ -3,8 +3,20 @@ from django.utils import timezone
 
 class Property(models.Model):
     property_id = models.AutoField(primary_key=True)
-    address = models.CharField(max_length=255)
+    type = models.CharField(max_length=50)
+    address = models.CharField(max_length=50)
     description = models.TextField()
+    photo = models.ImageField(upload_to='photos/')
+    video = models.FileField(upload_to='videos/')
+    size = models.DecimalField(max_digits=10, decimal_places=2)
+    bathroom_number = models.IntegerField(default=0)
+    badroom_number = models.IntegerField(default=0)
+    garage = models.BooleanField(default=False)
+    garden = models.BooleanField(default=False)
+    swiming_pool = models.BooleanField(default=False)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    year_built = models.DateField(auto_now=True)
+    status = models.CharField(max_length=50)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -38,22 +50,22 @@ class Communication(models.Model):
     def send_message(self):
         pass
 
-class PropertyListing(models.Model):
-    property_listing_id = models.AutoField(primary_key=True)
-    type = models.CharField(max_length=50)
-    address = models.CharField(max_length=50)
-    description = models.TextField()
-    photo = models.ImageField(upload_to='photos/')
-    video = models.FileField(upload_to='videos/')
-    size = models.DecimalField(max_digits=10, decimal_places=2)
-    bathroom_number = models.IntegerField(default=0)
-    badroom_number = models.IntegerField(default=0)
-    garage = models.BooleanField(default=False)
-    garden = models.BooleanField(default=False)
-    swiming_pool = models.BooleanField(default=False)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    year_built = models.DateField(auto_now=True)
-    status = models.CharField(max_length=50)
+# class PropertyListing(models.Model):
+#     property_listing_id = models.AutoField(primary_key=True)
+#     type = models.CharField(max_length=50)
+#     address = models.CharField(max_length=50)
+#     description = models.TextField()
+#     photo = models.ImageField(upload_to='photos/')
+#     video = models.FileField(upload_to='videos/')
+#     size = models.DecimalField(max_digits=10, decimal_places=2)
+#     bathroom_number = models.IntegerField(default=0)
+#     badroom_number = models.IntegerField(default=0)
+#     garage = models.BooleanField(default=False)
+#     garden = models.BooleanField(default=False)
+#     swiming_pool = models.BooleanField(default=False)
+#     price = models.DecimalField(max_digits=10, decimal_places=2)
+#     year_built = models.DateField(auto_now=True)
+#     status = models.CharField(max_length=50)
 
 class FinancialReport(models.Model):
     financial_report_id = models.AutoField(primary_key=True)

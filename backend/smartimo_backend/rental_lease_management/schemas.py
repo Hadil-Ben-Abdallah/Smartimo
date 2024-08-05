@@ -56,7 +56,7 @@ class LeaseRentalTenantSchema(BaseModel):
         from_attributes = True
         populate_by_name = True
 
-class LeaseRentalPropertyManagerSchema(BaseModel):
+class PropertyManagerSchema(BaseModel):
     # id: Optional[int] = Field(default=None, alias='id')
     properties: List[int]
     lease_agreements: List[LeaseRentalAgreementSchema]
@@ -139,7 +139,7 @@ class LeaseRentalCommunicationSchema(BaseModel):
 #     lease_agreements: List[LeaseRentalAgreementSchema]
 #     payment_history: List[dict]
 
-# class LeaseRentalPropertyManagerSchema(BaseModel):
+# class PropertyManagerSchema(BaseModel):
 #     name: str
 #     email: str
 #     phone: str

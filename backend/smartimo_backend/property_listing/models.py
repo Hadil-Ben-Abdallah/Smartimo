@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import PropertyListing, Notification
+from core.models import Property, Notification
 from core.models import User
 
 class RealEstateAgent(User):
@@ -21,7 +21,7 @@ class RealEstateAgent(User):
     def receive_notifications(self):
         return PropertyNotification.objects.filter(user_id=self.id).order_by('-id')
 
-class ThePropertyListing(PropertyListing):
+class ThePropertyListing(Property):
     agent_id = models.ForeignKey(RealEstateAgent, on_delete=models.CASCADE)
     
     def create_listing(self, **kwargs):
@@ -51,7 +51,7 @@ class PropertyOwner(User):
 
     def get_owner_details(self):
         return {
-            'name': self.name,
+            'name': self.username,
             'email': self.email,
             'phone': self.phone,
             'address': self.address,

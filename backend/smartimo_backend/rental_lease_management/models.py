@@ -70,7 +70,7 @@ class LeaseRentalTenant(User):
         )
         return communication
 
-class LeaseRentalPropertyManager(User):
+class PropertyManager(User):
     properties = models.ManyToManyField(Property, related_name='properties')
     lease_agreements = models.ManyToManyField(LeaseRentalAgreement, related_name='managers')
 
@@ -145,7 +145,7 @@ class RentalPayment(models.Model):
 
 class LeaseRentalCommunication(Communication):
     tenant = models.ForeignKey(LeaseRentalTenant, on_delete=models.CASCADE)
-    manager = models.ForeignKey(LeaseRentalPropertyManager, on_delete=models.CASCADE)
+    manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     type = models.CharField(max_length=50)
     response = models.TextField(blank=True, null=True)
 

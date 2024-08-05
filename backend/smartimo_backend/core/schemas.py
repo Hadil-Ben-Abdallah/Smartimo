@@ -4,8 +4,20 @@ from datetime import datetime
 
 class PropertySchema(BaseModel):
     property_id: Optional[int] = Field(default=None, alias='property_id')
-    address: str
+    type: str
     description: str
+    address: str
+    photo: str
+    video: str
+    size: float
+    bathroom_number: int
+    badroom_number: int
+    garage: bool
+    garden: bool
+    swiming_pool: bool
+    year_built: datetime 
+    price: float
+    status: str
     created_at: str
     updated_at: str
 
@@ -52,26 +64,26 @@ class CommunicationSchema(BaseModel):
         from_attributes = True
         populate_by_name = True
 
-class PropertyListingSchema(BaseModel):
-    property_listing_id: Optional[int] = Field(default=None, alias='property_listing_id')
-    type: str
-    description: str
-    address: str
-    photo: str
-    video: str
-    size: float
-    bathroom_number: int
-    badroom_number: int
-    garage: bool
-    garden: bool
-    swiming_pool: bool
-    year_built: datetime 
-    price: float
-    status: str
+# class PropertyListingSchema(BaseModel):
+#     property_listing_id: Optional[int] = Field(default=None, alias='property_listing_id')
+#     type: str
+#     description: str
+#     address: str
+#     photo: str
+#     video: str
+#     size: float
+#     bathroom_number: int
+#     badroom_number: int
+#     garage: bool
+#     garden: bool
+#     swiming_pool: bool
+#     year_built: datetime 
+#     price: float
+#     status: str
 
-    class Config:
-        from_attributes = True
-        populate_by_name = True
+#     class Config:
+#         from_attributes = True
+#         populate_by_name = True
 
 class FinancialReportSchema(BaseModel):
     financial_report_id: Optional[int] = Field(default=None, alias='financial_report_id')
