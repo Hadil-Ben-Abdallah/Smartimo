@@ -51,7 +51,9 @@ class Payment(models.Model):
     id = models.AutoField(primary_key=True)
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    amount_paid = models.DecimalField(max_digits=10, decimal_places=2)
+    credit_card_number = models.CharField(max_length=20)
+    reached_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    remaining_amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_date = models.DateField()
     payment_method = models.CharField(max_length=50)
     status = models.CharField(max_length=20, choices=[('processed', 'Processed'), ('pending', 'Pending')])
@@ -70,7 +72,9 @@ class Payment(models.Model):
             "id": self.id,
             "invoice": self.invoice.id,
             "user": self.user,
-            "amount_paid": self.amount_paid,
+            "credit_card_number": self.credit_card_number,
+            "reached_amount": self.reached_amount,
+            "remaining_amount": self.remaining_amount,
             "payment_date": self.payment_date,
             "payment_method": self.payment_method,
             "status": self.status,
@@ -91,7 +95,7 @@ class TheFinancialReport(FinancialReport):
         return report_content
 
     def customize_report(self, params):
-        return f"Financial report {self.id} customized with params {params}."
+        return f"Financial report {self} customized with params {params}."
 
     def export_report(self, format):
         report_content = self.generate_report()
@@ -104,7 +108,7 @@ class TheFinancialReport(FinancialReport):
         return exported_content
 
     def schedule_report_delivery(self, schedule):
-        return f"Financial report {self.id} scheduled for delivery on {schedule}."
+        return f"Financial report {self} scheduled for delivery on {schedule}."
 
 class FinancialTransaction(models.Model):
     id = models.AutoField(primary_key=True)
@@ -116,7 +120,7 @@ class FinancialTransaction(models.Model):
 
     def record_transaction(self):
         self.save()
-        return f"Transaction {self.id} recorded for property {self.property.id}."
+        return f"Transaction {self.id} recorded for property {self.property}."
 
     def get_transaction_details(self):
         return {

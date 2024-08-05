@@ -46,7 +46,7 @@ class TaskSchema(BaseModel):
         from_attributes = True
         populate_by_name = True
 
-class MeetingSchema(BaseModel):
+class EventSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
     organizer_id: int
     participants: List[int]

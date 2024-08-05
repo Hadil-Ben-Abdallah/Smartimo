@@ -1,12 +1,12 @@
 from typing import List
 from django.shortcuts import get_object_or_404
 from ninja import Router
-from .models import Appointment, Inspection, Task, Meeting, CalendarIntegration
+from .models import Appointment, Inspection, Task, Event, CalendarIntegration
 from .schemas import (
     AppointmentSchema,
     InspectionSchema,
     TaskSchema,
-    MeetingSchema,
+    EventSchema,
     CalendarIntegrationSchema
 )
 
@@ -105,35 +105,35 @@ def delete_task(request, task_id: int):
     task.delete()
     return None
 
-# Meeting Endpoints
-@router.get("/meetings/", response=List[MeetingSchema])
-def list_meetings(request):
-    return Meeting.objects.all()
+# Event Endpoints
+@router.get("/events/", response=List[EventSchema])
+def list_event(request):
+    return Event.objects.all()
 
-@router.post("/meetings/", response=MeetingSchema)
-def create_meeting(request, payload: MeetingSchema):
+@router.post("/events/", response=EventSchema)
+def create_event(request, payload: EventSchema):
     payload_dict = payload.dict(exclude_unset=True, exclude={'id'})
-    meeting = Meeting.objects.create(**payload_dict)
-    return meeting
+    event = Event.objects.create(**payload_dict)
+    return event
 
-@router.get("/meetings/{meeting_id}/", response=MeetingSchema)
-def get_meeting(request, meeting_id: int):
-    meeting = get_object_or_404(Meeting, id=meeting_id)
-    return meeting
+@router.get("/events/{event_id}/", response=EventSchema)
+def get_event(request, event_id: int):
+    event = get_object_or_404(Event, id=event_id)
+    return event
 
-@router.put("/meetings/{meeting_id}/", response=MeetingSchema)
-def update_meeting(request, meeting_id: int, payload: MeetingSchema):
-    meeting = get_object_or_404(Meeting, id=meeting_id)
+@router.put("/events/{event_id}/", response=EventSchema)
+def update_event(request, event_id: int, payload: EventSchema):
+    event = get_object_or_404(Event, id=event_id)
     for attr, value in payload.dict(exclude_unset=True).items():
         if attr != 'id':
-            setattr(meeting, attr, value)
-    meeting.save()
-    return meeting
+            setattr(event, attr, value)
+    event.save()
+    return event
 
-@router.delete("/meetings/{meeting_id}/", response=None)
-def delete_meeting(request, meeting_id: int):
-    meeting = get_object_or_404(Meeting, id=meeting_id)
-    meeting.delete()
+@router.delete("/events/{event_id}/", response=None)
+def delete_event(request, event_id: int):
+    event = get_object_or_404(Event, id=event_id)
+    event.delete()
     return None
 
 # Calendar Integration Endpoints

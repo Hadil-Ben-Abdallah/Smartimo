@@ -122,7 +122,7 @@ class Task(models.Model):
         return f"Reminders sent for task {self.id}."
 
 
-class Meeting(models.Model):
+class Event(models.Model):
     id = models.AutoField(primary_key=True)
     organizer = models.ForeignKey(User, related_name='meetings_organized', on_delete=models.CASCADE)
     participants = models.ManyToManyField(User, related_name='meetings_participated')

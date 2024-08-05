@@ -46,7 +46,13 @@ class PropertyListing(models.Model):
     photo = models.ImageField(upload_to='photos/')
     video = models.FileField(upload_to='videos/')
     size = models.DecimalField(max_digits=10, decimal_places=2)
+    bathroom_number = models.IntegerField(default=0)
+    badroom_number = models.IntegerField(default=0)
+    garage = models.BooleanField(default=False)
+    garden = models.BooleanField(default=False)
+    swiming_pool = models.BooleanField(default=False)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    year_built = models.DateField(auto_now=True)
     status = models.CharField(max_length=50)
 
 class FinancialReport(models.Model):
@@ -85,12 +91,16 @@ class User(models.Model):
     )
     
     user_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    username = models.CharField(unique=True, max_length=100)
     email = models.EmailField(unique=True)
     cin = models.CharField(max_length=8)
     birth_date = models.DateTimeField(auto_now=True)
     phone = models.CharField(max_length=20)
     address = models.CharField(max_length=250)
+    credit_card_number = models.CharField(max_length=20)
+    job_title = models.CharField(max_length=100)
     user_type = models.CharField(max_length=50, choices=USER_TYPES, default='client')
 
     def __str__(self):

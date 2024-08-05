@@ -1,11 +1,14 @@
 from ninja import Router
-from .models import Lead, SalesClientInteraction, TheSalesOpportunity, SalesPipeline, Collaboration, SalesAnalytics
+from .models import Lead, TheSalesOpportunity, SalesPipeline, Collaboration, SalesAnalytics, Deal
 from .schemas import (
     LeadSchema, CreateLeadSchema, UpdateLeadSchema, 
     TheSalesOpportunitySchema, 
     SalesPipelineSchema, CreatePipelineSchema, UpdatePipelineSchema, 
     CollaborationSchema, 
-    SalesAnalyticsSchema
+    SalesAnalyticsSchema,
+    DealSchema,
+    CreateDealSchema,
+    UpdateDealSchema,
 )
 from django.shortcuts import get_object_or_404
 
@@ -31,6 +34,26 @@ def update_lead(request, lead_id: int, payload: UpdateLeadSchema):
 def get_lead_details(request, lead_id: int):
     lead = get_object_or_404(Lead, id=lead_id)
     return lead
+
+@router.post("/deals/", response=DealSchema)
+def create_deal(request, payload: CreateDealSchema):
+    deal_data = payload.dict(exclude={'id'})
+    deal = Deal.objects.create(**deal_data)
+    return deal
+
+@router.put("/deals/{deal_id}/", response=DealSchema)
+def update_deal(request, deal_id: int, payload: UpdateDealSchema):
+    deal = get_object_or_404(Deal, id=deal_id)
+    for attr, value in payload.dict(exclude_unset=True).items():
+        if attr != 'id': 
+            setattr(deal, attr, value)
+    deal.save()
+    return deal
+
+@router.get("/deals/{deal_id}/", response=DealSchema)
+def get_deal_details(request, deal_id: int):
+    deal = get_object_or_404(Deal, id=deal_id)
+    return deal
 
 @router.post("/sales_opportunities/", response=TheSalesOpportunitySchema)
 def create_sales_opportunity(request, payload: TheSalesOpportunitySchema):

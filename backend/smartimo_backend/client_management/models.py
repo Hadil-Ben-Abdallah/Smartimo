@@ -4,6 +4,7 @@ from core.models import User, Notification, ClientInteraction
 
 class Client(User):
     preferences = models.JSONField(default=dict)
+    client_status = models.CharField(max_length=20, choices=[('new', 'New'), ('loyal', 'Loyal'), ('regular', 'Regular')], default='new')
     tags = models.JSONField(default=list)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

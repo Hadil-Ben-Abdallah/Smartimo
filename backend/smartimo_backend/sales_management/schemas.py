@@ -4,7 +4,9 @@ from datetime import datetime
 
 class LeadSchema(BaseModel):
     lead_source: str
-    status: str
+    lead_status: str
+    property_type: str
+    note: str
 
     class Config:
         from_attributes = True
@@ -16,7 +18,9 @@ class CreateLeadSchema(BaseModel):
     phone: str
     property_preferences: dict
     lead_source: str
-    status: str
+    property_type: str
+    note: str
+    lead_status: str
     agent_id: int
 
     class Config:
@@ -29,7 +33,48 @@ class UpdateLeadSchema(BaseModel):
     phone: Optional[str] = None
     property_preferences: Optional[dict] = None
     lead_source: Optional[str] = None
-    status: Optional[str] = None
+    lead_status: Optional[str] = None
+    property_type: Optional[str] = None
+    note: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+        populate_by_name = True
+
+class DealSchema(BaseModel):
+    title: str
+    property: str
+    lead: str
+    start_date: datetime
+    end_date: datetime
+    description: str
+    is_approved: bool
+    deal_type: str
+
+    class Config:
+        from_attributes = True
+        populate_by_name = True
+
+class CreateDealSchema(BaseModel):
+    title: str
+    property: str
+    lead: str
+    start_date: datetime
+    end_date: datetime
+    description: str
+    is_approved: bool
+    deal_type: str
+
+class UpdateDealSchema(BaseModel):
+    name: Optional[str] = None
+    title: Optional[str] = None
+    property: Optional[str] = None
+    lead: Optional[str] = None
+    start_date: Optional[str] = None
+    end_date: Optional[str] = None
+    description: Optional[str] = None
+    is_approved: Optional[str] = None
+    deal_type: Optional[str] = None
 
     class Config:
         from_attributes = True

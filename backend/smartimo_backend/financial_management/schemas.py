@@ -22,7 +22,9 @@ class PaymentSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
     invoice_id: int
     user_id: int
-    amount_paid: float
+    credit_card_number: str
+    reached_amount: float
+    remaining_amount: float
     payment_date: date
     payment_method: str
     status: str

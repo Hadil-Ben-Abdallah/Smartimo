@@ -60,6 +60,12 @@ class PropertyListingSchema(BaseModel):
     photo: str
     video: str
     size: float
+    bathroom_number: int
+    badroom_number: int
+    garage: bool
+    garden: bool
+    swiming_pool: bool
+    year_built: datetime 
     price: float
     status: str
 
@@ -104,6 +110,8 @@ class UserSchema(BaseModel):
     birth_date: str
     phone: str
     address: str
+    credit_card_number: str
+    job_title: str
     user_type: str
 
     class Config:

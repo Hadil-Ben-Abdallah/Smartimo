@@ -1,11 +1,13 @@
 from django.db import models
-from core.models import ClientInteraction, SalesOpportunity, Property 
+from core.models import SalesOpportunity, Property 
 from property_listing.models import RealEstateAgent
 from client_management.models import Client, Interaction
 
 class Lead(Client):
-    lead_source = models.CharField(max_length=255)
-    status = models.CharField(max_length=50, choices=[('new', 'New'), ('contacted', 'Contacted'), ('qualified', 'Qualified')])
+    lead_source = models.CharField(max_length=50, choices=[('facebook', 'Facebook'), ('instagram', 'Instagram'), ('search_web', 'Search Web'), ('tik_tok', 'Tik Tok')], default='search_web')
+    lead_status = models.CharField(max_length=50, choices=[('new', 'New'), ('contacted', 'Contacted'), ('qualified', 'Qualified')])
+    property_type = models.CharField(max_length=50, choices=[('house', 'House'), ('office', 'Office'), ('apartment', 'Apartment')], default='house')
+    note= models.TextField(max_length=2000)
 
     def create_lead(self, data):
         lead = Lead.objects.create(**data)
@@ -26,6 +28,42 @@ class Lead(Client):
         return {
             "lead_source": self.lead_source,
             "status": self.status,
+        }
+
+class Deal (models.Model):
+    title = models.CharField(max_length=50)
+    property = models.ForeignKey(Property,on_delete=models.CASCADE)
+    lead = models.ForeignKey(Lead, on_delete=models.CASCADE)
+    start_date = models.DateField(auto_now=True)
+    end_date = models.DateField (auto_now=True)
+    content_of_deal = models.TextField (max_length=2000)
+    description = models.TextField(max_length=2000)
+    is_approved = models.BooleanField(default=False)
+    deal_type = models.CharField(choices=[('rent', 'Rent'), ('sell', 'Sell')], default='rent')
+
+    def create_deal(self, data):
+        deal = Deal.objects.create(**data)
+        return deal
+
+    def update_deal(self, data):
+        for field, value in data.items():
+            setattr(self, field, value)
+        self.save()
+        return self
+
+    def change_is_approved(self, new_status):
+        self.is_approved = new_status
+        self.save()
+        return self
+
+    def get_deal_details(self):
+        return {
+            "title": self.title,
+            "property_code": self.property_code,
+            "start_date": self.start_date,
+            "end_date": self.end_date,
+            "is_approved": self.is_approved,
+            "deal_type": self.deal_type,
         }
 
 class SalesClientInteraction(Interaction):

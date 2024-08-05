@@ -5,6 +5,7 @@ from datetime import datetime
 class ClientSchema(BaseModel):
     preferences: Dict
     tags: List[str]
+    client_status: str
     created_at: datetime
     updated_at: datetime
     agent_id: int
