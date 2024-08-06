@@ -36,10 +36,10 @@ class CreateLeaseRentalAgreementSchema(BaseModel):
 
 class UpdateLeaseRentalAgreementSchema(BaseModel):
     terms: Optional[dict] = None
-    rent_amount: float
+    rent_amount: Optional[dict] = None
     signed_document: Optional[str] = None
-    start_date: datetime
-    end_date: datetime
+    start_date: Optional[dict] = None
+    end_date: Optional[dict] = None
 
     class Config:
         from_attributes = True

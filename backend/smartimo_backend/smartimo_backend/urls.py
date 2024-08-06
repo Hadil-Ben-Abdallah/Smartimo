@@ -15,6 +15,7 @@ urlpatterns = [
     path('api/task-calendar-management/', include('task_calendar_management.urls')),
     path('api/communication-tools/', include('communication_tools.urls')),
     path('api/reporting-and-analytics/', include('reporting_and_analytics.urls')),
+    path('api/maintenance-and-service-requests/', include('maintenance_and_service_requests.urls')),
 ]
 
 

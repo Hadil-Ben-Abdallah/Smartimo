@@ -100,6 +100,7 @@ class User(models.Model):
         ('property_manager', 'Property Manager'),
         ('prospective_buyer_renter', 'Prospective Buyer Renter'),
         ('real_estate_agent', 'Real Estate Agent'),
+        ('prospective_tenant', 'Prospective Tenant')
     )
     
     user_id = models.AutoField(primary_key=True)

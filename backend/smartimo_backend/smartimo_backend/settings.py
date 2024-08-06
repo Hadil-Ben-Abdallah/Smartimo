@@ -69,6 +69,7 @@ TENANT_APPS = [
     'task_calendar_management',
     'communication_tools',
     'reporting_and_analytics',
+    'maintenance_and_service_requests',
 ]
 
 INSTALLED_APPS = SHARED_APPS + [app for app in TENANT_APPS if app not in SHARED_APPS]

@@ -77,7 +77,7 @@ class PropertyManager(User):
     def create_lease_agreement(self, data):
         lease_agreement = LeaseRentalAgreement.objects.create(
             property=data['property'],
-            manager=self,
+            manager=self.user_id,
             terms=data.get('terms', {}),
             signed_document=data.get('signed_document', '')
         )
@@ -114,7 +114,7 @@ class RentalPayment(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_date = models.DateTimeField()
     payment_method = models.CharField(max_length=50)
-    status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('completed', 'Completed')])
+    status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('completed', 'Completed')], default='pending')
 
     def make_payment(self, data):
         self.lease_agreement = data['lease_agreement']
@@ -135,7 +135,7 @@ class RentalPayment(models.Model):
         receipt = {
             'id': self.id,
             'lease_agreement': self.lease_agreement.id,
-            'tenant': self.tenant.id,
+            'tenant': self.tenant.user_id,
             'amount': self.amount,
             'payment_date': self.payment_date,
             'payment_method': self.payment_method,
