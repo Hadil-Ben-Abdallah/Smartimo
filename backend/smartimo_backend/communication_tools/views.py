@@ -16,7 +16,7 @@ def create_email(request, payload: EmailSchema):
 def update_email(request, email_id: int, payload: EmailSchema):
     email = get_object_or_404(Email, id=email_id)
     for attr, value in payload.dict(exclude_unset=True).items():
-        if attr != 'id':  # Skip updating the ID
+        if attr != 'id':
             setattr(email, attr, value)
     email.save()
     return email
@@ -48,7 +48,7 @@ def create_notification(request, payload: CommunicationNotificationSchema):
 def update_notification(request, notification_id: int, payload: CommunicationNotificationSchema):
     notification = get_object_or_404(CommunicationNotification, id=notification_id)
     for attr, value in payload.dict(exclude_unset=True).items():
-        if attr != 'id':  # Skip updating the ID
+        if attr != 'id':
             setattr(notification, attr, value)
     notification.save()
     return notification
@@ -80,7 +80,7 @@ def create_instant_message(request, payload: InstantMessageSchema):
 def update_instant_message(request, message_id: int, payload: InstantMessageSchema):
     message = get_object_or_404(InstantMessage, id=message_id)
     for attr, value in payload.dict(exclude_unset=True).items():
-        if attr != 'id':  # Skip updating the ID
+        if attr != 'id':
             setattr(message, attr, value)
     message.save()
     return message
@@ -112,7 +112,7 @@ def create_sms_notification(request, payload: SMSNotificationSchema):
 def update_sms_notification(request, sms_id: int, payload: SMSNotificationSchema):
     sms = get_object_or_404(SMSNotification, id=sms_id)
     for attr, value in payload.dict(exclude_unset=True).items():
-        if attr != 'id':  # Skip updating the ID
+        if attr != 'id':
             setattr(sms, attr, value)
     sms.save()
     return sms
@@ -144,7 +144,7 @@ def create_communication_log(request, payload: CommunicationLogSchema):
 def update_communication_log(request, log_id: int, payload: CommunicationLogSchema):
     log = get_object_or_404(CommunicationLog, id=log_id)
     for attr, value in payload.dict(exclude_unset=True).items():
-        if attr != 'id':  # Skip updating the ID
+        if attr != 'id':
             setattr(log, attr, value)
     log.save()
     return log
