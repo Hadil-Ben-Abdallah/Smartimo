@@ -98,6 +98,7 @@ class User(models.Model):
         ('lease_rental_tenant', 'Lease Rental Tenant'),
         ('property_owner', 'Property Owner'),
         ('property_manager', 'Property Manager'),
+        ('vendor', 'Vendor'),
         ('prospective_buyer_renter', 'Prospective Buyer Renter'),
         ('real_estate_agent', 'Real Estate Agent'),
         ('prospective_tenant', 'Prospective Tenant')
@@ -120,11 +121,11 @@ class User(models.Model):
         return self.name
 
 
-class Vendor(models.Model):
-    vendor_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
-    certifications = models.TextField()
+# class Vendor(models.Model):
+#     vendor_id = models.AutoField(primary_key=True)
+#     name = models.CharField(max_length=100)
+#     certifications = models.TextField()
 
-    def create_profile(self):
-        pass
+#     def create_profile(self):
+#         pass
 

@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional
+from core.schemas import NotificationSchema
 
 class MaintenanceRequestSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
@@ -69,7 +70,7 @@ class MaintenanceTechnicianSchema(BaseModel):
         from_attributes = True
         populate_by_name = True
 
-class MaintenanceNotificationSchema(BaseModel):
+class MaintenanceNotificationSchema(NotificationSchema):
     recipient_id: int
     type: str
     message: str

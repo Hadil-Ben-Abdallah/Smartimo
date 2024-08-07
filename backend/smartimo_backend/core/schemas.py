@@ -130,11 +130,11 @@ class UserSchema(BaseModel):
         from_attributes = True
         populate_by_name = True
 
-class VendorSchema(BaseModel):
-    vendor_id: Optional[int] = Field(default=None, alias='vendor_id')
-    name: str
-    certifications: str
+# class VendorSchema(BaseModel):
+#     vendor_id: Optional[int] = Field(default=None, alias='vendor_id')
+#     name: str
+#     certifications: str
 
-    class Config:
-        from_attributes = True
-        populate_by_name = True
+#     class Config:
+#         from_attributes = True
+#         populate_by_name = True

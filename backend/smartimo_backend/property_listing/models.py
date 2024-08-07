@@ -1,6 +1,5 @@
 from django.db import models
-from core.models import Property, Notification
-from core.models import User
+from core.models import User, Property, Notification
 
 class RealEstateAgent(User):
     listings = models.ManyToManyField('ThePropertyListing', related_name='agent_listings')

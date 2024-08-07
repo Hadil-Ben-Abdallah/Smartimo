@@ -31,6 +31,7 @@ class Lead(Client):
         }
 
 class Deal (models.Model):
+    id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=50)
     property = models.ForeignKey(Property,on_delete=models.CASCADE)
     lead = models.ForeignKey(Lead, on_delete=models.CASCADE)

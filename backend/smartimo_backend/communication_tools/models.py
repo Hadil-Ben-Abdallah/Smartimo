@@ -42,8 +42,8 @@ class Email(models.Model):
     def get_email_details(self):
         return {
             "id": self.id,
-            "sender": self.sender.name,
-            "recipient": self.recipient.name,
+            "sender": self.sender.username,
+            "recipient": self.recipient.username,
             "subject": self.subject,
             "body": self.body,
             "attachments": self.attachments,
@@ -70,9 +70,9 @@ class CommunicationNotification(Notification):
 
     def get_notification_details(self):
         return {
-            "id": self.id,
-            "sender": self.sender.name,
-            "recipient": self.recipient.name,
+            "id": self.notification_id,
+            "sender": self.sender.username,
+            "recipient": self.recipient.username,
             "message": self.message,
             "type": self.type
         }
@@ -126,8 +126,8 @@ class SMSNotification(models.Model):
     def get_sms_details(self):
         return {
             "id": self.id,
-            "sender": self.sender.name,
-            "recipient": self.recipient.name,
+            "sender": self.sender.username,
+            "recipient": self.recipient.username,
             "message": self.message,
             "timestamp": self.timestamp,
             "status": self.status
@@ -156,7 +156,7 @@ class CommunicationLog(models.Model):
         return {
             "id": self.id,
             "client": self.client if self.client else None,
-            "property": self.property.id if self.property else None,
+            "property": self.property.property_id if self.property else None,
             "communication_type": self.communication_type
         }
 

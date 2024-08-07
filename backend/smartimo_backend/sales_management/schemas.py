@@ -1,8 +1,10 @@
 from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
+from core.schemas import SalesOpportunitySchema
+from client_management.schemas import ClientSchema, InteractionSchema
 
-class LeadSchema(BaseModel):
+class LeadSchema(ClientSchema):
     lead_source: str
     lead_status: str
     property_type: str
@@ -42,6 +44,7 @@ class UpdateLeadSchema(BaseModel):
         populate_by_name = True
 
 class DealSchema(BaseModel):
+    id: Optional[int] = Field(default=None, alias='id')
     title: str
     property: str
     lead: str
@@ -80,14 +83,14 @@ class UpdateDealSchema(BaseModel):
         from_attributes = True
         populate_by_name = True
 
-class SalesClientInteractionSchema(BaseModel):
+class SalesClientInteractionSchema(InteractionSchema):
     lead_id: int
 
     class Config:
         from_attributes = True
         populate_by_name = True
 
-class TheSalesOpportunitySchema(BaseModel):
+class TheSalesOpportunitySchema(SalesOpportunitySchema):
     lead_id: int
     property_id: int
     created_at: datetime

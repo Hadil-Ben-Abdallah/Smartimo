@@ -7,7 +7,7 @@ router = Router()
 
 @router.post("/maintenance-requests", response=MaintenanceRequestSchema)
 def create_maintenance_request(request, payload: CreateMaintenanceRequestSchema):
-    maintenance_request = MaintenanceRequest.objects.create(**payload.dict(exclude_unset=True))
+    maintenance_request = MaintenanceRequest.objects.create(**payload.dict(exclude={'id'}))
     maintenance_request.submit_request()
     return maintenance_request
 
@@ -27,7 +27,7 @@ def get_maintenance_request(request, request_id: int):
 
 @router.post("/tenant-requests", response=TenantRequestSchema)
 def create_tenant_request(request, payload: TenantRequestSchema):
-    tenant_request = TenantRequest.objects.create(**payload.dict(exclude_unset=True))
+    tenant_request = TenantRequest.objects.create(**payload.dict(exclude={'id'}))
     return tenant_request
 
 @router.get("/property-managers/{manager_id}", response=MaintenancePropertyManagerSchema)
@@ -42,7 +42,7 @@ def get_technician(request, technician_id: int):
 
 @router.post("/notifications", response=dict)
 def create_notification(request, payload: MaintenanceNotificationSchema):
-    notification = MaintenanceNotification.objects.create(**payload.dict(exclude_unset=True))
+    notification = MaintenanceNotification.objects.create(**payload.dict(exclude={'id'}))
     return {"status": "Notification created"}
 
 

@@ -1,28 +1,29 @@
 from pydantic import BaseModel, Field
 from typing import List, Dict, Optional
+from core.schemas import UserSchema, PropertySchema, NotificationSchema
 
-class RealEstateAgentSchema(BaseModel):
+class RealEstateAgentSchema(UserSchema):
     properties: List[int] = []
 
     class Config:
         from_attributes = True
         populate_by_name = True
 
-class ThePropertyListingSchema(BaseModel):
+class ThePropertyListingSchema(PropertySchema):
     agent_id: int
 
     class Config:
         from_attributes = True
         populate_by_name = True
 
-class PropertyOwnerSchema(BaseModel):
+class PropertyOwnerSchema(UserSchema):
     properties: List[int] = []
 
     class Config:
         from_attributes = True
         populate_by_name = True
 
-class ProspectiveBuyerRenterSchema(BaseModel):
+class ProspectiveBuyerRenterSchema(UserSchema):
     preferences: Dict
     saved_listings: List[int] = []
 
@@ -40,7 +41,7 @@ class SavedListingSchema(BaseModel):
         from_attributes = True
         populate_by_name = True
 
-class PropertyNotificationSchema(BaseModel):
+class PropertyNotificationSchema(NotificationSchema):
     user_id: int
     message: str
 

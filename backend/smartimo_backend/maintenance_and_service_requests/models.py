@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from core.models import User
+from core.models import Notification
 from lease_rental_management.models import PropertyManager, Tenant
 
 class MaintenanceRequest(models.Model):
@@ -149,7 +149,7 @@ class MaintenanceTechnician(models.Model):
         request = MaintenanceRequest.objects.get(id=request_id)
         return request.get_request_details()
 
-class MaintenanceNotification(models.Model):
+class MaintenanceNotification(Notification):
     recipient_id = models.IntegerField()  # Can be tenant or property manager or technicien id
     type = models.CharField(max_length=50)
     message = models.TextField()

@@ -1,8 +1,10 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict
 from datetime import datetime
+from core.schemas import UserSchema, ClientInteractionSchema
+from property_listing.schemas import RealEstateAgentSchema
 
-class ClientSchema(BaseModel):
+class ClientSchema(UserSchema):
     preferences: Dict
     tags: List[str]
     client_status: str
@@ -14,7 +16,7 @@ class ClientSchema(BaseModel):
         from_attributes = True
         populate_by_name = True
 
-class InteractionSchema(BaseModel):
+class InteractionSchema(ClientInteractionSchema):
     client_id: int
     agent_id: int
     timestamp: datetime
@@ -45,7 +47,7 @@ class ClientAnalyticsSchema(BaseModel):
         from_attributes = True
         populate_by_name = True
 
-class ClientRealEstateAgentSchema(BaseModel):
+class ClientRealEstateAgentSchema(RealEstateAgentSchema):
     clients: List[ClientSchema]
 
     class Config:

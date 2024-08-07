@@ -2,6 +2,7 @@ from ninja import Schema
 from pydantic import BaseModel, Field
 from typing import List, Optional
 from datetime import date, datetime
+from core.schemas import CommunicationSchema
 
 class AgreementSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
@@ -53,7 +54,7 @@ class RentalPaymentSchema(BaseModel):
         from_attributes = True
         populate_by_name = True
 
-class LeaseRentalCommunicationSchema(BaseModel):
+class LeaseRentalCommunicationSchema(CommunicationSchema):
     tenant_id: int
     manager_id: int
     type: str

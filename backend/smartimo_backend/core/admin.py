@@ -1,5 +1,5 @@
 from django.contrib import admin
-from core.models import Property, Notification, ClientInteraction, Communication, FinancialReport, SalesOpportunity, Resource, User, Vendor
+from core.models import Property, Notification, ClientInteraction, Communication, FinancialReport, SalesOpportunity, Resource, User
 
 admin.site.register(Property)
 admin.site.register(Notification)
@@ -11,4 +11,4 @@ admin.site.register(FinancialReport)
 admin.site.register(SalesOpportunity)
 admin.site.register(Resource)
 admin.site.register(User)
-admin.site.register(Vendor)
+# admin.site.register(Vendor)

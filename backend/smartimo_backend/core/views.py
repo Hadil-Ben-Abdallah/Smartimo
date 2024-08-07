@@ -1,6 +1,6 @@
 from ninja import Router
-from .models import Property, Notification, ClientInteraction,Communication, FinancialReport, SalesOpportunity, Resource, User, Vendor
-from .schemas import PropertySchema, NotificationSchema, ClientInteractionSchema, CommunicationSchema, FinancialReportSchema, SalesOpportunitySchema, ResourceSchema, UserSchema, VendorSchema
+from .models import Property, Notification, ClientInteraction,Communication, FinancialReport, SalesOpportunity, Resource, User
+from .schemas import PropertySchema, NotificationSchema, ClientInteractionSchema, CommunicationSchema, FinancialReportSchema, SalesOpportunitySchema, ResourceSchema, UserSchema
 
 router = Router()
 
@@ -104,12 +104,12 @@ def create_user(request, data: UserSchema):
     user_instance = User.objects.create(**user_data)
     return user_instance
 
-@router.get("/get-vendors/", response=list[VendorSchema])
-def list_vendors(request):
-    return list(Vendor.objects.all())
+# @router.get("/get-vendors/", response=list[VendorSchema])
+# def list_vendors(request):
+#     return list(Vendor.objects.all())
 
-@router.post("/set-vendors/", response=VendorSchema)
-def create_vendor(request, data: VendorSchema):
-    vendor_data = data.dict(exclude={'vendor_id'})
-    vendor_instance = Vendor.objects.create(**vendor_data)
-    return vendor_instance
+# @router.post("/set-vendors/", response=VendorSchema)
+# def create_vendor(request, data: VendorSchema):
+#     vendor_data = data.dict(exclude={'vendor_id'})
+#     vendor_instance = Vendor.objects.create(**vendor_data)
+#     return vendor_instance

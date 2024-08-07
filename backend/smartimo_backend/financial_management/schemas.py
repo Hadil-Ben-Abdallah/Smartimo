@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional, Any
 from datetime import date, datetime
+from core.schemas import FinancialReportSchema
 
 class InvoiceSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
@@ -33,7 +34,7 @@ class PaymentSchema(BaseModel):
         from_attributes = True
         populate_by_name = True
 
-class TheFinancialReportSchema(BaseModel):
+class TheFinancialReportSchema(FinancialReportSchema):
     property_id: int
     report_type: str
     report_period: str
@@ -55,6 +56,7 @@ class FinancialTransactionSchema(BaseModel):
         populate_by_name = True
 
 class TenantPortalSchema(BaseModel):
+    id: Optional[int] = Field(default=None, alias='id')
     tenant_id: int
     invoices: List[InvoiceSchema]
     payment_history: List[PaymentSchema]

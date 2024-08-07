@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional
+from core.schemas import NotificationSchema
 
 class EmailSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
@@ -15,7 +16,7 @@ class EmailSchema(BaseModel):
         from_attributes = True
         populate_by_name = True
 
-class CommunicationNotificationSchema(BaseModel):
+class CommunicationNotificationSchema(NotificationSchema):
     sender_id: int
     recipient_id: int
     message: str
