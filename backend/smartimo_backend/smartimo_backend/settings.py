@@ -62,7 +62,7 @@ TENANT_APPS = [
     'django.contrib.auth',
     'property_listing',
     'client_management',
-    'rental_lease_management',
+    'lease_rental_management',
     'sales_management',
     'document_management',
     'financial_management',

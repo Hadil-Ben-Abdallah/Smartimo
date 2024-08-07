@@ -4,6 +4,7 @@ from typing import List, Optional
 class MaintenanceRequestSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
     tenant: str
+    manager: str
     issue_type: str
     severity: str
     location: str

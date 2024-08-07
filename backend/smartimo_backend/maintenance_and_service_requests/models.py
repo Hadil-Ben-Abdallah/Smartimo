@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from core.models import User
-from rental_lease_management.models import PropertyManager
+from lease_rental_management.models import PropertyManager, Tenant
 
 class MaintenanceRequest(models.Model):
     STATUS_CHOICES = [
@@ -11,7 +11,8 @@ class MaintenanceRequest(models.Model):
     ]
 
     id = models.AutoField(primary_key=True)
-    tenant = models.ForeignKey(User, on_delete=models.CASCADE, related_name='maintenance_requests')
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name='maintenance_requests')
+    manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE, related_name='agreements')
     issue_type = models.CharField(max_length=255)
     severity = models.CharField(max_length=50)
     location = models.CharField(max_length=255)
@@ -32,7 +33,7 @@ class MaintenanceRequest(models.Model):
             )
 
     def get_property_manager(self):
-        return PropertyManager.objects.first()
+        return self.manager
 
     def update_status(self, new_status):
         if new_status in dict(self.STATUS_CHOICES):
@@ -53,7 +54,8 @@ class MaintenanceRequest(models.Model):
     def get_request_details(self):
         return {
             "id": self.id,
-            "tenant": self.tenant.username,
+            "tenant": self.tenant.user_id,
+            "manager": self.manager.user_id,
             "issue_type": self.issue_type,
             "severity": self.severity,
             "location": self.location,
@@ -65,7 +67,7 @@ class MaintenanceRequest(models.Model):
         }
 
 class TenantRequest(models.Model):
-    tenant = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tenant_requests')
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name='tenant_requests')
     unit_number = models.CharField(max_length=50)
     maintenance_requests = models.ManyToManyField(MaintenanceRequest, related_name='tenant_requests')
 
@@ -88,12 +90,12 @@ class MaintenancePropertyManager(models.Model):
     def prioritize_requests(self):
         return self.assigned_requests.order_by('severity')
 
-    def assign_tasks(self, technician, request_id):
+    def assign_tasks(self, request_id):
         request = MaintenanceRequest.objects.get(id=request_id)
         request.status = 'in_progress'
         request.save()
         MaintenanceNotification.objects.create(
-            recipient_id=technician.id,
+            recipient_id=MaintenanceTechnician.id,
             type='task_assignment',
             message=f'New task assigned: {request.issue_type} at {request.location}.'
         )
@@ -106,13 +108,14 @@ class MaintenancePropertyManager(models.Model):
         }
 
     def _calculate_average_resolution_time(self):
-        total_time = 0
-        completed_requests = self.assigned_requests.filter(status='completed')
-        for request in completed_requests:
-            if request.created_at and request.updated_at:
-                total_time += (request.updated_at - request.created_at).total_seconds()
-        count = completed_requests.count()
-        return total_time / count if count > 0 else 0
+        # total_time = 0
+        # completed_requests = self.assigned_requests.filter(status='completed')
+        # for request in completed_requests:
+        #     if request.created_at and request.updated_at:
+        #         total_time += (request.updated_at - request.created_at).total_seconds()
+        # count = completed_requests.count()
+        # return total_time / count if count > 0 else 0
+        pass
 
     def generate_reports(self):
         return {
@@ -133,7 +136,7 @@ class MaintenanceTechnician(models.Model):
         request = MaintenanceRequest.objects.get(id=request_id)
         request.update_status(new_status)
         MaintenanceNotification.objects.create(
-            recipient_id=request.tenant.id,
+            recipient_id=request.tenant.user_id,
             type='status_update',
             message=f'The status of your request {request_id} has been updated to {new_status}.'
         )
