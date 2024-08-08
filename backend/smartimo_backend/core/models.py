@@ -118,7 +118,7 @@ class User(models.Model):
     user_type = models.CharField(max_length=50, choices=USER_TYPES, default='client')
 
     def __str__(self):
-        return self.name
+        return self.username
 
 
 # class Vendor(models.Model):

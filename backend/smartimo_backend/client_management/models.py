@@ -8,7 +8,7 @@ class Client(User):
     tags = models.JSONField(default=list)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    agent_id = models.ForeignKey(RealEstateAgent, on_delete=models.CASCADE, related_name="clients")
+    agent = models.ForeignKey(RealEstateAgent, on_delete=models.CASCADE, related_name="clients")
 
     def add_client(self, data):
         self.name = data['name']
@@ -31,8 +31,8 @@ class Client(User):
         return self
 
 class Interaction(ClientInteraction):
-    client_id = models.ForeignKey(Client, on_delete=models.CASCADE)
-    agent_id = models.ForeignKey(RealEstateAgent, on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    agent = models.ForeignKey(RealEstateAgent, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     
     def log_interaction(self):
@@ -43,8 +43,8 @@ class Interaction(ClientInteraction):
 
 class Reminder(models.Model):
     id = models.AutoField(primary_key=True)
-    client_id = models.ForeignKey(Client, on_delete=models.CASCADE)
-    agent_id = models.ForeignKey(RealEstateAgent, on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    agent = models.ForeignKey(RealEstateAgent, on_delete=models.CASCADE)
     task = models.TextField()
     due_date = models.DateTimeField()
     status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('completed', 'Completed')])

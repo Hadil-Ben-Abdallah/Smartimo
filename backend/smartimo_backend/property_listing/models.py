@@ -21,7 +21,7 @@ class RealEstateAgent(User):
         return PropertyNotification.objects.filter(user_id=self.id).order_by('-id')
 
 class ThePropertyListing(Property):
-    agent_id = models.ForeignKey(RealEstateAgent, on_delete=models.CASCADE)
+    agent = models.ForeignKey(RealEstateAgent, on_delete=models.CASCADE)
     
     def create_listing(self, **kwargs):
         return ThePropertyListing.objects.create(**kwargs)
@@ -87,18 +87,18 @@ class ProspectiveBuyerRenter(User):
 
 class SavedListing(models.Model):
     id = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey(ProspectiveBuyerRenter, on_delete=models.CASCADE)
-    property_id = models.ForeignKey(ThePropertyListing, on_delete=models.CASCADE)
+    user = models.ForeignKey(ProspectiveBuyerRenter, on_delete=models.CASCADE)
+    property = models.ForeignKey(ThePropertyListing, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save_listing(self):
         self.save()
 
     def get_saved_listings(self):
-        return self.user_id.saved_listings.all()
+        return self.user.saved_listings.all()
 
 class PropertyNotification(Notification):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     message = models.TextField()
 
     def get_notifications(self):

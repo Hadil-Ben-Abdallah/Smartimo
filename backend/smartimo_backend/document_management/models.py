@@ -14,7 +14,7 @@ class PropertyDocument(models.Model):
     id = models.AutoField(primary_key=True)
     document_type = models.CharField(max_length=50, choices=DOCUMENT_TYPES)
     file_path = models.CharField(max_length=255)
-    property_id = models.ForeignKey(Property, on_delete=models.CASCADE)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE)
     uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     access_permissions = models.JSONField(default=dict)
@@ -53,7 +53,7 @@ class DocumentCategory(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
-    property_id = models.ForeignKey(Property, on_delete=models.CASCADE)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE)
 
     def create_category(self, name, description):
         self.name = name
@@ -79,7 +79,7 @@ class DocumentCategory(models.Model):
 class DocumentTag(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50)
-    document_id = models.ForeignKey(PropertyDocument, on_delete=models.CASCADE)
+    document = models.ForeignKey(PropertyDocument, on_delete=models.CASCADE)
 
     def create_tag(self, name):
         self.name = name
@@ -102,7 +102,7 @@ class DocumentTag(models.Model):
 
 class DocumentExpirationReminder(models.Model):
     id = models.AutoField(primary_key=True)
-    document_id = models.ForeignKey(PropertyDocument, on_delete=models.CASCADE)
+    document = models.ForeignKey(PropertyDocument, on_delete=models.CASCADE)
     reminder_date = models.DateField()
     status = models.CharField(max_length=50, choices=[('pending', 'Pending'), ('sent', 'Sent')], default='pending')
 
@@ -129,7 +129,7 @@ class DocumentExpirationReminder(models.Model):
 
 class DocumentSharing(models.Model):
     id = models.AutoField(primary_key=True)
-    document_id = models.ForeignKey(PropertyDocument, on_delete=models.CASCADE)
+    document = models.ForeignKey(PropertyDocument, on_delete=models.CASCADE)
     shared_with = models.ForeignKey(User, on_delete=models.CASCADE)
     shared_at = models.DateTimeField(auto_now_add=True)
     access_permissions = models.JSONField(default=dict)
@@ -154,7 +154,7 @@ class DocumentSharing(models.Model):
 
 class ESignatureIntegration(models.Model):
     id = models.AutoField(primary_key=True)
-    document_id = models.ForeignKey(PropertyDocument, on_delete=models.CASCADE)
+    document = models.ForeignKey(PropertyDocument, on_delete=models.CASCADE)
     signature_status = models.CharField(max_length=50, choices=[('pending', 'Pending'), ('completed', 'Completed')], default='pending')
     signed_at = models.DateTimeField(null=True, blank=True)
     signing_party = models.ForeignKey(User, on_delete=models.CASCADE)
