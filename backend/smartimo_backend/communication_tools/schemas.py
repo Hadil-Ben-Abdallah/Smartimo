@@ -19,7 +19,6 @@ class EmailSchema(BaseModel):
 class CommunicationNotificationSchema(NotificationSchema):
     sender_id: int
     recipient_id: int
-    message: str
     type: str
 
     class Config:

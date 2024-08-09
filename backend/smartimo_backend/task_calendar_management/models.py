@@ -25,7 +25,7 @@ class Appointment(models.Model):
     def send_confirmation(self):
         subject = f"Appointment Confirmation - {self.id}"
         message = (
-            f"Dear {self.client.name},\n\n"
+            f"Dear {self.client.username},\n\n"
             f"Your appointment for property {self.property} with agent {self.agent} "
             f"on {self.date} at {self.time} has been confirmed.\n\n"
             f"Details:\n{self.details}\n\n"
@@ -38,9 +38,9 @@ class Appointment(models.Model):
     def send_reminders(self):
         subject = f"Appointment Reminder - {self.id}"
         message = (
-            f"Dear {self.client.name},\n\n"
-            f"This is a reminder for your upcoming appointment with agent {self.agent.id} "
-            f"on {self.date} at {self.time} for property {self.property.id}.\n\n"
+            f"Dear {self.client.username},\n\n"
+            f"This is a reminder for your upcoming appointment with agent {self.agent.user_id} "
+            f"on {self.date} at {self.time} for property {self.property.property_id}.\n\n"
             f"Details:\n{self.details}\n\n"
             f"Thank you,\nThe Smartimo Team"
         )
@@ -65,7 +65,7 @@ class Inspection(models.Model):
     def send_reminders(self):
         subject = f"Inspection Reminder - {self.id}"
         message = (
-            f"Dear {self.manager.name},\n\n"
+            f"Dear {self.manager.username},\n\n"
             f"This is a reminder for the upcoming inspection of property {self.property.id} "
             f"scheduled for {self.date} at {self.time}.\n\n"
             f"Checklist:\n{json.dumps(self.checklist, indent=2)}\n\n"
@@ -110,7 +110,7 @@ class Task(models.Model):
     def send_reminders(self):
         subject = f"Reminder for Task ID {self.id}"
         message = (
-            f"Dear {self.user.name},\n\n"
+            f"Dear {self.user.username},\n\n"
             f"This is a reminder for your task '{self.title}' with priority '{self.priority}'.\n\n"
             f"Description:\n{self.description}\n\n"
             f"Deadline: {self.deadline}\n"

@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from core.models import Notification
+from core.models import Notification, Property
 from lease_rental_management.models import PropertyManager, Tenant
 
 class MaintenanceRequest(models.Model):
@@ -13,14 +13,16 @@ class MaintenanceRequest(models.Model):
     id = models.AutoField(primary_key=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name='maintenance_requests')
     manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE, related_name='agreements')
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='properties')
     issue_type = models.CharField(max_length=255)
     severity = models.CharField(max_length=50)
     location = models.CharField(max_length=255)
     description = models.TextField()
     photos = models.JSONField(default=list)
+    urgency_level = models.CharField(max_length=50, choices=[('low', 'Low'), ('medium', 'Medium'), ('high', 'High')], default='low')
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='submitted')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    submission_date = models.DateTimeField(auto_now_add=True)
+    completion_date = models.DateTimeField(auto_now=True)
 
     def submit_request(self):
         property_manager = self.get_property_manager()
@@ -127,6 +129,7 @@ class MaintenanceTechnician(models.Model):
     name = models.CharField(max_length=255)
     email = models.EmailField()
     phone = models.CharField(max_length=20)
+    skills = models.TextField()
     assigned_tasks = models.ManyToManyField(MaintenanceRequest, related_name='technicians')
 
     def view_assigned_tasks(self):
@@ -152,7 +155,6 @@ class MaintenanceTechnician(models.Model):
 class MaintenanceNotification(Notification):
     recipient_id = models.IntegerField()  # Can be tenant or property manager or technicien id
     type = models.CharField(max_length=50)
-    message = models.TextField()
 
     def track_delivery_status(self):
         pass

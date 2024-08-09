@@ -43,7 +43,6 @@ class SavedListingSchema(BaseModel):
 
 class PropertyNotificationSchema(NotificationSchema):
     user_id: int
-    message: str
 
     class Config:
         from_attributes = True

@@ -19,6 +19,7 @@ urlpatterns = [
     path('api/vendor-management/', include('vendor_management.urls')),
     path('api/marketplace-integration/', include('marketplace_integration.urls')),
     path('api/CRM-integration/', include('CRM_integration.urls')),
+    path('api/marketing-tools-integration/', include('marketing_tools_integration.urls')),
 ]
 
 

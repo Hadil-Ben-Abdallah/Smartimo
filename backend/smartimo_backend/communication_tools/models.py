@@ -54,7 +54,6 @@ class Email(models.Model):
 class CommunicationNotification(Notification):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_notifications')
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_notifications')
-    message = models.TextField()
     type = models.CharField(max_length=50, choices=[('lease_renewal', 'Lease Renewal'), ('maintenance_schedule', 'Maintenance Schedule')])
 
     def schedule_notification(self, schedule_time):

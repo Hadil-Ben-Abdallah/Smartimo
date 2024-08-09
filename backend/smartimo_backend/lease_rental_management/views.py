@@ -1,20 +1,20 @@
 from ninja import Router
 from django.shortcuts import get_object_or_404
-from .models import Agreement, Tenant, PropertyManager, RentalPayment, LeaseRentalCommunication
+from .models import LeaseAgreement, Tenant, PropertyManager, RentalPayment, LeaseRentalCommunication
 from .schemas import (
-    AgreementSchema, TenantSchema, PropertyManagerSchema, RentalPaymentSchema, LeaseRentalCommunicationSchema
+    LeaseAgreementSchema, TenantSchema, PropertyManagerSchema, RentalPaymentSchema, LeaseRentalCommunicationSchema
 )
 
 router = Router()
 
-@router.post("/agreements", response=AgreementSchema)
-def create_agreement(request, payload: AgreementSchema):
-    agreement = Agreement.objects.create(**payload.dict(exclude={'id'}))
+@router.post("/agreements", response=LeaseAgreementSchema)
+def create_agreement(request, payload: LeaseAgreementSchema):
+    agreement = LeaseAgreement.objects.create(**payload.dict(exclude={'id'}))
     return agreement
 
-@router.put("/agreements/{agreement_id}", response=AgreementSchema)
-def update_agreement(request, agreement_id: int, payload: AgreementSchema):
-    agreement = get_object_or_404(Agreement, id=agreement_id)
+@router.put("/agreements/{agreement_id}", response=LeaseAgreementSchema)
+def update_agreement(request, agreement_id: int, payload: LeaseAgreementSchema):
+    agreement = get_object_or_404(LeaseAgreement, id=agreement_id)
     for key, value in payload.dict().items():
         if key != 'id':
             setattr(agreement, key, value)

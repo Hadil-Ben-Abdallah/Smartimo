@@ -4,7 +4,7 @@ from typing import List, Optional
 from datetime import date, datetime
 from core.schemas import CommunicationSchema
 
-class AgreementSchema(BaseModel):
+class LeaseAgreementSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
     property_id: int
     tenant_id: int
@@ -24,7 +24,7 @@ class AgreementSchema(BaseModel):
 class TenantSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
     username: str
-    lease_agreements: List[AgreementSchema]
+    lease_agreements: List[LeaseAgreementSchema]
     payment_history: list
 
     class Config:
@@ -35,7 +35,7 @@ class PropertyManagerSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
     username: str
     properties: List[int]
-    lease_agreements: List[AgreementSchema]
+    lease_agreements: List[LeaseAgreementSchema]
 
     class Config:
         from_attributes = True

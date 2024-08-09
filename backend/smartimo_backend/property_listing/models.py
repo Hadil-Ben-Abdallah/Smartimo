@@ -99,7 +99,6 @@ class SavedListing(models.Model):
 
 class PropertyNotification(Notification):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    message = models.TextField()
 
     def get_notifications(self):
         return PropertyNotification.objects.filter(user_id=self.user_id).order_by('-created_at')

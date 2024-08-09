@@ -1,44 +1,16 @@
 from django.db import models
-from core.models import User, Property
+from core.models import User, Property, Document
 from django.utils import timezone
 
-class PropertyDocument(models.Model):
-    DOCUMENT_TYPES = (
-        ('contract', 'Contract'),
-        ('agreement', 'Agreement'),
-        ('deed', 'Deed'),
-        ('inspection_report', 'Inspection Report'),
-        ('insurance_policy', 'Insurance Policy'),
-    )
-    
-    id = models.AutoField(primary_key=True)
-    document_type = models.CharField(max_length=50, choices=DOCUMENT_TYPES)
-    file_path = models.CharField(max_length=255)
+class PropertyDocument(Document):
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    uploaded_at = models.DateTimeField(auto_now_add=True)
-    access_permissions = models.JSONField(default=dict)
-    expiration_date = models.DateField(null=True, blank=True)
 
-    def upload_document(self, file_path):
-        self.file_path = file_path
-        self.save()
-    
-    def update_document(self, **kwargs):
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-        self.save()
-    
-    def set_permissions(self, permissions):
-        self.access_permissions = permissions
-        self.save()
-    
     def get_document_details(self):
         return {
-            "id": self.id,
+            "id": self.document_id,
             "document_type": self.document_type,
             "file_path": self.file_path,
-            "property_id": self.property_id,
+            "property_id": self.property.property_id,
             "uploaded_by": self.uploaded_by,
             "uploaded_at": self.uploaded_at,
             "access_permissions": self.access_permissions,
@@ -73,7 +45,7 @@ class DocumentCategory(models.Model):
             "id": self.id,
             "name": self.name,
             "description": self.description,
-            "property_id": self.property_id,
+            "property_id": self.property.property_id,
         }
 
 class DocumentTag(models.Model):
@@ -97,7 +69,7 @@ class DocumentTag(models.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "document_id": self.document_id,
+            "document_id": self.document.id,
         }
 
 class DocumentExpirationReminder(models.Model):
@@ -122,7 +94,7 @@ class DocumentExpirationReminder(models.Model):
     def get_reminder_details(self):
         return {
             "id": self.id,
-            "document_id": self.document_id,
+            "document_id": self.document.id,
             "reminder_date": self.reminder_date,
             "status": self.status,
         }

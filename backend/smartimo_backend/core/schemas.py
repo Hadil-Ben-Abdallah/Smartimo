@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional, Dict
-from datetime import datetime
+from datetime import datetime, date
 
 class PropertySchema(BaseModel):
     property_id: Optional[int] = Field(default=None, alias='property_id')
@@ -27,7 +27,9 @@ class PropertySchema(BaseModel):
 
 class NotificationSchema(BaseModel):
     notification_id: Optional[int] = Field(default=None, alias='notification_id')
+    message: str
     status: str
+    date: datetime
 
     class Config:
         from_attributes = True
@@ -125,6 +127,22 @@ class UserSchema(BaseModel):
     credit_card_number: str
     job_title: str
     user_type: str
+
+    class Config:
+        from_attributes = True
+        populate_by_name = True
+
+class DocumentSchema(BaseModel):
+    document_id: Optional[int] = Field(default=None, alias='document_id ')
+    title: str
+    document_type: str
+    file_path: str
+    description: str
+    uploaded_by: int
+    uploaded_at: datetime
+    version: str
+    access_permissions: Dict
+    expiration_date: date
 
     class Config:
         from_attributes = True

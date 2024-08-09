@@ -1,4 +1,3 @@
-from ninja import Schema
 from datetime import date
 from pydantic import BaseModel, Field
 from typing import List,  Optional

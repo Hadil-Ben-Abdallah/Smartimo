@@ -6,14 +6,16 @@ class MaintenanceRequestSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
     tenant: str
     manager: str
+    property: str
     issue_type: str
     severity: str
     location: str
     description: str
     photos: List[str]
+    urgency_level: str
     status: str
-    created_at: str
-    updated_at: str
+    submission_date: str
+    completion_date: str
 
     class Config:
         from_attributes = True
@@ -64,6 +66,7 @@ class MaintenanceTechnicianSchema(BaseModel):
     name: str
     email: str
     phone: str
+    skills: str
     assigned_tasks: List[int]
 
     class Config:
@@ -73,7 +76,6 @@ class MaintenanceTechnicianSchema(BaseModel):
 class MaintenanceNotificationSchema(NotificationSchema):
     recipient_id: int
     type: str
-    message: str
 
     class Config:
         from_attributes = True

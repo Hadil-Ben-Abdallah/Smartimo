@@ -22,7 +22,9 @@ class Property(models.Model):
 
 class Notification(models.Model):
     notification_id = models.AutoField(primary_key=True)
+    message = models.TextField()
     status = models.CharField(max_length=50)
+    date = models.DateTimeField(default=timezone.now)
 
     def send_notification(self):
         pass
@@ -87,10 +89,8 @@ class SalesOpportunity(models.Model):
 class Resource(models.Model):
     resource_id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=100)
-    content = models.TextField()
+    description = models.TextField()
     contact_info = models.CharField(max_length=255)
-
-from django.db import models
 
 class User(models.Model):
     USER_TYPES = (
@@ -119,8 +119,41 @@ class User(models.Model):
 
     def __str__(self):
         return self.username
+    
+class Document(models.Model):
+    DOCUMENT_TYPES = (
+        ('contract', 'Contract'),
+        ('agreement', 'Agreement'),
+        ('deed', 'Deed'),
+        ('lease', 'Lease'),
+        ('addendum', 'Addentum'),
+        ('inspection_report', 'Inspection Report'),
+        ('insurance_policy', 'Insurance Policy'),
+    )
 
+    document_id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=100)
+    document_type = models.CharField(max_length=50, choices=DOCUMENT_TYPES, default='contract')
+    file_path = models.CharField(max_length=255)
+    description = models.TextField()
+    uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    version = models.CharField(max_length=10)
+    access_permissions = models.JSONField(default=dict)
+    expiration_date = models.DateField()
 
+    def upload_document(self, file_path):
+        self.file_path = file_path
+        self.save()
+    
+    def update_document(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+        self.save()
+    
+    def set_permissions(self, permissions):
+        self.access_permissions = permissions
+        self.save()
 # class Vendor(models.Model):
 #     vendor_id = models.AutoField(primary_key=True)
 #     name = models.CharField(max_length=100)

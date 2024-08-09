@@ -2,7 +2,7 @@ from django.db import models
 from core.models import Property, User, Communication
 from django.utils import timezone
 
-class Agreement(models.Model):
+class LeaseAgreement(models.Model):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     tenant = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lease_agreements')
@@ -47,7 +47,7 @@ class Agreement(models.Model):
         }
 
 class Tenant(User):
-    lease_agreements = models.ManyToManyField(Agreement, related_name='tenants')
+    lease_agreements = models.ManyToManyField(LeaseAgreement, related_name='tenants')
     payment_history = models.JSONField(default=list)
 
     def view_lease_agreement(self):
@@ -72,10 +72,10 @@ class Tenant(User):
 
 class PropertyManager(User):
     properties = models.ManyToManyField(Property, related_name='managers')
-    lease_agreements = models.ManyToManyField(Agreement, related_name='property_managers')
+    lease_agreements = models.ManyToManyField(LeaseAgreement, related_name='property_managers')
 
     def create_lease_agreement(self, property, tenant, terms, rent_amount, security_deposit, start_date, end_date):
-        agreement = Agreement.objects.create(
+        lease_agreement = LeaseAgreement.objects.create(
             property=property,
             tenant=tenant,
             terms=terms,
@@ -84,16 +84,16 @@ class PropertyManager(User):
             start_date=start_date,
             end_date=end_date
         )
-        self.lease_agreements.add(agreement)
+        self.lease_agreements.add(lease_agreement)
 
     def update_lease_agreement(self, terms, rent_amount, security_deposit, start_date, end_date):
-        Agreement.terms = terms
-        Agreement.rent_amount = rent_amount
-        Agreement.security_deposit = security_deposit
-        Agreement.start_date = start_date
-        Agreement.end_date = end_date
-        Agreement.updated_at = timezone.now()
-        Agreement.save()
+        LeaseAgreement.terms = terms
+        LeaseAgreement.rent_amount = rent_amount
+        LeaseAgreement.security_deposit = security_deposit
+        LeaseAgreement.start_date = start_date
+        LeaseAgreement.end_date = end_date
+        LeaseAgreement.updated_at = timezone.now()
+        LeaseAgreement.save()
 
     def track_rental_payments(self):
         return RentalPayment.objects.filter(lease_agreement__in=self.lease_agreements.all())
@@ -115,7 +115,7 @@ class PropertyManager(User):
 
 class RentalPayment(models.Model):
     id = models.AutoField(primary_key=True)
-    lease_agreement = models.ForeignKey(Agreement, on_delete=models.CASCADE)
+    lease_agreement = models.ForeignKey(LeaseAgreement, on_delete=models.CASCADE)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_date = models.DateField()
