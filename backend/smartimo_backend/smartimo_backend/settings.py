@@ -74,6 +74,7 @@ TENANT_APPS = [
     'marketplace_integration',
     'CRM_integration',
     'marketing_tools_integration',
+    'compliance_and_legal_management',
 ]
 
 INSTALLED_APPS = SHARED_APPS + [app for app in TENANT_APPS if app not in SHARED_APPS]
