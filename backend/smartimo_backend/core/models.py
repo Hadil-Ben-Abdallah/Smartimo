@@ -15,7 +15,7 @@ class Property(models.Model):
     ]
 
     property_id = models.AutoField(primary_key=True)
-    type = models.CharField(max_length=50, choices=PROPERTY_TYPES, default='')
+    type = models.CharField(max_length=50, choices=PROPERTY_TYPES, default='residential')
     address = models.CharField(max_length=50)
     description = models.TextField()
     photos = models.ImageField(upload_to='photos/')
@@ -40,6 +40,48 @@ class Notification(models.Model):
 
     def send_notification(self):
         pass
+
+class Reminder(models.Model):
+    REMINDER_FREQUENCY = [
+        ('daily', 'Daily'),
+        ('weekly', 'Weekly'),
+        ('monthly', 'Monthly'),
+        ('quartly', 'Quartly'),
+        ('bi-annually', 'Bi-annually'),
+        ('annually', 'Annually'),
+    ]
+    DELIVARY_CHANNEL = [
+        ('email', 'Email'),
+        ('sms', 'SMS'),
+        ('in_platform_alert', 'In-platform Alert'),
+    ]
+    REMINDER_STATUS = [
+        ('scheduled', 'Scheduled'),
+        ('sent', 'Sent')
+    ]
+    reminder_id = models.AutoField(primary_key=True)
+    message_content = models.TextField()
+    reminder_date = models.DateTimeField()
+    frequency = models.CharField(max_length=50, choices=REMINDER_FREQUENCY, default='daily')
+    delivary_channel = models.CharField(max_length=50, choices=DELIVARY_CHANNEL, default='email')
+    status = models.CharField(max_length=50, choices=REMINDER_STATUS, default='scheduled')
+
+    def create_reminder(self, reminder_date):
+        self.reminder_date = reminder_date
+        self.save()
+    
+    def update_reminder(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+        self.save()
+    
+    def send_reminder(self):
+        self.status = 'sent'
+        self.save()
+
+    def delete_reminder(self):
+        self.delete()
+
 
 class ClientInteraction(models.Model):
     client_interaction_id = models.AutoField(primary_key=True)

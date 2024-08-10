@@ -35,6 +35,18 @@ class NotificationSchema(BaseModel):
         from_attributes = True
         populate_by_name = True
 
+class ReminderSchema(BaseModel):
+    reminder_id: Optional[int] = Field(default=None, alias='reminder_id')
+    message_content: str
+    reminder_date: datetime
+    frequency: str
+    delivary_channel: str
+    status: str
+
+    class Config:
+        from_attributes = True
+        populate_by_name = True
+
 class ClientInteractionSchema(BaseModel):
     client_interaction_id: Optional[int] = Field(default=None, alias='client_interaction_id')
     interaction_type: str

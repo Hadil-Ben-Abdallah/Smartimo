@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict
 from datetime import datetime
-from core.schemas import UserSchema, ClientInteractionSchema
+from core.schemas import UserSchema, ClientInteractionSchema, ReminderSchema
 from property_listing.schemas import RealEstateAgentSchema
 
 class ClientSchema(UserSchema):
@@ -25,15 +25,10 @@ class InteractionSchema(ClientInteractionSchema):
         from_attributes = True
         populate_by_name = True
 
-class ReminderSchema(BaseModel):
-    id: Optional[int] = Field(default=None, alias='id')
+class ClientReminderSchema(ReminderSchema):
     client_id: int
     agent_id: int
     task: str
-    due_date: datetime
-    status: str
-    created_at: datetime
-    updated_at: datetime
 
     class Config:
         from_attributes = True

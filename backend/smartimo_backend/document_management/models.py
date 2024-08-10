@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import User, Property, Document
+from core.models import User, Property, Document, Reminder
 from django.utils import timezone
 
 class PropertyDocument(Document):
@@ -69,33 +69,21 @@ class DocumentTag(models.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "document_id": self.document.id,
+            "document_id": self.document.document_id,
         }
 
-class DocumentExpirationReminder(models.Model):
-    id = models.AutoField(primary_key=True)
+class DocumentExpirationReminder(Reminder):
     document = models.ForeignKey(PropertyDocument, on_delete=models.CASCADE)
-    reminder_date = models.DateField()
-    status = models.CharField(max_length=50, choices=[('pending', 'Pending'), ('sent', 'Sent')], default='pending')
 
-    def create_reminder(self, reminder_date):
-        self.reminder_date = reminder_date
-        self.save()
-    
-    def update_reminder(self, **kwargs):
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-        self.save()
-    
-    def send_reminder(self):
-        self.status = 'sent'
-        self.save()
     
     def get_reminder_details(self):
         return {
-            "id": self.id,
-            "document_id": self.document.id,
+            "id": self.reminder_id,
+            "document_id": self.document.document_id,
+            "message_content": self.message_content,
             "reminder_date": self.reminder_date,
+            "frequency": self.frequency,
+            "delivary_channel": self.delivary_channel,
             "status": self.status,
         }
 

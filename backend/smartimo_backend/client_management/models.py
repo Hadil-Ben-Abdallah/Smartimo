@@ -1,6 +1,6 @@
 from django.db import models
 from property_listing.models import RealEstateAgent
-from core.models import User, Notification, ClientInteraction
+from core.models import User, Notification, ClientInteraction, Reminder
 
 class Client(User):
     preferences = models.JSONField(default=dict)
@@ -41,26 +41,10 @@ class Interaction(ClientInteraction):
     def get_interactions(self, client_id):
         return Interaction.objects.filter(client_id=client_id).order_by('-timestamp')
 
-class Reminder(models.Model):
-    id = models.AutoField(primary_key=True)
+class ClientReminder(Reminder):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     agent = models.ForeignKey(RealEstateAgent, on_delete=models.CASCADE)
     task = models.TextField()
-    due_date = models.DateTimeField()
-    status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('completed', 'Completed')])
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    def set_reminder(self):
-        self.save()
-    
-    def update_reminder(self, data):
-        for field, value in data.items():
-            setattr(self, field, value)
-        self.save()
-    
-    def delete_reminder(self):
-        self.delete()
     
     def get_reminders(self, client_id):
         return Reminder.objects.filter(client_id=client_id)

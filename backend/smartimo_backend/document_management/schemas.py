@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict
-from datetime import datetime, date
-from core.schemas import DocumentSchema
+from datetime import datetime
+from core.schemas import DocumentSchema, ReminderSchema
 
 class PropertyDocumentSchema(DocumentSchema):
     property_id: int
@@ -29,11 +29,8 @@ class DocumentTagSchema(BaseModel):
         from_attributes = True
         populate_by_name = True
 
-class DocumentExpirationReminderSchema(BaseModel):
-    id: Optional[int] = Field(default=None, alias='id')
+class DocumentExpirationReminderSchema(ReminderSchema):
     document_id: int
-    reminder_date: date
-    status: str
 
     class Config:
         from_attributes = True

@@ -1,6 +1,6 @@
 from ninja import Router
-from .models import Property, Notification, ClientInteraction,Communication, FinancialReport, SalesOpportunity, Resource, User, Document
-from .schemas import PropertySchema, NotificationSchema, ClientInteractionSchema, CommunicationSchema, FinancialReportSchema, SalesOpportunitySchema, ResourceSchema, UserSchema, DocumentSchema
+from .models import Property, Notification, ClientInteraction,Communication, FinancialReport, SalesOpportunity, Resource, User, Document, Reminder
+from .schemas import PropertySchema, NotificationSchema, ClientInteractionSchema, CommunicationSchema, FinancialReportSchema, SalesOpportunitySchema, ResourceSchema, UserSchema, DocumentSchema, ReminderSchema
 
 router = Router()
 
@@ -23,6 +23,16 @@ def create_notification(request, data: NotificationSchema):
     notification_data = data.dict(exclude={'notification_id'})
     notification_instance = Notification.objects.create(**notification_data)
     return notification_instance
+
+@router.get("/get-reminders/", response=list[ReminderSchema])
+def list_reminders(request):
+    return list(Reminder.objects.all())
+
+@router.post("/set-reminders/", response=ReminderSchema)
+def create_reminder(request, data: ReminderSchema):
+    reminder_data = data.dict(exclude={'reminder_id'})
+    reminder_instance = Reminder.objects.create(**reminder_data)
+    return reminder_instance
 
 @router.get("/get-client-interactions/", response=list[ClientInteractionSchema])
 def list_client_interactions(request):
