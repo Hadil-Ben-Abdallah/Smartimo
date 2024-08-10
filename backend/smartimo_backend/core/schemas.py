@@ -7,8 +7,8 @@ class PropertySchema(BaseModel):
     type: str
     description: str
     address: str
-    photo: str
-    video: str
+    photos: str
+    videos: str
     size: float
     bathroom_number: int
     badroom_number: int
@@ -118,7 +118,9 @@ class ResourceSchema(BaseModel):
 
 class UserSchema(BaseModel):
     user_id: Optional[int] = Field(default=None, alias='user_id')
-    name: str
+    first_name: str
+    last_name: str
+    username: str
     email: str
     cin: str
     birth_date: str

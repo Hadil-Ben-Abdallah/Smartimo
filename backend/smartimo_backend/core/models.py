@@ -2,12 +2,24 @@ from django.db import models
 from django.utils import timezone
 
 class Property(models.Model):
+    PROPERTY_TYPES = [
+        ('residential', 'Residential'),
+        ('commercial', 'Commercial'),
+        ('mixed_use', 'Mixed Use'),
+        ('land', 'Land'),
+        ('special_purpose', 'Special Purpose'),
+        ('investment', 'Investment'),
+        ('luxury', 'Luxury'),
+        ('recreational', 'Recreational'),
+        ('development', 'Development'),
+    ]
+
     property_id = models.AutoField(primary_key=True)
-    type = models.CharField(max_length=50)
+    type = models.CharField(max_length=50, choices=PROPERTY_TYPES, default='')
     address = models.CharField(max_length=50)
     description = models.TextField()
-    photo = models.ImageField(upload_to='photos/')
-    video = models.FileField(upload_to='videos/')
+    photos = models.ImageField(upload_to='photos/')
+    videos = models.FileField(upload_to='videos/')
     size = models.DecimalField(max_digits=10, decimal_places=2)
     bathroom_number = models.IntegerField(default=0)
     badroom_number = models.IntegerField(default=0)

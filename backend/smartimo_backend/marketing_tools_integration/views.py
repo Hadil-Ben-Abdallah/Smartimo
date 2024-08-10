@@ -1,8 +1,7 @@
 from ninja import Router
 from typing import List
 from .models import MarketingProperty, ListingDistribution, SocialMediaPost, AdvertisingCampaign, MarketingAnalytics
-from .schemas import (MarketingPropertySchema, ListingDistributionSchema, SocialMediaPostSchema, 
-                      AdvertisingCampaignSchema, MarketingAnalyticsSchema)
+from .schemas import (MarketingPropertySchema, ListingDistributionSchema, SocialMediaPostSchema, AdvertisingCampaignSchema, MarketingAnalyticsSchema)
 
 router = Router()
 
