@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'property_listing',
-    'tenants',  # Ensure this is included for the Tenant and Domain models
+    'tenants', 
 ] 
 
 SHARED_APPS = [
@@ -75,6 +75,7 @@ TENANT_APPS = [
     'CRM_integration',
     'marketing_tools_integration',
     'compliance_and_legal_management',
+    'mobile_app_development',
 ]
 
 INSTALLED_APPS = SHARED_APPS + [app for app in TENANT_APPS if app not in SHARED_APPS]

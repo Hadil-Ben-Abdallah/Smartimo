@@ -162,6 +162,7 @@ class User(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     username = models.CharField(unique=True, max_length=100)
+    password = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     cin = models.CharField(max_length=8)
     birth_date = models.DateTimeField(auto_now=True)

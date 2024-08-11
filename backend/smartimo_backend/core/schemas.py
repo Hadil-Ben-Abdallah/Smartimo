@@ -133,6 +133,7 @@ class UserSchema(BaseModel):
     first_name: str
     last_name: str
     username: str
+    password: str
     email: str
     cin: str
     birth_date: str
