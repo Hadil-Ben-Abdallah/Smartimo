@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Dict, Optional
 from datetime import date, datetime
 from pydantic import Field
 
@@ -41,6 +41,16 @@ class TaskSchema(BaseModel):
     deadline: date
     status: str
     category: str
+
+    class Config:
+        from_attributes = True
+        populate_by_name = True
+
+class TaskManagerSchema(BaseModel):
+    id: Optional[int] = Field(default=None, alias='id')
+    tasks: List[Dict]
+    calendar: Dict
+    reminders: List[Dict]
 
     class Config:
         from_attributes = True

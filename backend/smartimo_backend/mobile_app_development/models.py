@@ -74,31 +74,6 @@ class CommunicationManager(Communication):
         self.save()
         return "User has been notified."
 
-class TaskManager(models.Model):
-    id = models.AutoField(primary_key=True)
-    tasks = models.JSONField(default=list)
-    calendar = models.JSONField(default=dict)
-    reminders = models.JSONField(default=list)
-
-    def add_task(self, task):
-        self.tasks.append(task)
-        self.save()
-        return f"Task '{task}' has been added."
-
-    def update_task(self, task_id, updated_task):
-        self.tasks[task_id] = updated_task
-        self.save()
-        return f"Task {task_id} has been updated."
-
-    def set_reminder(self, task_id, reminder_time):
-        self.reminders.append({"task_id": task_id, "time": reminder_time})
-        self.save()
-        return f"Reminder set for task {task_id} at {reminder_time}."
-
-    def notify_task(self, task_id):
-        task = self.tasks[task_id]
-        return f"Notification: Task '{task}' is coming up."
-
 class NotificationManager(Notification):
     user_preferences = models.JSONField(default=dict)
 

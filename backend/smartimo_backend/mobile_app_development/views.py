@@ -1,8 +1,7 @@
 from ninja import Router
-from .models import MobileApp, AppProperty, CommunicationManager, TaskManager, NotificationManager, MobileUserAccount
+from .models import MobileApp, AppProperty, CommunicationManager, NotificationManager, MobileUserAccount
 from .schemas import (
-    MobileAppSchema, AppPropertySchema, CommunicationManagerSchema, 
-    TaskManagerSchema, NotificationManagerSchema, MobileUserAccountSchema
+    MobileAppSchema, AppPropertySchema, CommunicationManagerSchema, NotificationManagerSchema, MobileUserAccountSchema
 )
 
 router = Router()
@@ -36,16 +35,6 @@ def create_communication_manager(request, payload: CommunicationManagerSchema):
 def get_communication_manager(request, comm_id: int):
     communication_manager = CommunicationManager.objects.get(id=comm_id)
     return communication_manager
-
-@router.post("/taskmanager/", response=TaskManagerSchema)
-def create_task_manager(request, payload: TaskManagerSchema):
-    task_manager = TaskManager.objects.create(**payload.dict(exclude={'id'}))
-    return task_manager
-
-@router.get("/taskmanager/{task_id}", response=TaskManagerSchema)
-def get_task_manager(request, task_id: int):
-    task_manager = TaskManager.objects.get(id=task_id)
-    return task_manager
 
 @router.post("/notificationmanager/", response=NotificationManagerSchema)
 def create_notification_manager(request, payload: NotificationManagerSchema):

@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 
 class Property(models.Model):
     PROPERTY_TYPES = [
@@ -209,6 +210,39 @@ class Document(models.Model):
     def set_permissions(self, permissions):
         self.access_permissions = permissions
         self.save()
+
+class Portal(models.Model):
+    portal_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=255)
+    version = models.CharField(max_length=50)
+    url = models.URLField()
+
+    def login(self, request, username, password):
+        """
+        Authenticates the user and logs them in.
+        :param request: The HTTP request object
+        :param username: The username of the user
+        :param password: The password of the user
+        :return: Success or failure message
+        """
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            auth_login(request, user)
+            return "Login successful"
+        else:
+            return "Invalid credentials"
+
+    def logout(self, request):
+        """
+        Logs the user out.
+        :param request: The HTTP request object
+        :return: Success message
+        """
+        auth_logout(request)
+        return "Logout successful"
+
+    def navigate(self, destination):
+        return f"Navigating to {destination} within {self.portal_name}."
 # class Vendor(models.Model):
 #     vendor_id = models.AutoField(primary_key=True)
 #     name = models.CharField(max_length=100)

@@ -1,7 +1,7 @@
 from ninja import Router
 from django.shortcuts import get_object_or_404
-from .models import Invoice, Payment, TheFinancialReport, FinancialTransaction, TenantPortal
-from .schemas import InvoiceSchema, PaymentSchema, TheFinancialReportSchema, FinancialTransactionSchema, TenantPortalSchema
+from .models import Invoice, Payment, TheFinancialReport, FinancialTransaction, FinancialPortal
+from .schemas import InvoiceSchema, PaymentSchema, TheFinancialReportSchema, FinancialTransactionSchema, FinancialPortalSchema
 
 router = Router()
 
@@ -69,9 +69,9 @@ def update_financial_report(request, report_id: int, payload: TheFinancialReport
     return financial_report
 
 
-@router.get("/tenant-portal/{tenant_id}/", response=TenantPortalSchema)
+@router.get("/tenant-portal/{tenant_id}/", response=FinancialPortalSchema)
 def get_tenant_portal(request, tenant_id: int):
-    tenant_portal = get_object_or_404(TenantPortal, tenant_id=tenant_id)
+    tenant_portal = get_object_or_404(FinancialPortal, tenant_id=tenant_id)
     return tenant_portal
 
 

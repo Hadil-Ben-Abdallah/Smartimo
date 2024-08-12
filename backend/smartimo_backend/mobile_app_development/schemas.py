@@ -31,16 +31,6 @@ class CommunicationManagerSchema(CommunicationSchema):
         from_attributes = True
         populate_by_name = True
 
-class TaskManagerSchema(BaseModel):
-    id: Optional[int] = Field(default=None, alias='id')
-    tasks: List[Dict]
-    calendar: Dict
-    reminders: List[Dict]
-
-    class Config:
-        from_attributes = True
-        populate_by_name = True
-
 class NotificationManagerSchema(NotificationSchema):
     user_preferences: Dict
 

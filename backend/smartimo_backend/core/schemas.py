@@ -148,7 +148,7 @@ class UserSchema(BaseModel):
         populate_by_name = True
 
 class DocumentSchema(BaseModel):
-    document_id: Optional[int] = Field(default=None, alias='document_id ')
+    document_id: Optional[int] = Field(default=None, alias='document_id')
     title: str
     document_type: str
     file_path: str
@@ -158,6 +158,16 @@ class DocumentSchema(BaseModel):
     version: str
     access_permissions: Dict
     expiration_date: date
+
+    class Config:
+        from_attributes = True
+        populate_by_name = True
+
+class PortalSchema(BaseModel):
+    portal_id: Optional[int] = Field(default=None, alias='portal_id')
+    name:str
+    version:str
+    url:str
 
     class Config:
         from_attributes = True

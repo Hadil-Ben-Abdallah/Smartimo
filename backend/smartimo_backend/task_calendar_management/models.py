@@ -120,7 +120,28 @@ class Task(models.Model):
         recipient_list = [self.user.email]
         send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list)
         return f"Reminders sent for task {self.id}."
+    
 
+class TaskManager(models.Model):
+    id = models.AutoField(primary_key=True)
+    tasks = models.ForeignKey(Task, on_delete=models.CASCADE)
+    calendar = models.JSONField(default=dict)
+    reminders = models.JSONField(default=list)
+
+    def add_task(self, task):
+        self.tasks.append(task)
+        self.save()
+        return f"Task '{task}' has been added."
+
+    def update_task(self, task_id, updated_task):
+        self.tasks[task_id] = updated_task
+        self.save()
+        return f"Task {task_id} has been updated."
+
+    def set_reminder(self, task_id, reminder_time):
+        self.reminders.append({"task_id": task_id, "time": reminder_time})
+        self.save()
+        return f"Reminder set for task {task_id} at {reminder_time}."
 
 class Event(models.Model):
     id = models.AutoField(primary_key=True)

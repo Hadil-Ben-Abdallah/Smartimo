@@ -55,7 +55,7 @@ class FinancialTransactionSchema(BaseModel):
         from_attributes = True
         populate_by_name = True
 
-class TenantPortalSchema(BaseModel):
+class FinancialPortalSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
     tenant_id: int
     invoices: List[InvoiceSchema]

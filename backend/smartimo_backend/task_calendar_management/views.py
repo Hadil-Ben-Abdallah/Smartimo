@@ -1,11 +1,12 @@
 from typing import List
 from django.shortcuts import get_object_or_404
 from ninja import Router
-from .models import Appointment, Inspection, Task, Event, CalendarIntegration
+from .models import Appointment, Inspection, Task, TaskManager, Event, CalendarIntegration
 from .schemas import (
     AppointmentSchema,
     InspectionSchema,
     TaskSchema,
+    TaskManagerSchema,
     EventSchema,
     CalendarIntegrationSchema
 )
@@ -104,6 +105,17 @@ def delete_task(request, task_id: int):
     task = get_object_or_404(Task, id=task_id)
     task.delete()
     return None
+
+# TaskManager Endpoints
+@router.post("/taskmanager/", response=TaskManagerSchema)
+def create_task_manager(request, payload: TaskManagerSchema):
+    task_manager = TaskManager.objects.create(**payload.dict(exclude={'id'}))
+    return task_manager
+
+@router.get("/taskmanager/{task_id}", response=TaskManagerSchema)
+def get_task_manager(request, task_id: int):
+    task_manager = TaskManager.objects.get(id=task_id)
+    return task_manager
 
 # Event Endpoints
 @router.get("/events/", response=List[EventSchema])

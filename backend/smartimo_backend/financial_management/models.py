@@ -138,7 +138,7 @@ class FinancialTransaction(models.Model):
         self.save()
         return f"Transaction {self.id} updated."
 
-class TenantPortal(models.Model):
+class FinancialPortal(models.Model):
     id = models.AutoField(primary_key=True)
     tenant = models.ForeignKey(User, on_delete=models.CASCADE)
     invoices = models.ManyToManyField(Invoice)
