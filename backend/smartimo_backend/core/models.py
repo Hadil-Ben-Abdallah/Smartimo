@@ -242,7 +242,7 @@ class Portal(models.Model):
         return "Logout successful"
 
     def navigate(self, destination):
-        return f"Navigating to {destination} within {self.portal_name}."
+        return f"Navigating to {destination} within {self.name}."
 # class Vendor(models.Model):
 #     vendor_id = models.AutoField(primary_key=True)
 #     name = models.CharField(max_length=100)

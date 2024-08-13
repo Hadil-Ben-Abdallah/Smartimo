@@ -23,6 +23,7 @@ urlpatterns = [
     path('api/compliance-and-legal-management/', include('compliance_and_legal_management.urls')),
     path('api/mobile-app-development/', include('mobile_app_development.urls')),
     path('api/tenant-portal-development/', include('tenant_portal_development.urls')),
+    path('api/owner-portal-development/', include('owner_portal_development.urls')),
 ]
 
 
