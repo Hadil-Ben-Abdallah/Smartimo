@@ -78,6 +78,7 @@ TENANT_APPS = [
     'mobile_app_development',
     'tenant_portal_development',
     'owner_portal_development',
+    'lead_management',
 ]
 
 INSTALLED_APPS = SHARED_APPS + [app for app in TENANT_APPS if app not in SHARED_APPS]

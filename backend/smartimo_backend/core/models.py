@@ -83,7 +83,6 @@ class Reminder(models.Model):
     def delete_reminder(self):
         self.delete()
 
-
 class ClientInteraction(models.Model):
     client_interaction_id = models.AutoField(primary_key=True)
     interaction_type = models.CharField(max_length=50)
@@ -92,13 +91,6 @@ class ClientInteraction(models.Model):
     def log_interactions(self):
         pass
 
-# class LeaseAgreement(models.Model):
-#     lease_id = models.AutoField(primary_key=True)
-#     start_date = models.DateField()
-#     end_date = models.DateField()
-#     rent_amount = models.DecimalField(max_digits=10, decimal_places=2)
-#     security_deposit = models.DecimalField(max_digits=10, decimal_places=2)
-
 class Communication(models.Model):
     communication_id = models.AutoField(primary_key=True)
     message = models.TextField()
@@ -106,23 +98,6 @@ class Communication(models.Model):
 
     def send_message(self):
         pass
-
-# class PropertyListing(models.Model):
-#     property_listing_id = models.AutoField(primary_key=True)
-#     type = models.CharField(max_length=50)
-#     address = models.CharField(max_length=50)
-#     description = models.TextField()
-#     photo = models.ImageField(upload_to='photos/')
-#     video = models.FileField(upload_to='videos/')
-#     size = models.DecimalField(max_digits=10, decimal_places=2)
-#     bathroom_number = models.IntegerField(default=0)
-#     badroom_number = models.IntegerField(default=0)
-#     garage = models.BooleanField(default=False)
-#     garden = models.BooleanField(default=False)
-#     swiming_pool = models.BooleanField(default=False)
-#     price = models.DecimalField(max_digits=10, decimal_places=2)
-#     year_built = models.DateField(auto_now=True)
-#     status = models.CharField(max_length=50)
 
 class FinancialReport(models.Model):
     financial_report_id = models.AutoField(primary_key=True)
@@ -243,11 +218,4 @@ class Portal(models.Model):
 
     def navigate(self, destination):
         return f"Navigating to {destination} within {self.name}."
-# class Vendor(models.Model):
-#     vendor_id = models.AutoField(primary_key=True)
-#     name = models.CharField(max_length=100)
-#     certifications = models.TextField()
-
-#     def create_profile(self):
-#         pass
 
