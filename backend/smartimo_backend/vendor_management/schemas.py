@@ -64,7 +64,6 @@ class VendorsCommunicationSchema(CommunicationSchema):
     sender_id: int
     receiver_id: int
     status: str
-    message: Optional[str]
 
     class Config:
         from_attributes = True

@@ -25,7 +25,7 @@ urlpatterns = [
     path('api/tenant-portal-development/', include('tenant_portal_development.urls')),
     path('api/owner-portal-development/', include('owner_portal_development.urls')),
     path('api/lead-management/', include('lead_management.urls')),
-    path('api/document-signing/', include('document_signing.urls')),
+    path('api/visitor-management-for-property-access/', include('visitor_management_for_property_access.urls')),
 ]
 
 
