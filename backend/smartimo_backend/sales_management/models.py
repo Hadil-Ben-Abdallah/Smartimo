@@ -60,7 +60,7 @@ class Deal (models.Model):
     def get_deal_details(self):
         return {
             "title": self.title,
-            "property_code": self.property_code,
+            "property": self.property,
             "start_date": self.start_date,
             "end_date": self.end_date,
             "is_approved": self.is_approved,

@@ -10,8 +10,8 @@ class LeadCaptureForm(models.Model):
     customization_options = models.JSONField()
 
     def create_form(self):
-      self.save()
-      return self
+        self.save()
+        return self
 
     def customize_form(self, fields, options):
         self.form_fields = fields

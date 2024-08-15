@@ -45,7 +45,7 @@ class UpdateMaintenanceRequestSchema(BaseModel):
         populate_by_name = True
 
 class TenantRequestSchema(BaseModel):
-    tenant: str
+    tenant_id: str
     unit_number: str
     maintenance_requests: List[int]
 
@@ -54,7 +54,7 @@ class TenantRequestSchema(BaseModel):
         populate_by_name = True
 
 class MaintenancePropertyManagerSchema(BaseModel):
-    property_manager: str
+    property_manager_id: str
     assigned_requests: List[int]
 
     class Config:
@@ -62,7 +62,7 @@ class MaintenancePropertyManagerSchema(BaseModel):
         populate_by_name = True
 
 class MaintenanceTechnicianSchema(BaseModel):
-    id: int
+    id: Optional[int] = Field(default=None, alias='id')
     name: str
     email: str
     phone: str

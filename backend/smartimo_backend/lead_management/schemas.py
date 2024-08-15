@@ -3,7 +3,7 @@ from typing import List, Optional
 from core.schemas import CommunicationSchema
 
 class LeadCaptureFormSchema(BaseModel):
-    form_id: Optional[int] = Field(default=None, alias='id')
+    id: Optional[int] = Field(default=None, alias='id')
     form_fields: List[str]
     form_url: HttpUrl
     customization_options: dict
@@ -34,7 +34,7 @@ class OfflineLeadSchema(BaseModel):
         populate_by_name = True
 
 class LeadAssignmentSchema(BaseModel):
-    assignment_id: Optional[int] = Field(default=None, alias='id')
+    id: Optional[int] = Field(default=None, alias='id')
     lead_id: int
     agent_id: int
     criteria: dict
@@ -55,7 +55,7 @@ class LeadCommunicationSchema(CommunicationSchema):
         populate_by_name = True
 
 class LeadNurturingSchema(BaseModel):
-    nurturing_id: Optional[int] = Field(default=None, alias='id')
+    id: Optional[int] = Field(default=None, alias='id')
     lead_id: int
     communication_tools: List[str]
     follow_up_actions: List[str]
