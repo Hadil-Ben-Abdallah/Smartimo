@@ -1,7 +1,7 @@
 from ninja import Router
 from typing import List
-from .models import VisitorProperty, Visitor, AccessControl, Feedback, VisitorNotification
-from .schemas import ShowingSchema, VisitorSchema, AccessControlSchema, FeedbackSchema, VisitorNotificationSchema
+from .models import VisitorProperty, Visitor, AccessControl, VisitorFeedback, VisitorNotification
+from .schemas import ShowingSchema, VisitorSchema, AccessControlSchema, VisitorFeedbackSchema, VisitorNotificationSchema
 
 router = Router()
 
@@ -26,9 +26,9 @@ def grant_access(request, payload: AccessControlSchema):
     access = AccessControl.objects.create(**payload.dict(exclude={'id'}))
     return access
 
-@router.post("/submit_feedback", response=FeedbackSchema)
-def submit_feedback(request, payload: FeedbackSchema):
-    feedback = Feedback.objects.create(**payload.dict(exclude={'id'}))
+@router.post("/submit_feedback", response=VisitorFeedbackSchema)
+def submit_feedback(request, payload: VisitorFeedbackSchema):
+    feedback = VisitorFeedback.objects.create(**payload.dict(exclude={'id'}))
     return feedback
 
 @router.get("/get_notifications/{visitor_id}", response=List[VisitorNotificationSchema])

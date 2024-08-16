@@ -219,3 +219,21 @@ class Portal(models.Model):
     def navigate(self, destination):
         return f"Navigating to {destination} within {self.name}."
 
+class Feedback(models.Model):
+    feedback_id = models.AutoField(primary_key=True)
+    rating = models.IntegerField()
+    comments = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+    def edit_feedback(self, rating, comments):
+        self.rating = rating
+        self.comments = comments
+        self.save()
+
+    def delete_feedback(self):
+        self.delete()
+
+    def analyze_feedback(self):
+        return Feedback.objects.values('rating').annotate(count=models.Count('rating'))

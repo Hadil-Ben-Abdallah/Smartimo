@@ -26,6 +26,7 @@ urlpatterns = [
     path('api/owner-portal-development/', include('owner_portal_development.urls')),
     path('api/lead-management/', include('lead_management.urls')),
     path('api/visitor-management-for-property-access/', include('visitor_management_for_property_access.urls')),
+    path('api/community-management-features/', include('community_management_features.urls')),
 ]
 
 

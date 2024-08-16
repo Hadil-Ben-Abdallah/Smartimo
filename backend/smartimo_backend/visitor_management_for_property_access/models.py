@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import Property, Notification
+from core.models import Property, Notification, Feedback
 from property_listing.models import PropertyOwner, RealEstateAgent
 from django.core.mail import send_mail
 from datetime import datetime, timedelta
@@ -102,14 +102,9 @@ class AccessControl(models.Model):
         self.save()
 
 
-class Feedback(models.Model):
-    id = models.AutoField(primary_key=True)
+class VisitorFeedback(Feedback):
     visitor = models.ForeignKey(Visitor, on_delete=models.CASCADE)
     property = models.ForeignKey(VisitorProperty, on_delete=models.CASCADE)
-    rating = models.IntegerField()
-    comments = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
     
     def submit_feedback(self, details):
         Feedback.objects.create(visitor=self.visitor, property=self.property, **details)
@@ -117,8 +112,6 @@ class Feedback(models.Model):
     def get_feedback(self, property):
         return Feedback.objects.filter(property=property)
 
-    def analyze_feedback(self):
-        return Feedback.objects.values('rating').annotate(count=models.Count('rating'))
 
 
 class VisitorNotification(Notification):

@@ -1,6 +1,6 @@
 from ninja import Router
-from .models import Property, Notification, ClientInteraction,Communication, FinancialReport, SalesOpportunity, Resource, User, Document, Reminder, Portal
-from .schemas import PropertySchema, NotificationSchema, ClientInteractionSchema, CommunicationSchema, FinancialReportSchema, SalesOpportunitySchema, ResourceSchema, UserSchema, DocumentSchema, ReminderSchema, PortalSchema
+from .models import Property, Notification, ClientInteraction,Communication, FinancialReport, SalesOpportunity, Resource, User, Document, Reminder, Portal, Feedback
+from .schemas import PropertySchema, NotificationSchema, ClientInteractionSchema, CommunicationSchema, FinancialReportSchema, SalesOpportunitySchema, ResourceSchema, UserSchema, DocumentSchema, ReminderSchema, PortalSchema, FeedbackSchema
 
 router = Router()
 
@@ -134,12 +134,12 @@ def create_portal(request, data: PortalSchema):
     portal_instance = Portal.objects.create(**portal_data)
     return portal_instance
 
-# @router.get("/get-vendors/", response=list[VendorSchema])
-# def list_vendors(request):
-#     return list(Vendor.objects.all())
+@router.get("/get-feedbacks/", response=list[FeedbackSchema])
+def list_feedbacks(request):
+    return list(Feedback.objects.all())
 
-# @router.post("/set-vendors/", response=VendorSchema)
-# def create_vendor(request, data: VendorSchema):
-#     vendor_data = data.dict(exclude={'vendor_id'})
-#     vendor_instance = Vendor.objects.create(**vendor_data)
-#     return vendor_instance
+@router.post("/set-feedbacks/", response=FeedbackSchema)
+def create_feedback(request, data: FeedbackSchema):
+    feedback_data = data.dict(exclude={'feedback_id'})
+    feedback_instance = Feedback.objects.create(**feedback_data)
+    return feedback_instance

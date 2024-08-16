@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import date, time, datetime
-from core.schemas import PropertySchema, NotificationSchema
+from core.schemas import PropertySchema, NotificationSchema, FeedbackSchema
 
 
 class VisitorPropertySchema(PropertySchema):
@@ -59,14 +59,9 @@ class AccessControlSchema(BaseModel):
         populate_by_name = True
 
 
-class FeedbackSchema(BaseModel):
-    id: Optional[int] = Field(default=None, alias='id')
+class VisitorFeedbackSchema(FeedbackSchema):
     visitor_id: int
     property_id: int
-    rating: int
-    comments: str
-    created_at: datetime
-    updated_at: datetime
 
     class Config:
         from_attributes = True

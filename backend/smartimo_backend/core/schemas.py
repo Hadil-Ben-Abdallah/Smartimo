@@ -173,11 +173,13 @@ class PortalSchema(BaseModel):
         from_attributes = True
         populate_by_name = True
 
-# class VendorSchema(BaseModel):
-#     vendor_id: Optional[int] = Field(default=None, alias='vendor_id')
-#     name: str
-#     certifications: str
+class FeedbackSchema(BaseModel):
+    feedback_id: Optional[int] = Field(default=None, alias='vendor_id')
+    rating: int
+    comments: str
+    created_at: str
+    updated_at: str
 
-#     class Config:
-#         from_attributes = True
-#         populate_by_name = True
+    class Config:
+        from_attributes = True
+        populate_by_name = True
