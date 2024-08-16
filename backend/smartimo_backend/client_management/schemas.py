@@ -8,8 +8,8 @@ class ClientSchema(UserSchema):
     preferences: Dict
     tags: List[str]
     client_status: str
-    created_at: datetime
-    updated_at: datetime
+    created_at: Optional[str] = None
+    updated_at: Optional[str] = None
     agent_id: int
 
     class Config:

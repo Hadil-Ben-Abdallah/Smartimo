@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, HttpUrl, Field
 from typing import List, Dict, Optional
 from core.schemas import UserSchema, PropertySchema, CommunicationSchema, NotificationSchema
 
@@ -7,7 +7,7 @@ class MobileAppSchema(BaseModel):
     app_name: str
     version: str
     platform: str
-    store_url: str
+    store_url: HttpUrl
 
     class Config:
         from_attributes = True

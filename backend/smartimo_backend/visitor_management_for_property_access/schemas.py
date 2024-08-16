@@ -3,7 +3,6 @@ from typing import Optional
 from datetime import date, time, datetime
 from core.schemas import PropertySchema, NotificationSchema, FeedbackSchema
 
-
 class VisitorPropertySchema(PropertySchema):
     owner_id: int
     listing_type: str
@@ -12,20 +11,18 @@ class VisitorPropertySchema(PropertySchema):
         from_attributes = True
         populate_by_name = True
 
-
 class VisitorSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
     name: str
     email: str
     phone: str
     visit_purpose: str
-    created_at: datetime
-    updated_at: datetime
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
         populate_by_name = True
-
 
 class ShowingSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
@@ -35,13 +32,12 @@ class ShowingSchema(BaseModel):
     date: date
     time: time
     status: str
-    created_at: datetime
-    updated_at: datetime
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
         populate_by_name = True
-
 
 class AccessControlSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
@@ -51,13 +47,12 @@ class AccessControlSchema(BaseModel):
     access_start: datetime
     access_end: datetime
     permissions: dict
-    created_at: datetime
-    updated_at: datetime
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
         populate_by_name = True
-
 
 class VisitorFeedbackSchema(FeedbackSchema):
     visitor_id: int
@@ -66,7 +61,6 @@ class VisitorFeedbackSchema(FeedbackSchema):
     class Config:
         from_attributes = True
         populate_by_name = True
-
 
 class VisitorNotificationSchema(NotificationSchema):
     visitor_id: int

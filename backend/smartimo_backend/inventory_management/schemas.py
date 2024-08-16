@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional, Any
-from datetime import date
+from datetime import datetime, date
 from core.schemas import PropertySchema, NotificationSchema
 
 class InventoryItemSchema(BaseModel):
@@ -12,8 +12,8 @@ class InventoryItemSchema(BaseModel):
     description: str
     condition: str
     photos: List[str]
-    created_at: date
-    updated_at: date
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -35,7 +35,7 @@ class MaintenanceLogSchema(BaseModel):
     service_provider: str
     cost: float
     date: date
-    next_maintenance_date: date = None
+    next_maintenance_date: Optional[datetime] = None
 
     class Config:
         from_attributes = True

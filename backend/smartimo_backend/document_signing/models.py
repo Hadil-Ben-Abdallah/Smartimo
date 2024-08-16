@@ -7,10 +7,10 @@ class SigningDocument(Document):
     status = models.CharField(max_length=50, choices=[('pending', 'Pending'), ('signed', 'Signed'), ('completed', 'Completed')], default='pending')
     
     def prepare_for_signature(self, signer_list):
-      self.signer_list.set(signer_list)
-      self.status = 'pending'
-      self.save()
-      return self
+        self.signer_list.set(signer_list)
+        self.status = 'pending'
+        self.save()
+        return self
 
     def track_status(self):
         all_signed = all(signer.signature for signer in self.signer_list.all())
@@ -28,7 +28,7 @@ class Signer(models.Model):
     email = models.EmailField()
     signature = models.TextField(null=True, blank=True)  # Electronic signature provided by the signer.
     document = models.ForeignKey(SigningDocument, on_delete=models.CASCADE)
-    signed_at = models.DateTimeField(null=True, blank=True)
+    signed_at = models.DateTimeField(auto_now_add=True)
     
     def review_document(self, document):
         document = SigningDocument.objects.get(id=document)

@@ -93,8 +93,8 @@ class SalesClientInteractionSchema(InteractionSchema):
 class TheSalesOpportunitySchema(SalesOpportunitySchema):
     lead_id: int
     property_id: int
-    created_at: datetime
-    updated_at: datetime
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -141,7 +141,7 @@ class SalesAnalyticsSchema(BaseModel):
     agent_id: int
     metrics: dict
     report_type: str
-    created_at: datetime
+    created_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional
+from datetime import datetime
 from core.schemas import DocumentSchema, NotificationSchema
 
 class SigningDocumentSchema(DocumentSchema):
@@ -16,7 +17,7 @@ class SignerSchema(BaseModel):
     email: str
     signature: Optional[str] = None
     document_id: int
-    signed_at: Optional[str] = None
+    signed_at: datetime
 
     class Config:
         from_attributes = True
@@ -37,7 +38,7 @@ class ComplianceSchema(BaseModel):
     document_id: int
     regulation: str
     compliance_status: str
-    last_checked: str
+    last_checked: datetime
 
     class Config:
         from_attributes = True

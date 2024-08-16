@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional
+from datetime import datetime
 from core.schemas import NotificationSchema
 
 class EmailSchema(BaseModel):
@@ -9,7 +10,7 @@ class EmailSchema(BaseModel):
     subject: str
     body: str
     attachments: List[str] = []
-    timestamp: Optional[str] = None
+    timestamp: Optional[datetime] = None
     status: str
 
     class Config:
@@ -31,7 +32,7 @@ class InstantMessageSchema(BaseModel):
     recipient_id: int
     content: str
     attachments: List[str] = []
-    timestamp: Optional[str] = None
+    timestamp: Optional[datetime] = None
     status: str
 
     class Config:
@@ -43,7 +44,7 @@ class SMSNotificationSchema(BaseModel):
     sender_id: int
     recipient_id: int
     message: str
-    timestamp: Optional[str] = None
+    timestamp: Optional[datetime] = None
     status: str
 
     class Config:

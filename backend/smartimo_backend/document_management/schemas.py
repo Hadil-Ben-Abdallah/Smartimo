@@ -52,7 +52,7 @@ class ESignatureIntegrationSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
     document_id: int
     signature_status: str
-    signed_at: Optional[datetime]
+    signed_at: datetime
     signing_party: int
     signature_log: List[Dict]
 

@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional
+from datetime import datetime
 from core.schemas import NotificationSchema
 
 class MaintenanceRequestSchema(BaseModel):
@@ -14,8 +15,8 @@ class MaintenanceRequestSchema(BaseModel):
     photos: List[str]
     urgency_level: str
     status: str
-    submission_date: str
-    completion_date: str
+    submission_date: datetime
+    completion_date: datetime
 
     class Config:
         from_attributes = True

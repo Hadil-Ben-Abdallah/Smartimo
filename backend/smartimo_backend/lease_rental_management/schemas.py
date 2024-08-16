@@ -1,5 +1,5 @@
 from ninja import Schema
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, HttpUrl, Field
 from typing import List, Optional
 from datetime import date, datetime
 from core.schemas import CommunicationSchema, UserSchema
@@ -11,11 +11,11 @@ class LeaseAgreementSchema(BaseModel):
     terms: dict
     rent_amount: float
     security_deposit: float
-    signed_document: Optional[str]
+    signed_document: HttpUrl
     start_date: date
     end_date: date
-    created_at: datetime
-    updated_at: datetime
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

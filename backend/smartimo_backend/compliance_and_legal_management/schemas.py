@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import List, Optional
 from pydantic import Field
+from datetime import datetime
 
 class RegulationRepositorySchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
@@ -10,7 +11,7 @@ class RegulationRepositorySchema(BaseModel):
     property_type: str
     compliance_category: str
     version: str
-    last_updated: str
+    last_updated: Optional[datetime] = None
 
     class Config:
         from_attributes = True

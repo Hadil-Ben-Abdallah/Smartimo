@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional
+from datetime import datetime
 from core.schemas import ResourceSchema
 from task_calendar_management.schemas import EventSchema
 
@@ -7,8 +8,8 @@ class CommunitySchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
     name: str
     description: str
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -19,8 +20,8 @@ class ForumSchema(BaseModel):
     community_id: int
     name: str
     description: str
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -31,8 +32,8 @@ class ThreadSchema(BaseModel):
     forum_id: int
     title: str
     content: str
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -43,8 +44,8 @@ class ReplySchema(BaseModel):
     thread_id: int
     content: str
     status: str
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -56,8 +57,8 @@ class AnnouncementSchema(BaseModel):
     title: str
     content: str
     category: str
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
     archived: bool
 
     class Config:
@@ -92,8 +93,8 @@ class RSVP_Schema(BaseModel):
 class CommunityResourceSchema(ResourceSchema):
     community_id: int
     category: str
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -103,7 +104,7 @@ class ReviewSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
     resource_id: int
     details: str
-    created_at: Optional[str] = None
+    created_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -114,8 +115,8 @@ class PollSchema(BaseModel):
     community_id: int
     question: str
     options: List[str]
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -126,7 +127,7 @@ class PollVoteSchema(BaseModel):
     poll_id: int
     option: int
     user_id: int
-    created_at: Optional[str] = None
+    created_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

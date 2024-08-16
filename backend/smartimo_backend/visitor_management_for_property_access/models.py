@@ -20,7 +20,6 @@ class VisitorProperty(Property):
             setattr(self, key, value)
         self.save()
 
-
 class Visitor(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
@@ -41,7 +40,6 @@ class Visitor(models.Model):
 
     def provide_feedback(self, feedback):
         Feedback.objects.create(visitor=self, **feedback)
-
 
 class Showing(models.Model):
     id = models.AutoField(primary_key=True)

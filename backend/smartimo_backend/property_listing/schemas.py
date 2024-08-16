@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import List, Dict, Optional
+from datetime import datetime
 from core.schemas import UserSchema, PropertySchema, NotificationSchema
 
 class RealEstateAgentSchema(UserSchema):
@@ -35,7 +36,7 @@ class SavedListingSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
     user_id: int
     property_id: int
-    created_at: str
+    created_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

@@ -226,7 +226,6 @@ class Feedback(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-
     def edit_feedback(self, rating, comments):
         self.rating = rating
         self.comments = comments
