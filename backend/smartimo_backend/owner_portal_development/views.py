@@ -2,8 +2,8 @@ from ninja import Router, File, UploadedFile
 from .models import (OwnerPortal, OwnerFinancialReport, PerformanceMetric, 
                     OwnerNotification, PortalCommunication, OwnerResource)
 from .schemas import (OwnerPortalSchema, OwnerFinancialReportSchema, 
-                      PerformanceMetricSchema, OwnerNotificationSchema, 
-                      PortalCommunicationSchema, OwnerResourceSchema)
+                        PerformanceMetricSchema, OwnerNotificationSchema, 
+                        PortalCommunicationSchema, OwnerResourceSchema)
 from django.shortcuts import get_object_or_404
 from typing import List
 
