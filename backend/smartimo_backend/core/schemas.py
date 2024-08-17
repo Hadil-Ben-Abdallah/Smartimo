@@ -18,8 +18,8 @@ class PropertySchema(BaseModel):
     year_built: datetime 
     price: float
     status: str
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -102,8 +102,8 @@ class CommunicationSchema(BaseModel):
 class FinancialReportSchema(BaseModel):
     financial_report_id: Optional[int] = Field(default=None, alias='financial_report_id')
     financial_data: Dict
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -177,8 +177,8 @@ class FeedbackSchema(BaseModel):
     feedback_id: Optional[int] = Field(default=None, alias='vendor_id')
     rating: int
     comments: str
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

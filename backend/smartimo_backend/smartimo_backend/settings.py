@@ -84,6 +84,7 @@ TENANT_APPS = [
     'visitor_management_for_property_access',
     'community_management_features',
     'feedback_and_review_system',
+    'integration_with_accounting_software',
 ]
 
 INSTALLED_APPS = SHARED_APPS + [app for app in TENANT_APPS if app not in SHARED_APPS]

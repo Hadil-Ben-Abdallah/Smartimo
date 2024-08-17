@@ -28,6 +28,7 @@ urlpatterns = [
     path('api/visitor-management-for-property-access/', include('visitor_management_for_property_access.urls')),
     path('api/community-management-features/', include('community_management_features.urls')),
     path('api/feedback-and-review-system/', include('feedback_and_review_system.urls')),
+    path('api/integration-with-accounting-software/', include('integration_with_accounting_software.urls')),
 ]
 
 
