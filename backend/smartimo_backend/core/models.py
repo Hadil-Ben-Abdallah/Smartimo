@@ -131,6 +131,7 @@ class User(models.Model):
         ('vendor', 'Vendor'),
         ('prospective_buyer_renter', 'Prospective Buyer Renter'),
         ('real_estate_agent', 'Real Estate Agent'),
+        ('real_estate_developer', 'Real Estate Developer'),
         ('prospective_tenant', 'Prospective Tenant')
     )
     

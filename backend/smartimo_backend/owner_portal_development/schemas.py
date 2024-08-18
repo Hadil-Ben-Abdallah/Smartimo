@@ -8,6 +8,10 @@ from core.schemas import PortalSchema, FinancialReportSchema, NotificationSchema
 class OwnerPortalSchema(PortalSchema):
     owner: int
 
+    class Config:
+        from_attributes = True
+        populate_by_name = True
+
 class OwnerFinancialReportSchema(FinancialReportSchema):
     owner: int
     property: int

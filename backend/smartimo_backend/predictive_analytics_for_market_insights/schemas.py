@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import Dict, Optional
+from core.schemas import UserSchema
 
 class PredictiveAnalyticsSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
@@ -10,6 +11,10 @@ class PredictiveAnalyticsSchema(BaseModel):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
+    class Config:
+        from_attributes = True
+        populate_by_name = True
+
 class InvestmentDashboardSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
     user_id: int
@@ -17,6 +22,10 @@ class InvestmentDashboardSchema(BaseModel):
     investment_returns: Dict
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+        populate_by_name = True
 
 class MarketTrendAnalysisSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
@@ -26,6 +35,10 @@ class MarketTrendAnalysisSchema(BaseModel):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
+    class Config:
+        from_attributes = True
+        populate_by_name = True
+
 class RentalDemandForecastSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
     property_manager_id: int
@@ -33,6 +46,10 @@ class RentalDemandForecastSchema(BaseModel):
     tenant_preferences: Dict
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+        populate_by_name = True
 
 class PropertyValuationModelSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
@@ -42,11 +59,29 @@ class PropertyValuationModelSchema(BaseModel):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
+    class Config:
+        from_attributes = True
+        populate_by_name = True
+
+class RealEstaeDeveloperSchema(UserSchema):
+    projects: Dict
+    market_analysis_id: int
+    investment_strategies:Dict
+    demand_forecast_id: int
+
+    class Config:
+        from_attributes = True
+        populate_by_name = True
+
 class DevelopmentFeasibilityToolSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
-    agent_id: int
+    developer_id: int
     project_parameters: Dict
     roi_projections: Dict
     risk_factors: Dict
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+        populate_by_name = True

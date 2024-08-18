@@ -1,7 +1,6 @@
 from django.db import models
 from core.models import User, Property
 from lease_rental_management.models import PropertyManager
-from property_listing.models import RealEstateAgent
 import numpy as np
 import json
 
@@ -158,9 +157,37 @@ class PropertyValuationModel(models.Model):
         return risk_assessment
 
 
+class RealEstateDeveloper(User):
+    projects = models.JSONField()
+    market_analysis = models.ForeignKey(MarketTrendAnalysis, on_delete=models.CASCADE)
+    investment_strategies = models.JSONField()
+    demand_forecast = models.ForeignKey(RentalDemandForecast, on_delete=models.CASCADE)
+
+    def create_development_project(self, project_data):
+        pass
+
+    def analyze_market_conditions(self):
+        pass
+
+    def forecast_property_values(self, property_id):
+        pass
+
+    def assess_investment_opportunities(self):
+        pass
+
+    def update_investment_strategy(self, strategy_data):
+        pass
+
+    def monitor_emerging_trends(self):
+        pass
+
+    def generate_financial_projections(self, project_id):
+        pass
+
+
 class DevelopmentFeasibilityTool(models.Model):
     id = models.AutoField(primary_key=True)
-    agent = models.ForeignKey(RealEstateAgent, on_delete=models.CASCADE)
+    developer = models.ForeignKey(RealEstateDeveloper, on_delete=models.CASCADE)
     project_parameters = models.JSONField()
     roi_projections = models.JSONField()
     risk_factors = models.JSONField()
