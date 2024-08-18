@@ -86,6 +86,7 @@ TENANT_APPS = [
     'feedback_and_review_system',
     'integration_with_accounting_software',
     'predictive_analytics_for_market_insights',
+    'energy_management',
 ]
 
 INSTALLED_APPS = SHARED_APPS + [app for app in TENANT_APPS if app not in SHARED_APPS]

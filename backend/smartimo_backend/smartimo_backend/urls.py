@@ -30,6 +30,7 @@ urlpatterns = [
     path('api/feedback-and-review-system/', include('feedback_and_review_system.urls')),
     path('api/integration-with-accounting-software/', include('integration_with_accounting_software.urls')),
     path('api/predictive-analytics-for-market-insights/', include('predictive_analytics_for_market_insights.urls')),
+    path('api/energy-management/', include('energy_management.urls')),
 ]
 
 
