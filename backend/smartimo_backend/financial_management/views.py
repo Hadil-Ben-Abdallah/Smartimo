@@ -1,7 +1,7 @@
 from ninja import Router
 from django.shortcuts import get_object_or_404
-from .models import Invoice, Payment, TheFinancialReport, FinancialTransaction, FinancialPortal
-from .schemas import InvoiceSchema, PaymentSchema, TheFinancialReportSchema, FinancialTransactionSchema, FinancialPortalSchema
+from .models import Invoice, Payment, FinancialReport, FinancialTransaction, FinancialPortal
+from .schemas import InvoiceSchema, PaymentSchema, FinancialReportSchema, FinancialTransactionSchema, FinancialPortalSchema
 
 router = Router()
 
@@ -53,15 +53,15 @@ def update_transaction(request, transaction_id: int, payload: FinancialTransacti
     return transaction
 
 
-@router.post("/financial-reports/", response=TheFinancialReportSchema)
-def create_financial_report(request, payload: TheFinancialReportSchema):
+@router.post("/financial-reports/", response=FinancialReportSchema)
+def create_financial_report(request, payload: FinancialReportSchema):
     payload_dict = payload.dict(exclude_unset=True, exclude={'id'})
-    financial_report = TheFinancialReport.objects.create(**payload_dict)
+    financial_report = FinancialReport.objects.create(**payload_dict)
     return financial_report
 
-@router.put("/financial-reports/{report_id}/", response=TheFinancialReportSchema)
-def update_financial_report(request, report_id: int, payload: TheFinancialReportSchema):
-    financial_report = get_object_or_404(TheFinancialReport, id=report_id)
+@router.put("/financial-reports/{report_id}/", response=FinancialReportSchema)
+def update_financial_report(request, report_id: int, payload: FinancialReportSchema):
+    financial_report = get_object_or_404(FinancialReport, id=report_id)
     for attr, value in payload.dict(exclude_unset=True).items():
         if attr != 'id':
             setattr(financial_report, attr, value)

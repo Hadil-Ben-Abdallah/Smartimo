@@ -41,12 +41,12 @@ class ThePropertyListing(Property):
             'type': self.type,
             'size': self.size,
             'price': self.price,
-            'photos': self.photo,
-            'videos': self.video,
+            'photos': self.photos,
+            'videos': self.videos,
         }
 
 class PropertyOwner(User):
-    properties = models.ManyToManyField('ThePropertyListing', related_name='owner_properties')
+    properties = models.ManyToManyField(ThePropertyListing, related_name='owner_properties')
 
     def get_owner_details(self):
         return {

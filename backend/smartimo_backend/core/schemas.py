@@ -99,9 +99,10 @@ class CommunicationSchema(BaseModel):
 #         from_attributes = True
 #         populate_by_name = True
 
-class FinancialReportSchema(BaseModel):
-    financial_report_id: Optional[int] = Field(default=None, alias='financial_report_id')
-    financial_data: Dict
+class ReportSchema(BaseModel):
+    report_id: Optional[int] = Field(default=None, alias='financial_report_id')
+    title: str
+    data: Dict
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 

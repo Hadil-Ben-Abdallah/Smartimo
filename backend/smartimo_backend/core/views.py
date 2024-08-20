@@ -1,6 +1,6 @@
 from ninja import Router
-from .models import Property, Notification, ClientInteraction,Communication, FinancialReport, SalesOpportunity, Resource, User, Document, Reminder, Portal, Feedback
-from .schemas import PropertySchema, NotificationSchema, ClientInteractionSchema, CommunicationSchema, FinancialReportSchema, SalesOpportunitySchema, ResourceSchema, UserSchema, DocumentSchema, ReminderSchema, PortalSchema, FeedbackSchema
+from .models import Property, Notification, ClientInteraction,Communication, Report, SalesOpportunity, Resource, User, Document, Reminder, Portal, Feedback
+from .schemas import PropertySchema, NotificationSchema, ClientInteractionSchema, CommunicationSchema, ReportSchema, SalesOpportunitySchema, ResourceSchema, UserSchema, DocumentSchema, ReminderSchema, PortalSchema, FeedbackSchema
 
 router = Router()
 
@@ -74,14 +74,14 @@ def create_communication(request, data: CommunicationSchema):
 #     property_listing_instance = PropertyListing.objects.create(**property_listing_data)
 #     return property_listing_instance
 
-@router.get("/get-financial-reports/", response=list[FinancialReportSchema])
+@router.get("/get-financial-reports/", response=list[ReportSchema])
 def list_financial_reports(request):
-    return list(FinancialReport.objects.all())
+    return list(Report.objects.all())
 
-@router.post("/set-financial-reports/", response=FinancialReportSchema)
-def create_financial_report(request, data: FinancialReportSchema):
+@router.post("/set-financial-reports/", response=ReportSchema)
+def create_financial_report(request, data: ReportSchema):
     financial_report_data = data.dict(exclude={'financial_report_id'})
-    financial_report_instance = FinancialReport.objects.create(**financial_report_data)
+    financial_report_instance = Report.objects.create(**financial_report_data)
     return financial_report_instance
 
 @router.get("/get-sales-opportunities/", response=list[SalesOpportunitySchema])

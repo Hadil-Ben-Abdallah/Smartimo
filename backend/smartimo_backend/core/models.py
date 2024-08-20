@@ -99,9 +99,10 @@ class Communication(models.Model):
     def send_message(self):
         pass
 
-class FinancialReport(models.Model):
-    financial_report_id = models.AutoField(primary_key=True)
-    financial_data = models.JSONField()
+class Report(models.Model):
+    report_id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=50)
+    data = models.JSONField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

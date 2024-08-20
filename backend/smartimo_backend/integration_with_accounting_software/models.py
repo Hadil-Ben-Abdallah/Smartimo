@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import Property, FinancialReport
+from core.models import Property, Report
 from lease_rental_management.models import PropertyManager
 from datetime import datetime
 import csv
@@ -64,7 +64,7 @@ class IntegrationSettings(models.Model):
         pass
 
 
-class IntegrationFinancialReport(FinancialReport):
+class IntegrationFinancialReport(Report):
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     report_type = models.CharField(max_length=255, choices=[('profit_and_loss_statement', 'Profit and Loss Statement'), ('balance_sheet', 'Balance Sheet'), ('cash_flow_summary', 'Cash Flow Summary')], default='profit_and_loss_statement')
     generated_at = models.DateTimeField(auto_now_add=True)

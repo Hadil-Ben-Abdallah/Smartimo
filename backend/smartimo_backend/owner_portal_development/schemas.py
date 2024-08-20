@@ -3,7 +3,7 @@ from typing import List, Optional
 from datetime import date
 from pydantic import HttpUrl
 from typing import List
-from core.schemas import PortalSchema, FinancialReportSchema, NotificationSchema, CommunicationSchema, ResourceSchema
+from core.schemas import PortalSchema, ReportSchema, NotificationSchema, CommunicationSchema, ResourceSchema
 
 class OwnerPortalSchema(PortalSchema):
     owner: int
@@ -12,7 +12,7 @@ class OwnerPortalSchema(PortalSchema):
         from_attributes = True
         populate_by_name = True
 
-class OwnerFinancialReportSchema(FinancialReportSchema):
+class OwnerFinancialReportSchema(ReportSchema):
     owner: int
     property: int
     report_type: str

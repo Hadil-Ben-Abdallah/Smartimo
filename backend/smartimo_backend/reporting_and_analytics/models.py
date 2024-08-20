@@ -4,22 +4,19 @@ from django.utils import timezone
 from django.core.mail import send_mail
 from io import BytesIO
 import pandas as pd
+from core.models import Report
 
-class Report(models.Model):
+class AnalyticsReport(Report):
     REPORT_TYPES = (
         ('property_performance', 'Property Performance'),
         ('sales_trend', 'Sales Trend'),
         ('financial_performance', 'Financial Performance'),
         ('client_engagement', 'Client Engagement'),
     )
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255)
     type = models.CharField(max_length=50, choices=REPORT_TYPES, default='property_performance')
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
     filters = models.JSONField(default=dict)
     visualizations = models.JSONField(default=list) 
-    data = models.JSONField(default=dict)
 
     def generate_report(self):
         self.data = self._fetch_data_based_on_filters()
@@ -67,7 +64,7 @@ class Report(models.Model):
         buffer.seek(0)
         return buffer
 
-class PropertyPerformanceReport(Report):
+class PropertyPerformanceReport(AnalyticsReport):
     occupancy_rate = models.FloatField()
     average_rental_income = models.FloatField()
     vacancy_rate = models.FloatField()
@@ -97,7 +94,7 @@ class PropertyPerformanceReport(Report):
     def _calculate_noi(self):
         return self.average_rental_income - self.maintenance_costs
 
-class SalesTrendReport(Report):
+class SalesTrendReport(AnalyticsReport):
     sales_volume = models.FloatField()
     average_selling_price = models.FloatField()
     time_on_market = models.FloatField()
@@ -122,7 +119,7 @@ class SalesTrendReport(Report):
     def _calculate_regional_sales_distribution(self):
         pass
 
-class FinancialPerformanceReport(Report):
+class FinancialPerformanceReport(AnalyticsReport):
     rental_income = models.FloatField()
     operating_expenses = models.FloatField()
     cash_flow = models.FloatField()
@@ -147,7 +144,7 @@ class FinancialPerformanceReport(Report):
     def _calculate_roi(self):
         return (self.cash_flow / self.operating_expenses) * 100
 
-class ClientEngagementReport(Report):
+class ClientEngagementReport(AnalyticsReport):
     lead_conversion_rate = models.FloatField()
     inquiry_response_time = models.FloatField()
     client_satisfaction_score = models.FloatField()
@@ -169,7 +166,7 @@ class ClientEngagementReport(Report):
 
 class AutomatedReportScheduler(models.Model):
     id = models.AutoField(primary_key=True)
-    report = models.ForeignKey(Report, on_delete=models.CASCADE)
+    report = models.ForeignKey(AnalyticsReport, on_delete=models.CASCADE)
     frequency = models.CharField(max_length=50, choices=[('daily', 'Daily'), ('weekly', 'Weekly'), ('monthly', 'Monthly')], default='daily')
     recipients = models.JSONField(default=list)
     delivery_channel = models.CharField(max_length=50) 
@@ -201,7 +198,7 @@ class AutomatedReportScheduler(models.Model):
     def get_schedule_details(self):
         return {
             "id": self.id,
-            "report": self.report.name,
+            "report": self.report.title,
             "frequency": self.frequency,
             "recipients": self.recipients,
             "delivery_channel": self.delivery_channel,

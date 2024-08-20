@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import Field
 from datetime import datetime, date
 from lease_rental_management.schemas import PropertyManagerSchema
-from core.schemas import FinancialReportSchema
+from core.schemas import ReportSchema
 
 class IntegrationPropertyManagerSchema(PropertyManagerSchema):
     created_at: Optional[datetime] = None
@@ -26,7 +26,7 @@ class IntegrationSettingsSchema(Schema):
         from_attributes = True
         populate_by_name = True
 
-class IntegrationFinancialReportSchema(FinancialReportSchema):
+class IntegrationFinancialReportSchema(ReportSchema):
     report_type: str
     property_id: int
     generated_at: Optional[datetime] = None

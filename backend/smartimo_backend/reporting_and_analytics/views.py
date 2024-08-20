@@ -2,7 +2,7 @@ from ninja import Router
 from typing import List
 from django.shortcuts import get_object_or_404
 from .models import (
-    Report,
+    AnalyticsReport,
     PropertyPerformanceReport,
     SalesTrendReport,
     FinancialPerformanceReport,
@@ -10,7 +10,7 @@ from .models import (
     AutomatedReportScheduler
 )
 from .schemas import (
-    ReportSchema,
+    AnalyticsReportSchema,
     PropertyPerformanceReportSchema,
     SalesTrendReportSchema,
     FinancialPerformanceReportSchema,
@@ -20,25 +20,25 @@ from .schemas import (
 
 router = Router()
 
-@router.get("/reports", response=List[ReportSchema])
+@router.get("/reports", response=List[AnalyticsReportSchema])
 def list_reports(request):
-    reports = Report.objects.all()
+    reports = AnalyticsReport.objects.all()
     return reports
 
-@router.post("/reports", response=ReportSchema)
-def create_report(request, report: ReportSchema):
+@router.post("/reports", response=AnalyticsReportSchema)
+def create_report(request, report: AnalyticsReportSchema):
     report_data = report.dict(exclude_unset=True)
-    report_obj = Report.objects.create(**report_data)
+    report_obj = AnalyticsReport.objects.create(**report_data)
     return report_obj
 
-@router.get("/reports/{report_id}", response=ReportSchema)
+@router.get("/reports/{report_id}", response=AnalyticsReportSchema)
 def get_report(request, report_id: int):
-    report = get_object_or_404(Report, id=report_id)
+    report = get_object_or_404(AnalyticsReport, id=report_id)
     return report
 
-@router.post("/reports/{report_id}/generate", response=ReportSchema)
+@router.post("/reports/{report_id}/generate", response=AnalyticsReportSchema)
 def generate_report(request, report_id: int):
-    report = get_object_or_404(Report, id=report_id)
+    report = get_object_or_404(AnalyticsReport, id=report_id)
     report.generate_report()
     return report
 
@@ -85,9 +85,9 @@ def cancel_automated_report(request, scheduler_id: int):
     scheduler.cancel_schedule()
     return {"success": True}
 
-@router.put("/reports/{report_id}", response=ReportSchema)
-def update_report(request, report_id: int, payload: ReportSchema):
-    report = get_object_or_404(Report, id=report_id)
+@router.put("/reports/{report_id}", response=AnalyticsReportSchema)
+def update_report(request, report_id: int, payload: AnalyticsReportSchema):
+    report = get_object_or_404(AnalyticsReport, id=report_id)
     for attr, value in payload.dict(exclude_unset=True).items():
         if attr != 'id':
             setattr(report, attr, value)

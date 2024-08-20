@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import Property, User, FinancialReport
+from core.models import Property, User, Report
 from django.db.models import JSONField
 from datetime import datetime
 from django.utils import timezone
@@ -85,7 +85,7 @@ class Payment(models.Model):
         self.update_status('processed')
         return f"Payment {self.id} reconciled for invoice {self.invoice.id}."
 
-class TheFinancialReport(FinancialReport):
+class FinancialReport(Report):
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     report_type = models.CharField(max_length=50)
     report_period = models.CharField(max_length=50)

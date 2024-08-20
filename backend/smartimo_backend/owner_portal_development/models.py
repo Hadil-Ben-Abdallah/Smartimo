@@ -1,12 +1,12 @@
 from django.db import models
-from core.models import Property, FinancialReport, Notification, Communication, Resource, Portal
+from core.models import Property, Report, Notification, Communication, Resource, Portal
 from property_listing.models import PropertyOwner
 from lease_rental_management.models import PropertyManager
 
 class OwnerPortal(Portal):
     owner = models.ForeignKey(PropertyOwner, on_delete=models.CASCADE)
 
-class OwnerFinancialReport(FinancialReport):
+class OwnerFinancialReport(Report):
     owner = models.ForeignKey(PropertyOwner, on_delete=models.CASCADE)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     report_type = models.CharField(max_length=255)
