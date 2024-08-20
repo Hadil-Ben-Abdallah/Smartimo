@@ -100,7 +100,7 @@ class CommunicationSchema(BaseModel):
 #         populate_by_name = True
 
 class ReportSchema(BaseModel):
-    report_id: Optional[int] = Field(default=None, alias='financial_report_id')
+    report_id: Optional[int] = Field(default=None, alias='report_id')
     title: str
     data: Dict
     created_at: Optional[datetime] = None
