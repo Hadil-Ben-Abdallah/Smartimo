@@ -1,8 +1,45 @@
 from django.db import models
 from core.models import User, Property, Notification
 
+class Agency(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=255)
+    bank_partnership = models.CharField(max_length=255)
+    founding_date = models.DateField()
+    bank_code = models.CharField(max_length=100)
+    description = models.TextField()
+    email = models.EmailField()
+    website_link = models.URLField()
+    phone_number = models.CharField(max_length=20)
+    location = models.CharField(max_length=255)
+
+    def create_agency(self, **kwargs):
+        return Agency.objects.create(**kwargs)
+
+    def update_agency(self, **kwargs):
+        for attr, value in kwargs.items():
+            setattr(self, attr, value)
+        self.save()
+        return self
+
+    def delete_agency(self):
+        self.delete()
+
+    def get_agency(self):
+        return {
+            'name': self.name,
+            'bank_partnership': self.bank_partnership,
+            'founding_date': self.founding_date,
+            'bank_code': self.bank_code,
+            'description': self.description,
+            'email': self.email,
+            'website_link': self.website_link,
+            'phone_number': self.phone_number,
+            'location': self.location,
+        }
+
 class RealEstateAgent(User):
-    listings = models.ManyToManyField('ThePropertyListing', related_name='agent_listings')
+    agency = models.ForeignKey(Agency, on_delete=models.CASCADE, related_name='agent_agency')
 
     def view_listings(self):
         return self.listings.all()

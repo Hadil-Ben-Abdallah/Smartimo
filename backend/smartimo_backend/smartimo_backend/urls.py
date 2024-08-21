@@ -34,6 +34,7 @@ urlpatterns = [
     path('api/sustainability-tracking/', include('sustainability_tracking.urls')),
     path('api/remote-property-monitoring/', include('remote_property_monitoring.urls')),
     path('api/customizable-reporting-for-tailored-insights/', include('customizable_reporting_for_tailored_insights.urls')),
+    path('api/forecasting-and-demand-planning/', include('forecasting_and_demand_planning.urls')),
 ]
 
 

@@ -1,9 +1,14 @@
 from ninja import Router
 from typing import List
-from .models import RealEstateAgent, ThePropertyListing, PropertyOwner, ProspectiveBuyerRenter, SavedListing, PropertyNotification
-from .schemas import RealEstateAgentSchema, ThePropertyListingSchema, PropertyOwnerSchema, ProspectiveBuyerRenterSchema, SavedListingSchema, PropertyNotificationSchema
+from .models import Agency, RealEstateAgent, ThePropertyListing, PropertyOwner, ProspectiveBuyerRenter, SavedListing, PropertyNotification
+from .schemas import AgencySchema, RealEstateAgentSchema, ThePropertyListingSchema, PropertyOwnerSchema, ProspectiveBuyerRenterSchema, SavedListingSchema, PropertyNotificationSchema
 
 router = Router()
+
+@router.get("/agencies", response=List[AgencySchema])
+def list_agencies(request):
+    agencies = Agency.objects.all()
+    return agencies
 
 @router.get("/agents", response=List[RealEstateAgentSchema])
 def list_agents(request):

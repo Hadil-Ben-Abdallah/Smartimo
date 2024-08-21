@@ -29,8 +29,8 @@ def get_financial_report(request, report_id: int):
 def update_financial_report(request, report_id: int, data: CustomizableFinancialReportSchema):
     report = get_object_or_404(CustomizableFinancialReport, id=report_id)
     for key, value in data.dict().items():
-      if key != 'id':
-        setattr(report, key, value)
+        if key != 'id':
+            setattr(report, key, value)
     report.save()
     return report
 
@@ -60,8 +60,8 @@ def get_sales_report(request, report_id: int):
 def update_sales_report(request, report_id: int, data: SalesReportSchema):
     report = get_object_or_404(SalesReport, id=report_id)
     for key, value in data.dict().items():
-      if key != 'id':
-        setattr(report, key, value)
+        if key != 'id':
+            setattr(report, key, value)
     report.save()
     return report
 
@@ -91,8 +91,8 @@ def get_maintenance_report(request, report_id: int):
 def update_maintenance_report(request, report_id: int, data: MaintenanceReportSchema):
     report = get_object_or_404(MaintenanceReport, id=report_id)
     for key, value in data.dict().items():
-      if key != 'id':
-        setattr(report, key, value)
+        if key != 'id':
+            setattr(report, key, value)
     report.save()
     return report
 
@@ -122,8 +122,8 @@ def get_investment_report(request, report_id: int):
 def update_investment_report(request, report_id: int, data: InvestmentReportSchema):
     report = get_object_or_404(InvestmentReport, id=report_id)
     for key, value in data.dict().items():
-      if key != 'id':
-        setattr(report, key, value)
+        if key != 'id':
+            setattr(report, key, value)
     report.save()
     return report
 
@@ -153,8 +153,8 @@ def get_compliance_report(request, report_id: int):
 def update_compliance_report(request, report_id: int, data: ComplianceReportSchema):
     report = get_object_or_404(ComplianceReport, id=report_id)
     for key, value in data.dict().items():
-      if key != 'id':
-        setattr(report, key, value)
+        if key != 'id':
+            setattr(report, key, value)
     report.save()
     return report
 

@@ -1,10 +1,26 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr, HttpUrl
 from typing import List, Dict, Optional
-from datetime import datetime
+from datetime import datetime, date
 from core.schemas import UserSchema, PropertySchema, NotificationSchema
 
+class AgencySchema(BaseModel):
+    id: Optional[int] = Field(default=None, alias='id')
+    name: str
+    bank_partnership: str
+    founding_date: date
+    bank_code: str
+    description: str
+    email: EmailStr
+    website_link: HttpUrl
+    phone_number: str
+    location: str
+
+    class Config:
+        from_attributes = True
+        populate_by_name = True
+
 class RealEstateAgentSchema(UserSchema):
-    properties: List[int] = []
+    agency: int
 
     class Config:
         from_attributes = True
