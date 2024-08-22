@@ -7,7 +7,7 @@ class Author(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     bio = models.TextField(blank=True, null=True)
-    resources = models.JSONField(blank=True, null=True)
+    resources = models.JSONField(default=list, blank=True, null=True)
 
     def create_author(self, name, bio):
         return self.create(name=name, bio=bio)
@@ -29,7 +29,7 @@ class Trainer(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     bio = models.TextField(blank=True, null=True)
-    sessions = models.JSONField(blank=True, null=True)
+    sessions = models.JSONField(default=list, blank=True, null=True)
 
     def create_trainer(self, name, bio):
         return self.create(name=name, bio=bio)
@@ -51,7 +51,7 @@ class EducationProvider(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     contact_info = models.TextField(blank=True, null=True)
-    courses = models.JSONField(blank=True, null=True)
+    courses = models.JSONField(default=list, blank=True, null=True)
 
     def register_provider(self, name, contact_info):
         return self.create(name=name, contact_info=contact_info)
@@ -196,7 +196,7 @@ class TrainingProgram(models.Model):
     agency = models.ForeignKey(Agency, on_delete=models.CASCADE)
     title = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    modules = models.JSONField(blank=True, null=True)
+    modules = models.JSONField(default=list, blank=True, null=True)
     mentors = models.ManyToManyField(TrainingAgent, related_name='training_programs', blank=True)
 
     def create_program(self, agency_id, title, description, modules, mentors):
@@ -234,8 +234,8 @@ class CommunityDiscussion(models.Model):
     description = models.TextField()
     created_by = models.ForeignKey(TrainingAgent, on_delete=models.CASCADE)
     created_date = models.DateField(default=timezone.now)
-    participants = models.JSONField()
-    posts = models.JSONField()
+    participants = models.JSONField(default=list)
+    posts = models.JSONField(default=list)
 
     def start_discussion(self, topic, description, created_by_id):
         creator = TrainingAgent.objects.get(id=created_by_id)
