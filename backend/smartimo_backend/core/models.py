@@ -196,13 +196,6 @@ class Portal(models.Model):
     url = models.URLField()
 
     def login(self, request, username, password):
-        """
-        Authenticates the user and logs them in.
-        :param request: The HTTP request object
-        :param username: The username of the user
-        :param password: The password of the user
-        :return: Success or failure message
-        """
         user = authenticate(request, username=username, password=password)
         if user is not None:
             auth_login(request, user)
@@ -211,11 +204,6 @@ class Portal(models.Model):
             return "Invalid credentials"
 
     def logout(self, request):
-        """
-        Logs the user out.
-        :param request: The HTTP request object
-        :return: Success message
-        """
         auth_logout(request)
         return "Logout successful"
 

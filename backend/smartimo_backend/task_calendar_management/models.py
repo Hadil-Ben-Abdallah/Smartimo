@@ -146,8 +146,8 @@ class TaskManager(models.Model):
 class Event(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50)
-    organizer = models.ForeignKey(User, related_name='meetings_organized', on_delete=models.CASCADE)
-    participants = models.ManyToManyField(User, related_name='meetings_participated')
+    organizer = models.ForeignKey(User, related_name='events_organized', on_delete=models.CASCADE)
+    participants = models.ManyToManyField(User, related_name='events_participated')
     date = models.DateField()
     time = models.TimeField()
     topic = models.CharField(max_length=255)
@@ -155,41 +155,41 @@ class Event(models.Model):
     location = models.CharField(max_length=255)
     status = models.CharField(max_length=50, choices= [('scheduled', 'Scheduled'), ('cancelled', 'Cancelled'), ('completed', 'Completed')], default= 'pending')
 
-    def schedule_meeting(self):
-        return f"Meeting scheduled with ID {self.id}."
+    def schedule_event(self):
+        return f"event scheduled with ID {self.id}."
 
     def send_invitations(self):
-        subject = f"Meeting Invitation - {self.id}"
+        subject = f"Event Invitation - {self.id}"
         message = (
             f"Dear participants,\n\n"
-            f"You are invited to a meeting on {self.date} at {self.time}.\n\n"
+            f"You are invited to a event on {self.date} at {self.time}.\n\n"
             f"Topic: {self.topic}\n"
             f"Agenda:\n{self.agenda}\n"
             f"Location: {self.location}\n\n"
             f"Please RSVP at your earliest convenience.\n\n"
             f"Thank you,\nThe Smartimo Team"
         )
-        recipient_list = [user.email for user in self.participants.all()]
+        recipient_list = [User.email for user in self.participants.all()]
         send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list)
-        return f"Invitations sent for meeting {self.id}."
+        return f"Invitations sent for event {self.id}."
 
     def track_rsvps(self):
-        rsvps = {user.id: "Confirmed" for user in self.participants.all()}
-        return f"RSVPs tracked for meeting {self.id}."
+        rsvps = {User.user_id: "Confirmed" for user in self.participants.all()}
+        return f"RSVPs tracked for event {self.id}."
 
     def send_reminders(self):
-        subject = f"Meeting Reminder - {self.id}"
+        subject = f"Event Reminder - {self.id}"
         message = (
             f"Dear participants,\n\n"
-            f"This is a reminder for our upcoming meeting on {self.date} at {self.time}.\n\n"
+            f"This is a reminder for our upcoming event on {self.date} at {self.time}.\n\n"
             f"Topic: {self.topic}\n"
             f"Agenda:\n{self.agenda}\n"
             f"Location: {self.location}\n\n"
             f"Thank you,\nThe Smartimo Team"
         )
-        recipient_list = [user.email for user in self.participants.all()]
+        recipient_list = [User.email for user in self.participants.all()]
         send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list)
-        return f"Reminders sent for meeting {self.id}."
+        return f"Reminders sent for event {self.id}."
 
 
 class CalendarIntegration(models.Model):

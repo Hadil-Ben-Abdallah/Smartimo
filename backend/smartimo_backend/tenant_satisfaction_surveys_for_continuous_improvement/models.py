@@ -112,6 +112,7 @@ class TenantFollowUpActions(models.Model):
 class TenantSatisfactionMetrics(models.Model):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
+    metric_name = models.CharField(max_length=100, blank=True, null=True)
     tenant_satisfaction_score = models.FloatField(blank=True, null=True)
     historical_data = models.JSONField(blank=True, null=True)
     performance_indicators = models.JSONField(blank=True, null=True)
@@ -133,6 +134,7 @@ class TenantSatisfactionMetrics(models.Model):
     def generate_performance_reports(self):
         report = {
             "property_id": self.property.property_id,
+            "metric_name": self.metric_name,
             "latest_satisfaction_score": self.tenant_satisfaction_score,
             "historical_data": self.historical_data,
             "trend_analysis": self.analyze_trends(),

@@ -1,6 +1,6 @@
 from django.db import models
 from datetime import datetime
-from core.models import Property, User
+from core.models import Property, User, Report
 from lease_rental_management.models import Tenant
 
 class Project(models.Model):
@@ -120,43 +120,41 @@ class MaintenanceDevice(models.Model):
         device = MaintenanceDevice.objects.get(id=device_id)
         print(f"Maintenance alert of type {alert_type} sent for device {device_id}")
 
-class TenantMaintenanceRequest(models.Model):
-    id = models.AutoField(primary_key=True)
-    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
-    property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    description = models.TextField()
-    status = models.CharField(max_length=50, choices=[(' submitted', ' submitted'), ('in_progress', 'In Progress'), ('completed', 'Completed')], default='in_progress')
-    attachments = models.JSONField()
+# class TenantMaintenanceRequest(models.Model):
+#     id = models.AutoField(primary_key=True)
+#     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
+#     property = models.ForeignKey(Property, on_delete=models.CASCADE)
+#     description = models.TextField()
+#     status = models.CharField(max_length=50, choices=[(' submitted', ' submitted'), ('in_progress', 'In Progress'), ('completed', 'Completed')], default='in_progress')
+#     attachments = models.JSONField()
 
-    def submit_request(self, tenant_id, property_id, description, attachments):
-        request = TenantMaintenanceRequest.objects.create(
-            tenant=tenant_id,
-            property=property_id,
-            description=description,
-            status='submitted',
-            attachments=attachments
-        )
-        return request
+#     def submit_request(self, tenant_id, property_id, description, attachments):
+#         request = TenantMaintenanceRequest.objects.create(
+#             tenant=tenant_id,
+#             property=property_id,
+#             description=description,
+#             status='submitted',
+#             attachments=attachments
+#         )
+#         return request
 
-    def update_request_status(self, request_id, status):
-        request = TenantMaintenanceRequest.objects.get(id=request_id)
-        request.status = status
-        request.save()
+#     def update_request_status(self, request_id, status):
+#         request = TenantMaintenanceRequest.objects.get(id=request_id)
+#         request.status = status
+#         request.save()
 
-    def notify_tenant(self, request_id):
-        request = TenantMaintenanceRequest.objects.get(id=request_id)
-        print(f"Notification sent to tenant {request.tenant} for request {request_id}")
+#     def notify_tenant(self, request_id):
+#         request = TenantMaintenanceRequest.objects.get(id=request_id)
+#         print(f"Notification sent to tenant {request.tenant} for request {request_id}")
 
-    def generate_request_report(self, tenant_id):
-        requests = TenantMaintenanceRequest.objects.filter(id=tenant_id)
-        report = [{"request_id": req.id, "status": req.status} for req in requests]
-        return report
+#     def generate_request_report(self, tenant_id):
+#         requests = TenantMaintenanceRequest.objects.filter(id=tenant_id)
+#         report = [{"request_id": req.id, "status": req.status} for req in requests]
+#         return report
 
-class InspectionReport(models.Model):
-    id = models.AutoField(primary_key=True)
+class InspectionReport(Report):
     inspector = models.ForeignKey(Inspector, on_delete=models.CASCADE)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    inspection_date = models.DateField()
     findings = models.TextField()
     compliance_status = models.CharField(max_length=50)
 

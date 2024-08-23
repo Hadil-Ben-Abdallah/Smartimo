@@ -1,6 +1,6 @@
 from ninja import Router
-from .models import SecurityDevice, MaintenanceDevice, TenantMaintenanceRequest, InspectionReport, ConstructionMonitoring, Project, Inspector
-from .schemas import SecurityDeviceSchema, MaintenanceDeviceSchema, TenantMaintenanceRequestSchema, InspectionReportSchema, ConstructionMonitoringSchema, ProjectSchema, InspectorSchema
+from .models import SecurityDevice, MaintenanceDevice, InspectionReport, ConstructionMonitoring, Project, Inspector
+from .schemas import SecurityDeviceSchema, MaintenanceDeviceSchema,InspectionReportSchema, ConstructionMonitoringSchema, ProjectSchema, InspectorSchema
 
 router = Router()
 
@@ -45,24 +45,24 @@ def update_maintenance_device(request, device_id: int, payload: MaintenanceDevic
     return device
 
 # Tenant Maintenance Request Endpoints
-@router.post("/tenant-maintenance-request/submit", response=TenantMaintenanceRequestSchema)
-def submit_tenant_maintenance_request(request, payload: TenantMaintenanceRequestSchema):
-    request_obj = TenantMaintenanceRequest.objects.create(**payload.dict(exclude={'id'}))
-    return request_obj
+# @router.post("/tenant-maintenance-request/submit", response=TenantMaintenanceRequestSchema)
+# def submit_tenant_maintenance_request(request, payload: TenantMaintenanceRequestSchema):
+#     request_obj = TenantMaintenanceRequest.objects.create(**payload.dict(exclude={'id'}))
+#     return request_obj
 
-@router.get("/tenant-maintenance-request/{request_id}", response=TenantMaintenanceRequestSchema)
-def get_tenant_maintenance_request(request, request_id: int):
-    request_obj = TenantMaintenanceRequest.objects.get(id=request_id)
-    return request_obj
+# @router.get("/tenant-maintenance-request/{request_id}", response=TenantMaintenanceRequestSchema)
+# def get_tenant_maintenance_request(request, request_id: int):
+#     request_obj = TenantMaintenanceRequest.objects.get(id=request_id)
+#     return request_obj
 
-@router.put("/tenant-maintenance-request/update-status/{request_id}", response=TenantMaintenanceRequestSchema)
-def update_tenant_maintenance_request_status(request, request_id: int, payload: TenantMaintenanceRequestSchema):
-    request_obj = TenantMaintenanceRequest.objects.get(id=request_id)
-    for key, value in payload.dict().items():
-        if key != 'id':
-            setattr(request_obj, key, value)
-    request_obj.save()
-    return request_obj
+# @router.put("/tenant-maintenance-request/update-status/{request_id}", response=TenantMaintenanceRequestSchema)
+# def update_tenant_maintenance_request_status(request, request_id: int, payload: TenantMaintenanceRequestSchema):
+#     request_obj = TenantMaintenanceRequest.objects.get(id=request_id)
+#     for key, value in payload.dict().items():
+#         if key != 'id':
+#             setattr(request_obj, key, value)
+#     request_obj.save()
+#     return request_obj
 
 # Inspection Report Endpoints
 @router.post("/inspection-report/create", response=InspectionReportSchema)

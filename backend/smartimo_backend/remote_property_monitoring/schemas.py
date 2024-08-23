@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import List, Dict, Optional
 from datetime import date
-from core.schemas import UserSchema
+from core.schemas import UserSchema, ReportSchema
 
 class ProjectSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
@@ -49,23 +49,21 @@ class MaintenanceDeviceSchema(BaseModel):
         from_attributes = True
         populate_by_name = True
 
-class TenantMaintenanceRequestSchema(BaseModel):
-    id: Optional[int] = Field(default=None, alias='id')
-    tenant_id: int
-    property_id: int
-    description: str
-    status: str
-    attachments: Dict
+# class TenantMaintenanceRequestSchema(BaseModel):
+#     id: Optional[int] = Field(default=None, alias='id')
+#     tenant_id: int
+#     property_id: int
+#     description: str
+#     status: str
+#     attachments: Dict
 
-    class Config:
-        from_attributes = True
-        populate_by_name = True
+#     class Config:
+#         from_attributes = True
+#         populate_by_name = True
 
-class InspectionReportSchema(BaseModel):
-    id: Optional[int] = Field(default=None, alias='id')
+class InspectionReportSchema(ReportSchema):
     inspector_id: int
     property_id: int
-    inspection_date: str
     findings: str
     compliance_status: str
 
