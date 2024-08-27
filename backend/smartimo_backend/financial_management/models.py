@@ -2,7 +2,6 @@ from django.db import models
 from core.models import Property, User, Report
 from django.db.models import JSONField
 from datetime import datetime
-from django.utils import timezone
 from django.core.mail import send_mail
 
 
@@ -13,8 +12,6 @@ class Invoice(models.Model):
     amount_due = models.DecimalField(max_digits=10, decimal_places=2)
     due_date = models.DateField()
     status = models.CharField(max_length=20, choices=[('unpaid', 'Unpaid'), ('paid', 'Paid'), ('overdue', 'Overdue')])
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
     itemized_charges = JSONField()
     payment_instructions = models.TextField()
 
@@ -25,7 +22,7 @@ class Invoice(models.Model):
 
     def send_invoice(self):
         subject = f"Invoice #{self.id}"
-        message = f"Dear {self.tenant.name},\n\nPlease find your invoice attached.\n\nAmount Due: {self.amount_due}\nDue Date: {self.due_date}\n\nThank you."
+        message = f"Dear {self.tenant.username},\n\nPlease find your invoice attached.\n\nAmount Due: {self.amount_due}\nDue Date: {self.due_date}\n\nThank you."
         from_email = "smartimo@example.com"
         recipient_list = [self.tenant.email]
         send_mail(subject, message, from_email, recipient_list)

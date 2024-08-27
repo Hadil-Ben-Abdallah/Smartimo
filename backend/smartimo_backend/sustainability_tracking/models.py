@@ -186,7 +186,6 @@ class SustainabilityCertification(models.Model):
 class TenantSustainabilityResource(Resource):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     category = models.CharField(max_length=255, choices=[('energy_conservation', 'Energy Conservation'), ('waste_reduction', 'Waste Reduction')], default='energy_conservation')
-    created_at = models.DateTimeField(auto_now_add=True)
 
     def add_resource(self, tenant_id, title, description, category):
         tenant_instance = Tenant.objects.get(id=tenant_id)
@@ -282,7 +281,6 @@ class SustainabilityForum(models.Model):
     topic = models.CharField(max_length=255)
     message = models.TextField()
     participants = models.ManyToManyField(Tenant, related_name='forums')
-    timestamp = models.DateTimeField(auto_now_add=True)
 
     def create_forum(self, topic, message):
         forum = SustainabilityForum(

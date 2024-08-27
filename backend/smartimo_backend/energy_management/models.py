@@ -73,7 +73,6 @@ class EnergyRecommendation(models.Model):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     recommendation_text = models.TextField()
     category = models.CharField(max_length=255, choices=[('thermostat_setting', 'Thermostat Setting'), ('lighting_optimization', 'Lighting Optimization')])
-    created_at = models.DateTimeField(auto_now_add=True)
 
     def generate_recommendation(self, usage_data):
         return f"Recommendation for tenant {self.tenant.user_id}: {self.recommendation_text}"

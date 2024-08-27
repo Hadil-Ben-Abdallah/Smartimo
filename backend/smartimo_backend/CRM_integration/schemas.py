@@ -18,7 +18,6 @@ class CRMClientSyncSchema(BaseModel):
     client: int
     crm_client_id: str
     sync_status: str
-    last_update_time: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -41,7 +40,6 @@ class CRMClientInteractionSchema(BaseModel):
     client: int
     interaction_type: str
     details: str
-    timestamp: datetime
 
     class Config:
         from_attributes = True

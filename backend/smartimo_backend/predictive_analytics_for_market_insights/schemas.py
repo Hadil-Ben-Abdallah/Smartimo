@@ -8,8 +8,6 @@ class PredictiveAnalyticsSchema(BaseModel):
     data_source: str
     algorithm: str
     parameters: Dict
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -20,8 +18,6 @@ class InvestmentDashboardSchema(BaseModel):
     user_id: int
     predicted_values: Dict
     investment_returns: Dict
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -32,8 +28,6 @@ class MarketTrendAnalysisSchema(BaseModel):
     region: str
     property_type: str
     trend_data: Dict
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -44,8 +38,6 @@ class RentalDemandForecastSchema(BaseModel):
     property_manager_id: int
     demand_projections: Dict
     tenant_preferences: Dict
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -56,8 +48,6 @@ class PropertyValuationModelSchema(BaseModel):
     property_id: int
     predicted_value: float
     growth_factors: Dict
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -79,8 +69,6 @@ class DevelopmentFeasibilityToolSchema(BaseModel):
     project_parameters: Dict
     roi_projections: Dict
     risk_factors: Dict
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

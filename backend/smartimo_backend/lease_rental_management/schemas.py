@@ -14,8 +14,6 @@ class LeaseAgreementSchema(BaseModel):
     signed_document: HttpUrl
     start_date: date
     end_date: date
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

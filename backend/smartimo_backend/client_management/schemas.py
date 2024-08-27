@@ -8,8 +8,6 @@ class ClientSchema(UserSchema):
     preferences: Dict
     tags: List[str]
     client_status: str
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
     agent_id: int
 
     class Config:
@@ -19,7 +17,6 @@ class ClientSchema(UserSchema):
 class InteractionSchema(ClientInteractionSchema):
     client_id: int
     agent_id: int
-    timestamp: datetime
 
     class Config:
         from_attributes = True

@@ -62,7 +62,6 @@ class CRMClientSync(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     crm_client_id = models.CharField(max_length=100, unique=True, null=True, blank=True)
     sync_status = models.CharField(max_length=50, choices=[('active', 'Active'), ('paused', 'Paused'), ('failed', 'Failed')], default='paused')
-    last_update_time = models.DateTimeField(null=True, blank=True)
 
     def export_client(self):
         crm_tool = CRMIntegration.objects.get(id=self.integration_id).crm_tool
@@ -221,7 +220,6 @@ class CRMClientInteraction(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     interaction_type = models.CharField(max_length=50, choices=[('call', 'Call'), ('email', 'Email'), ('meeting', 'Meeting')], default='call')
     details = models.TextField()
-    timestamp = models.DateTimeField()
 
     def log_interaction(self):
         crm_tool = CRMIntegration.objects.get(id=self.integration_id).crm_tool
@@ -248,8 +246,6 @@ class CRMClientInteraction(models.Model):
         response = requests.post(url, headers=headers, json=data)
         if response.status_code != 201:
             raise ValidationError("Failed to log interaction in CRM")
-
-          
 
     def link_to_opportunity(self, opportunity_id):
         crm_tool = CRMIntegration.objects.get(id=self.integration_id).crm_tool

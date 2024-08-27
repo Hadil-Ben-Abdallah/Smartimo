@@ -17,8 +17,6 @@ class VisitorSchema(BaseModel):
     email: str
     phone: str
     visit_purpose: str
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -32,8 +30,6 @@ class ShowingSchema(BaseModel):
     date: date
     time: time
     status: str
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -47,8 +43,6 @@ class AccessControlSchema(BaseModel):
     access_start: datetime
     access_end: datetime
     permissions: dict
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

@@ -30,8 +30,7 @@ class Property(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     year_built = models.DateField(auto_now=True)
     status = models.CharField(max_length=50)
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
+
 
 class Notification(models.Model):
     notification_id = models.AutoField(primary_key=True)
@@ -103,8 +102,6 @@ class Report(models.Model):
     report_id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=50)
     data = models.JSONField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
 class SalesOpportunity(models.Model):
     sales_opportunity_id = models.AutoField(primary_key=True)
@@ -214,8 +211,6 @@ class Feedback(models.Model):
     feedback_id = models.AutoField(primary_key=True)
     rating = models.IntegerField()
     comments = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     # def edit_feedback(self, rating, comments):
     #     self.rating = rating

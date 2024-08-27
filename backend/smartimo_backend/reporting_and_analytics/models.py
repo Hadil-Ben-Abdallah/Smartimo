@@ -35,11 +35,10 @@ class AnalyticsReport(Report):
 
     def get_report_details(self):
         return {
-            "id": self.id,
-            "name": self.name,
+            "id": self.report_id,
+            "title": self.title,
             "type": self.type,
             "created_by": self.created_by.username,
-            "created_at": self.created_at,
             "filters": self.filters,
             "visualizations": self.visualizations,
             "data": self.data,

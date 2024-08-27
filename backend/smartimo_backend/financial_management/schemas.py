@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional, Any
-from datetime import date, datetime
+from datetime import date
 from core.schemas import ReportSchema
 
 class InvoiceSchema(BaseModel):
@@ -10,8 +10,6 @@ class InvoiceSchema(BaseModel):
     amount_due: float
     due_date: date
     status: str
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
     itemized_charges: Any
     payment_instructions: str
 

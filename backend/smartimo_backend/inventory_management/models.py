@@ -36,8 +36,6 @@ class InventoryItem(models.Model):
     description = models.TextField()
     condition = models.CharField(max_length=50, choices=[('new', 'New'), ('good', 'Good'), ('fair', 'Fair'), ('poor', 'Poor')], default='new')
     photos = models.JSONField(default=list)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def update_item_details(self, details):
         for key, value in details.items():

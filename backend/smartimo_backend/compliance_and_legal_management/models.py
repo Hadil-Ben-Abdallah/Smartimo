@@ -10,7 +10,6 @@ class RegulationRepository(models.Model):
     property_type = models.CharField(max_length=255)
     compliance_category = models.CharField(max_length=255)
     version = models.CharField(max_length=50)
-    last_updated = models.DateTimeField(auto_now=True)
 
     def store_regulation(self):
         self.save()

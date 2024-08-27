@@ -18,8 +18,6 @@ class PropertySchema(BaseModel):
     year_built: datetime 
     price: float
     status: str
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -103,8 +101,6 @@ class ReportSchema(BaseModel):
     report_id: Optional[int] = Field(default=None, alias='report_id')
     title: str
     data: Dict
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -178,8 +174,6 @@ class FeedbackSchema(BaseModel):
     feedback_id: Optional[int] = Field(default=None, alias='vendor_id')
     rating: int
     comments: str
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

@@ -52,7 +52,6 @@ class SavedListingSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
     user_id: int
     property_id: int
-    created_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

@@ -7,8 +7,6 @@ class Community(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     description = models.TextField()
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(default=timezone.now)
 
     def create_forum(self, name: str, description: str):
         return Forum.objects.create(community=self, name=name, description=description)
@@ -30,8 +28,6 @@ class Forum(models.Model):
     community = models.ForeignKey(Community, related_name='forums', on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     description = models.TextField()
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(default=timezone.now)
 
     def create_thread(self, title: str, content: str):
         return Thread.objects.create(forum=self, title=title, content=content)
@@ -56,8 +52,6 @@ class Thread(models.Model):
     forum = models.ForeignKey(Forum, related_name='threads', on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     content = models.TextField()
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(default=timezone.now)
 
 
 class Reply(models.Model):
@@ -65,8 +59,6 @@ class Reply(models.Model):
     thread = models.ForeignKey(Thread, related_name='replies', on_delete=models.CASCADE)
     content = models.TextField()
     status = models.CharField(max_length=50, default='pending')
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(default=timezone.now)
 
 
 class Announcement(models.Model):
@@ -75,8 +67,6 @@ class Announcement(models.Model):
     title = models.CharField(max_length=255)
     content = models.TextField()
     category = models.CharField(max_length=255, choices=[('news', 'News'), ('updates', 'Updates'), ('events', 'Events')], default='news')
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(default=timezone.now)
     archived = models.BooleanField(default=False)
 
     def publish(self):
@@ -112,8 +102,6 @@ class RSVP(models.Model):
 class CommunityResource(Resource):
     community = models.ForeignKey(Community, related_name='resources', on_delete=models.CASCADE)
     category = models.CharField(max_length=255, choices=[('service_provider', 'Service Provider'), ('local_business', 'Local Business')], default='service_provider')
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(default=timezone.now)
 
     def search(self, criteria: dict):
         return CommunityResource.objects.filter(**criteria)
@@ -131,7 +119,6 @@ class Review(models.Model):
     id = models.AutoField(primary_key=True)
     resource = models.ForeignKey(CommunityResource, related_name='reviews', on_delete=models.CASCADE)
     details = models.TextField()
-    created_at = models.DateTimeField(default=timezone.now)
 
 
 class Poll(models.Model):
@@ -139,8 +126,6 @@ class Poll(models.Model):
     community = models.ForeignKey(Community, related_name='polls', on_delete=models.CASCADE)
     question = models.CharField(max_length=255)
     options = models.JSONField()
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(default=timezone.now)
 
     def create_poll(self, question: str, options: list):
         self.question = question
@@ -161,4 +146,3 @@ class PollVote(models.Model):
     poll = models.ForeignKey(Poll, related_name='votes', on_delete=models.CASCADE)
     option = models.IntegerField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(default=timezone.now)

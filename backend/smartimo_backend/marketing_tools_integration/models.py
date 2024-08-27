@@ -29,8 +29,8 @@ class MarketingProperty(Property):
 
     def get_optimization_recommendations(self):
         recommendations = f"Optimize the photos by reducing size and enhancing brightness. " \
-                          f"For videos, ensure proper lighting and stable recording. " \
-                          f"Virtual tours should be interactive and easy to navigate."
+                            f"For videos, ensure proper lighting and stable recording. " \
+                            f"Virtual tours should be interactive and easy to navigate."
         self.media_optimization_recommendations = recommendations
         self.save()
         return recommendations

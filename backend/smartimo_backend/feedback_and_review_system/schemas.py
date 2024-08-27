@@ -1,6 +1,5 @@
 from pydantic import BaseModel, Field
 from typing import Optional
-from datetime import datetime
 from core.schemas import FeedbackSchema, NotificationSchema
 
 class UserFeedbackSchema(FeedbackSchema):
@@ -16,8 +15,6 @@ class SurveySchema(BaseModel):
     title: str
     description: str
     questions: dict
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -47,8 +44,6 @@ class AnalyticsSchema(BaseModel):
     feedback_data: dict
     survey_data: dict
     review_data: dict
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

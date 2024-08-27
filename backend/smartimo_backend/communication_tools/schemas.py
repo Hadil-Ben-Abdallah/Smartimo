@@ -10,7 +10,6 @@ class EmailSchema(BaseModel):
     subject: str
     body: str
     attachments: List[str] = []
-    timestamp: Optional[datetime] = None
     status: str
 
     class Config:
@@ -32,7 +31,6 @@ class InstantMessageSchema(BaseModel):
     recipient_id: int
     content: str
     attachments: List[str] = []
-    timestamp: Optional[datetime] = None
     status: str
 
     class Config:
@@ -44,7 +42,6 @@ class SMSNotificationSchema(BaseModel):
     sender_id: int
     recipient_id: int
     message: str
-    timestamp: Optional[datetime] = None
     status: str
 
     class Config:

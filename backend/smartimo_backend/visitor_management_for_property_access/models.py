@@ -26,8 +26,6 @@ class Visitor(models.Model):
     email = models.EmailField()
     phone = models.CharField(max_length=15)
     visit_purpose = models.CharField(max_length=100, choices=[('viewing', 'Viewing'), ('inspecting', 'Inspecting')], default='viewing')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def check_in(self, property):
         AccessControl.objects.create(property=property, visitor=self, access_code='TEMP_CODE', access_start=datetime.now(), access_end=datetime.now() + timedelta(hours=1), permissions={})
@@ -49,8 +47,6 @@ class Showing(models.Model):
     date = models.DateField()
     time = models.TimeField()
     status = models.CharField(max_length=20, choices=[('scheduled', 'Scheduled'), ('completed', 'Completed'), ('cancelled', 'Cancelled')])
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def send_invitation(self):
         subject = "Property Showing Invitation"
@@ -61,7 +57,7 @@ class Showing(models.Model):
     def send_reminder(self):
         from django.core.mail import send_mail
         subject = "Reminder: Property Showing"
-        message = f"This is a reminder for your property showing on {self.date} at {self.time}. Property ID: {self.property.id}"
+        message = f"This is a reminder for your property showing on {self.date} at {self.time}. Property ID: {self.property.property_id}"
         recipient_list = [self.visitor.email]
         send_mail(subject, message, 'smartimo@example.com', recipient_list)
 
@@ -83,8 +79,6 @@ class AccessControl(models.Model):
     access_start = models.DateTimeField()
     access_end = models.DateTimeField()
     permissions = models.JSONField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
     
     def grant_access(self, details):
         for key, value in details.items():

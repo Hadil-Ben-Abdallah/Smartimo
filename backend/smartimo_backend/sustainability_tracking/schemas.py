@@ -42,7 +42,6 @@ class SustainabilityCertificationSchema(BaseModel):
 class TenantSustainabilityResourceSchema(ResourceSchema):
     tenant_id: int
     category: str
-    created_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -65,7 +64,6 @@ class SustainabilityForumSchema(BaseModel):
     topic: str
     message: str
     participants_id: int
-    timestamp: Optional[datetime] = None
 
     class Config:
         from_attributes = True

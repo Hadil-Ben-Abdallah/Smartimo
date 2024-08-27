@@ -76,8 +76,6 @@ class SalesClientInteraction(Interaction):
 class TheSalesOpportunity(SalesOpportunity):
     lead = models.ForeignKey(Lead, on_delete=models.CASCADE)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def change_status(self, new_status):
         self.status = new_status
@@ -89,8 +87,6 @@ class TheSalesOpportunity(SalesOpportunity):
             "lead_id": self.lead,
             "property_id": self.property,
             "status": self.status,
-            "created_at": self.created_at,
-            "updated_at": self.updated_at,
         }
 
 class SalesPipeline(models.Model):
@@ -156,7 +152,6 @@ class SalesAnalytics(models.Model):
     agent = models.ForeignKey(RealEstateAgent, on_delete=models.CASCADE)
     metrics = models.JSONField()
     report_type = models.CharField(max_length=50)
-    created_at = models.DateTimeField(auto_now_add=True)
 
     def generate_report(self, report_type):
         pass

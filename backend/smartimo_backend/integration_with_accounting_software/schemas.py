@@ -6,8 +6,7 @@ from lease_rental_management.schemas import PropertyManagerSchema
 from core.schemas import ReportSchema
 
 class IntegrationPropertyManagerSchema(PropertyManagerSchema):
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
+    financial_data: dict
 
     class Config:
         from_attributes = True
@@ -19,8 +18,6 @@ class IntegrationSettingsSchema(Schema):
     accounting_software: str
     sync_frequency: str
     data_mapping_rules: dict
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -54,8 +51,6 @@ class ExportSchema(Schema):
     export_type: str
     export_format: str
     date_range: str
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

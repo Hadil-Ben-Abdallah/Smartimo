@@ -6,8 +6,7 @@ import csv
 import io
 
 class IntegrationPropertyManager(PropertyManager):
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    financial_data = models.JSONField()
 
     def sync_financial_data(self):
         pass
@@ -42,8 +41,6 @@ class IntegrationSettings(models.Model):
     accounting_software = models.CharField(max_length=255, choices=[('quickBooks', 'QuickBooks'), ('xero', 'Xero'), ('freshBooks', 'FreshBooks')], default='quickBooks')
     sync_frequency = models.CharField(max_length=255, choices=[('daily', 'Daily'), ('weekly', 'Weekly'), ('on_demand', 'On-demand')], default='weekly')
     data_mapping_rules = models.JSONField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def configure_settings(self, accounting_software, sync_frequency, data_mapping_rules):
         self.accounting_software = accounting_software
@@ -122,8 +119,6 @@ class Export(models.Model):
     export_type = models.CharField(max_length=255, choices=[('financial_data', 'Financial Data'), ('transaction_records', 'Transaction Records')])
     export_format = models.CharField(max_length=50, choices=[('csv', 'CSV'), ('excel', 'Excel'), ('xml', 'XML')], default='csv')
     date_range = models.CharField(max_length=255)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def configure_export(self, export_type, export_format, date_range):
         self.export_type = export_type

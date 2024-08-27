@@ -9,8 +9,6 @@ class PredictiveAnalytics(models.Model):
     data_source = models.CharField(max_length=255)
     algorithm = models.CharField(max_length=255)
     parameters = models.JSONField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def train_model(self, data_source, algorithm, parameters):
         model_performance = np.random.rand()
@@ -41,8 +39,6 @@ class InvestmentDashboard(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     predicted_values = models.JSONField()
     investment_returns = models.JSONField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def visualize_forecasts(self, dashboard_id):
         dashboard_instance = InvestmentDashboard.objects.get(id=dashboard_id)
@@ -73,8 +69,6 @@ class MarketTrendAnalysis(models.Model):
     region = models.CharField(max_length=255)
     property_type = models.CharField(max_length=255)
     trend_data = models.JSONField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def analyze_market(self, region, property_type):
         trend_analysis = np.random.rand(10)
@@ -102,8 +96,6 @@ class RentalDemandForecast(models.Model):
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     demand_projections = models.JSONField()
     tenant_preferences = models.JSONField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def forecast_demand(self, property_manager):
         demand_projection = np.random.rand(10) * 1000
@@ -131,8 +123,6 @@ class PropertyValuationModel(models.Model):
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     predicted_value = models.DecimalField(max_digits=12, decimal_places=2)
     growth_factors = models.JSONField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def calculate_valuation(self, property_id):
         property_instance = Property.objects.get(id=property_id)
@@ -191,8 +181,6 @@ class DevelopmentFeasibilityTool(models.Model):
     project_parameters = models.JSONField()
     roi_projections = models.JSONField()
     risk_factors = models.JSONField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def evaluate_feasibility(self, developer_id, project_parameters):
         feasibility_score = np.random.rand() * 100

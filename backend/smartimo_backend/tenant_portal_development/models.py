@@ -31,16 +31,16 @@ class TenantResource(Resource):
             return "Resource not found"
 
     def subscribe_to_updates(self, resource_id: int):
-      try:
-        # Fetch the resource based on resource_id
-        resource = TenantResource.objects.get(id=resource_id, tenant=self.tenant)
+        try:
+            # Fetch the resource based on resource_id
+            resource = TenantResource.objects.get(id=resource_id, tenant=self.tenant)
 
-        resource.add_subscriber(self.tenant)
-        
-        return "Successfully subscribed to updates for this resource."
+            resource.add_subscriber(self.tenant)
+            
+            return "Successfully subscribed to updates for this resource."
     
-      except TenantResource.DoesNotExist:
-        return "Resource not found or you do not have access to this resource."
+        except TenantResource.DoesNotExist:
+            return "Resource not found or you do not have access to this resource."
 
 
     def view_announcements(self):

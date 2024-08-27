@@ -11,7 +11,6 @@ class Email(models.Model):
     subject = models.CharField(max_length=255)
     body = models.TextField()
     attachments = models.JSONField(default=list, blank=True)
-    timestamp = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=50, choices=[('sent', 'Sent'), ('received', 'Received'), ('draft', 'Draft')])
 
     def send_email(self):
@@ -82,7 +81,6 @@ class InstantMessage(models.Model):
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_instant_messages')
     content = models.TextField()
     attachments = models.JSONField(default=list, blank=True)
-    timestamp = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=50, choices=[('sent', 'Sent'), ('read', 'Read')])
 
     def send_message(self):
@@ -106,7 +104,6 @@ class SMSNotification(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_sms_notifications')
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_sms_notifications')
     message = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=50, choices=[('sent', 'Sent'), ('delivered', 'Delivered')])
 
     def send_sms(self):

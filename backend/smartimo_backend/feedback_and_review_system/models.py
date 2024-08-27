@@ -14,9 +14,6 @@ class Survey(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     questions = models.JSONField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
     def create_survey(self, title, description, questions):
         self.title = title
         self.description = description
@@ -90,8 +87,6 @@ class Analytics(models.Model):
     feedback_data = models.JSONField()
     survey_data = models.JSONField()
     review_data = models.JSONField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def generate_feedback_report(self, criteria):
         report = {}

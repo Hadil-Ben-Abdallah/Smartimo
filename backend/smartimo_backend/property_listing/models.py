@@ -126,7 +126,6 @@ class SavedListing(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(ProspectiveBuyerRenter, on_delete=models.CASCADE)
     property = models.ForeignKey(ThePropertyListing, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
 
     def save_listing(self):
         self.save()

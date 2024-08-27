@@ -11,7 +11,6 @@ class RegulationRepositorySchema(BaseModel):
     property_type: str
     compliance_category: str
     version: str
-    last_updated: Optional[datetime] = None
 
     class Config:
         from_attributes = True

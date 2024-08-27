@@ -46,8 +46,6 @@ class AppProperty(Property):
             "status": self.status,
             "features": self.features,
             "saved": self.saved,
-            "created_at":self.created_at,
-            "updated_at": self.updated_at
         }
 
     def save_listing(self):

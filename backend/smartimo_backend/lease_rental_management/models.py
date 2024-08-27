@@ -12,8 +12,6 @@ class LeaseAgreement(models.Model):
     signed_document = models.URLField(max_length=255, blank=True, null=True)
     start_date = models.DateField()
     end_date = models.DateField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def create_lease_agreement(self):
         self.save()
@@ -42,8 +40,6 @@ class LeaseAgreement(models.Model):
             "signed_document": self.signed_document,
             "start_date": self.start_date,
             "end_date": self.end_date,
-            "created_at": self.created_at,
-            "updated_at": self.updated_at,
         }
 
 class Tenant(User):
