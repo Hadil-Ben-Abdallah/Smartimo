@@ -53,6 +53,18 @@ class MaintenanceRequest(models.Model):
         self.photos.extend(photos)
         self.save()
 
+    def create_request(self, tenant, manager, issue_type, location, description, severity, photos, urgency_level):
+        self.tenant = tenant
+        self.manager = manager
+        self.issue_type = issue_type
+        self.severity = severity
+        self.location = location
+        self.description = description
+        self.photos = photos
+        self.status = 'Pending'
+        self.urgency_level = urgency_level
+        self.save()
+
     def get_request_details(self):
         return {
             "id": self.id,
@@ -64,9 +76,10 @@ class MaintenanceRequest(models.Model):
             "description": self.description,
             "photos": self.photos,
             "status": self.status,
-            "created_at": self.created_at,
-            "updated_at": self.updated_at,
         }
+
+    def delete_request(self):
+        self.delete()
 
 class TenantRequest(models.Model):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name='tenant_requests')

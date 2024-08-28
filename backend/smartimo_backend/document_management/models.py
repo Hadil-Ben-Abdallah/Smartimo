@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import User, Property, Document, Reminder
+from core.models import User, Property, Document, Reminder, Category
 from django.utils import timezone
 
 class PropertyDocument(Document):
@@ -21,31 +21,21 @@ class PropertyDocument(Document):
         self.expiration_date = expiration_date
         self.save()
 
-class DocumentCategory(models.Model):
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
-    description = models.TextField(null=True, blank=True)
+class DocumentCategory(Category):
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
 
-    def create_category(self, name, description):
+    def create_category(self, name, description, property):
         self.name = name
         self.description = description
+        self.property.property_id = property
         self.save()
-    
-    def update_category(self, **kwargs):
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-        self.save()
-    
-    def delete_category(self):
-        self.delete()
-    
+
     def get_category_details(self):
         return {
-            "id": self.id,
+            "id": self.category_id,
             "name": self.name,
             "description": self.description,
-            "property_id": self.property.property_id,
+            "property": self.property.property_id
         }
 
 class DocumentTag(models.Model):

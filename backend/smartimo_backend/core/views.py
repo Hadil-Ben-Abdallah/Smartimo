@@ -1,6 +1,6 @@
 from ninja import Router
-from .models import Property, Notification, ClientInteraction,Communication, Report, SalesOpportunity, Resource, User, Document, Reminder, Portal, Feedback
-from .schemas import PropertySchema, NotificationSchema, ClientInteractionSchema, CommunicationSchema, ReportSchema, SalesOpportunitySchema, ResourceSchema, UserSchema, DocumentSchema, ReminderSchema, PortalSchema, FeedbackSchema
+from .models import Property, Notification, ClientInteraction,Communication, Report, SalesOpportunity, Resource, User, Document, Reminder, Portal, Feedback, Category
+from .schemas import PropertySchema, NotificationSchema, ClientInteractionSchema, CommunicationSchema, ReportSchema, SalesOpportunitySchema, ResourceSchema, UserSchema, DocumentSchema, ReminderSchema, PortalSchema, FeedbackSchema, CategorySchema
 
 router = Router()
 
@@ -63,16 +63,6 @@ def create_communication(request, data: CommunicationSchema):
 #     lease_agreement_data = data.dict(exclude={'lease_agreement_id'})
 #     lease_agreement_instance = LeaseAgreement.objects.create(**lease_agreement_data)
 #     return lease_agreement_instance
-
-# @router.get("/get-property-listings/", response=list[PropertyListingSchema])
-# def list_property_listings(request):
-#     return list(PropertyListing.objects.all())
-
-# @router.post("/set-property-listings/", response=PropertyListingSchema)
-# def create_property_listing(request, data: PropertyListingSchema):
-#     property_listing_data = data.dict(exclude={'property_listing_id'})
-#     property_listing_instance = PropertyListing.objects.create(**property_listing_data)
-#     return property_listing_instance
 
 @router.get("/get-financial-reports/", response=list[ReportSchema])
 def list_financial_reports(request):
@@ -143,3 +133,13 @@ def create_feedback(request, data: FeedbackSchema):
     feedback_data = data.dict(exclude={'feedback_id'})
     feedback_instance = Feedback.objects.create(**feedback_data)
     return feedback_instance
+
+@router.get("/get-category/", response=list[CategorySchema])
+def list_category(request):
+    return list(Category.objects.all())
+
+@router.post("/set-category/", response=CategorySchema)
+def create_category(request, data: CategorySchema):
+    category_data = data.dict(exclude={'category_id'})
+    category_instance = Category.objects.create(**category_data)
+    return category_instance

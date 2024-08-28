@@ -222,3 +222,16 @@ class Feedback(models.Model):
 
     def analyze_feedback(self):
         return Feedback.objects.values('rating').annotate(count=models.Count('rating'))
+    
+class Category(models.Model):
+    category_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    
+    def update_category(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+        self.save()
+    
+    def delete_category(self):
+        self.delete()

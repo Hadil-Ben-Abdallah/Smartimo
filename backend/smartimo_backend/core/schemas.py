@@ -178,3 +178,12 @@ class FeedbackSchema(BaseModel):
     class Config:
         from_attributes = True
         populate_by_name = True
+
+class CategorySchema(BaseModel):
+    category_id: Optional[int] = Field(default=None, alias='category_id')
+    name: str
+    description: Optional[str]
+
+    class Config:
+        from_attributes = True
+        populate_by_name = True

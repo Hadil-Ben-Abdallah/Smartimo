@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict
 from datetime import datetime
-from core.schemas import DocumentSchema, ReminderSchema
+from core.schemas import DocumentSchema, ReminderSchema, CategorySchema
 
 class PropertyDocumentSchema(DocumentSchema):
     property_id: int
@@ -10,10 +10,7 @@ class PropertyDocumentSchema(DocumentSchema):
         from_attributes = True
         populate_by_name = True
 
-class DocumentCategorySchema(BaseModel):
-    id: Optional[int] = Field(default=None, alias='id')
-    name: str
-    description: Optional[str]
+class DocumentCategorySchema(CategorySchema):
     property_id: int
 
     class Config:
