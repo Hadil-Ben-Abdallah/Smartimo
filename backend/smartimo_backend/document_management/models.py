@@ -25,16 +25,11 @@ class DocumentCategory(Category):
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
 
     def create_category(self, name, description, property):
-        self.name = name
-        self.description = description
         self.property.property_id = property
         self.save()
 
     def get_category_details(self):
         return {
-            "id": self.category_id,
-            "name": self.name,
-            "description": self.description,
             "property": self.property.property_id
         }
 

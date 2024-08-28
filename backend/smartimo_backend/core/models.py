@@ -227,6 +227,11 @@ class Category(models.Model):
     category_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
+
+    def create_category(self, name, description, property):
+        self.name = name
+        self.description = description
+        self.save()
     
     def update_category(self, **kwargs):
         for key, value in kwargs.items():
@@ -235,3 +240,10 @@ class Category(models.Model):
     
     def delete_category(self):
         self.delete()
+
+    def get_category_details(self):
+        return {
+            "id": self.category_id,
+            "name": self.name,
+            "description": self.description,
+        }
