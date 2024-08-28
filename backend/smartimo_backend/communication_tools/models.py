@@ -16,7 +16,7 @@ class Email(models.Model):
     def send_email(self):
         subject = f"{self.subject}"
         message = (
-            f"Dear {self.recipient.name},\n\n"
+            f"Dear {self.recipient.username},\n\n"
             f"{self.body}\n\n"
             f"below you will find the necessary documents"
             f"From:\n{self.sender}\n\n"
