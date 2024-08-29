@@ -6,6 +6,8 @@ from lease_rental_management.models import PropertyManager, Tenant
 class MaintenanceRequest(models.Model):
     STATUS_CHOICES = [
         ('submitted', 'Submitted'),
+        ('in_review', 'In Review'),
+        ('assigned', 'Assigned'),
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
     ]
