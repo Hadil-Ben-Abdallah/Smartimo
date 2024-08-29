@@ -6,6 +6,9 @@ from django.utils import timezone
 
 class Vendor(models.Model):
     id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=50)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20)
     certifications = models.JSONField(default=list)
     service_specialties = models.JSONField(default=list)
     insurance_details = models.TextField(blank=True, null=True)

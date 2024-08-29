@@ -5,6 +5,9 @@ from lease_rental_management.schemas import PropertyManagerSchema, Communication
 
 class VendorSchema(BaseModel):
     id: Optional[int] = Field(default=None, alias='id')
+    name: str
+    email: str
+    phone: str
     certifications: List[str]
     service_specialties: List[str]
     insurance_details: Optional[str]

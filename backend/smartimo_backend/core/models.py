@@ -209,7 +209,7 @@ class Portal(models.Model):
 
 class Feedback(models.Model):
     feedback_id = models.AutoField(primary_key=True)
-    rating = models.IntegerField()
+    rating = models.DecimalField(max_digits=3, decimal_places=2)
     comments = models.TextField()
 
     # def edit_feedback(self, rating, comments):
