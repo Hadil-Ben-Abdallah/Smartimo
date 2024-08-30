@@ -3,6 +3,7 @@ from django.utils import timezone
 from tenant_satisfaction_surveys.models import TenantSatisfactionSurvey
 from core.models import Communication
 from lease_rental_management.models import PropertyManager
+import json
 
 class TenantFeedbackAnalytics(models.Model):
     id = models.AutoField(primary_key=True)
@@ -49,27 +50,32 @@ class ImprovementInitiative(models.Model):
     metrics = models.JSONField(default=dict, blank=True, null=True)
 
     def create_initiative(self, related_survey_id, initiated_by_id, category, description):
-        return ImprovementInitiative.objects.create(
-            related_survey=related_survey_id,
-            initiated_by=initiated_by_id,
-            category=category,
-            description=description,
-            status='planned',
-            metrics={}
-        )
+        self.related_survey_id = related_survey_id
+        self.initiated_by_id = initiated_by_id
+        self.category = category
+        self.description = description
+        self.status = 'planned'
+        self.metrics = {}
+        self.save()
 
-    def update_status(self, initiative_id, status):
-        initiative = ImprovementInitiative.objects.get(id=initiative_id)
-        initiative.status = status
-        initiative.save()
+    def update_status(self, status):
+        self.status = status
+        self.save()
 
-    def track_progress(self, initiative_id, metrics):
-        initiative = ImprovementInitiative.objects.get(id=initiative_id)
-        initiative.metrics = metrics
-        initiative.save()
+    def track_progress(self, metrics):
+        self.metrics.update(metrics)
+        self.save()
 
-    def view_initiative(self, initiative_id):
-        return ImprovementInitiative.objects.get(id=initiative_id)
+    def view_initiative(self):
+        return {
+            "id": self.id,
+            "related_survey_id": self.related_survey_id,
+            "initiated_by_id": self.initiated_by_id,
+            "category": self.category,
+            "description": self.description,
+            "status": self.status,
+            "metrics": json.dumps(self.metrics)
+        }
 
 class StakeholderCommunication(Communication):
     related_report = models.ForeignKey(TenantFeedbackAnalytics, on_delete=models.CASCADE)
@@ -78,14 +84,12 @@ class StakeholderCommunication(Communication):
     is_received = models.BooleanField(default=False, blank=True, null=True)
     is_read = models.BooleanField(default=False, blank=True, null=True)
 
-    def create_communication(self, related_report_id, sent_by_id, recipients, message, date):
-        return StakeholderCommunication.objects.create(
-            related_report=related_report_id,
-            sent_by=sent_by_id,
-            recipients=recipients,
-            message=message,
-            date=date
-        )
+    def create_communication(self, related_report_id, sent_by_id, recipients, message):
+        self.related_report_id = related_report_id
+        self.sent_by_id = sent_by_id
+        self.recipients = recipients
+        self.message = message
+        self.save()
 
     def track_communication_status(self, communication_id):
         communication = StakeholderCommunication.objects.get(id=communication_id)
