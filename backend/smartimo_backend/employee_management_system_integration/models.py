@@ -1,30 +1,6 @@
 from django.db import models
 from lease_rental_management.models import PropertyManager
 
-
-class Role(models.Model):
-    id = models.AutoField(primary_key=True)
-    role_name = models.CharField(max_length=255, blank=True, null=True)
-    permissions = models.ManyToManyField('Permission', blank=True, null=True)
-
-    def define_role(self, name, permissions):
-        self.role_name = name
-        self.permissions.set(permissions)
-        self.save()
-        return self
-
-    def modify_role_permissions(self, role_id, new_permissions):
-        role = Role.objects.get(id=role_id)
-        role.permissions.set(new_permissions)
-        role.save()
-
-    def assign_role(self, employee_id, role_id):
-        employee = EmployeeProfile.objects.get(id=employee_id)
-        role = Role.objects.get(id=role_id)
-        employee.role_id = role
-        employee.save()
-
-
 class Permission(models.Model):
     id = models.AutoField(primary_key=True)
     permission_name = models.CharField(max_length=255, blank=True, null=True)
@@ -44,6 +20,29 @@ class Permission(models.Model):
     def delete_permission(self, permission_id):
         permission = Permission.objects.get(id=permission_id)
         permission.delete()
+
+
+class Role(models.Model):
+    id = models.AutoField(primary_key=True)
+    role_name = models.CharField(max_length=255, blank=True, null=True)
+    permissions = models.ManyToManyField(Permission, blank=True, null=True)
+
+    def define_role(self, name, permissions):
+        self.role_name = name
+        self.permissions.set(permissions)
+        self.save()
+        return self
+
+    def modify_role_permissions(self, role_id, new_permissions):
+        role = Role.objects.get(id=role_id)
+        role.permissions.set(new_permissions)
+        role.save()
+
+    def assign_role(self, employee_id, role_id):
+        employee = EmployeeProfile.objects.get(id=employee_id)
+        role = Role.objects.get(id=role_id)
+        employee.role_id = role
+        employee.save()
 
 
 class EmployeeProfile(models.Model):

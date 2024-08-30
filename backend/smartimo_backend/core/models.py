@@ -126,6 +126,7 @@ class User(models.Model):
         ('lease_rental_tenant', 'Lease Rental Tenant'),
         ('property_owner', 'Property Owner'),
         ('property_manager', 'Property Manager'),
+        ('staff_member', 'Staff Member'),
         ('inspector', 'Inspector'),
         ('vendor', 'Vendor'),
         ('prospective_buyer_renter', 'Prospective Buyer Renter'),

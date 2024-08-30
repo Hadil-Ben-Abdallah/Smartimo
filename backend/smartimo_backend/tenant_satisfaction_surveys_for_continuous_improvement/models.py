@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from core.models import Property
 from maintenance_and_service_requests.models import MaintenancePropertyManager
 from lease_rental_management.models import Tenant
+from tenant_portal_feedback_submission.models import FeedbackSubmission
 
 class TenantSurveyCreation(models.Model):
     id = models.AutoField(primary_key=True)
@@ -25,27 +26,14 @@ class TenantSurveyCreation(models.Model):
         return f"Survey scheduled for {self.distribution_schedule}"
 
     def track_response_metrics(self):
-        total_surveys = TenantFeedbackSubmission.objects.filter(survey=self).count()
-        completed_surveys = TenantFeedbackSubmission.objects.filter(survey=self, responses__isnull=False).count()
+        total_surveys = FeedbackSubmission.objects.filter(survey=self).count()
+        completed_surveys = FeedbackSubmission.objects.filter(survey=self, responses__isnull=False).count()
         response_rate = (completed_surveys / total_surveys) * 100 if total_surveys > 0 else 0
         return {
             "total_surveys": total_surveys,
             "completed_surveys": completed_surveys,
             "response_rate": response_rate,
         }
-
-class TenantFeedbackSubmission(models.Model):
-    survey = models.ForeignKey(TenantSurveyCreation, on_delete=models.CASCADE)
-    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
-    responses = models.JSONField(null=True, blank=True)
-    anonymous = models.BooleanField(default=False)
-    language_preference = models.CharField(max_length=10, choices=[('en', 'English'), ('es', 'Spanish'), ('fr', 'French')], default='en')
-
-    def submit_feedback(self, responses, anonymous=False):
-        self.responses = responses
-        self.anonymous = anonymous
-        self.save()
-        return f"Feedback submitted for survey {self.survey}."
 
 class SurveyAnalytics(models.Model):
     survey = models.ForeignKey(TenantSurveyCreation, on_delete=models.CASCADE)
@@ -54,10 +42,10 @@ class SurveyAnalytics(models.Model):
     trend_data = models.JSONField(null=True, blank=True)
 
     def analyze_responses(self):
-        responses = TenantFeedbackSubmission.objects.filter(survey=self.survey)
+        responses = FeedbackSubmission.objects.filter(survey=self.survey)
         response_list = [response.responses for response in responses]
         self.response_data = response_list
-        # Example of analysis: calculate average satisfaction score
+        
         total_score = sum(response.get("satisfaction_score", 0) for response in response_list)
         avg_score = total_score / len(response_list) if response_list else 0
         self.analysis_results = {"average_satisfaction_score": avg_score}
