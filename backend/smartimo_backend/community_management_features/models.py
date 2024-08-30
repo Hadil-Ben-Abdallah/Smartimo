@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils import timezone
 from task_calendar_management.models import Event
 from core.models import User, Resource
 
