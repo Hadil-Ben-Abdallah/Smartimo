@@ -5,7 +5,7 @@ from lease_rental_management.models import Tenant, PropertyManager, LeaseAgreeme
 class LeaseRenewalReminder(Reminder):
     lease = models.ForeignKey(LeaseAgreement, on_delete=models.CASCADE)
     recipient = models.ForeignKey(Tenant, on_delete=models.CASCADE)
-    status = models.CharField(max_length=50, choices=[('opened', 'Opened'), ('responded', 'Responded')], default='opened')
+    status = models.CharField(max_length=50, choices=[('pending', 'Pending'), ('sent', 'Sent'), ('opened', 'Opened'), ('responded', 'Responded'), ('expired', 'Expired')], default='pending')
 
     def customize_reminder(self, frequency, delivery_channel):
         self.reminder_frequency = frequency
