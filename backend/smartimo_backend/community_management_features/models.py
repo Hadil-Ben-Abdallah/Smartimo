@@ -1,6 +1,7 @@
 from django.db import models
 from task_calendar_management.models import Event
 from core.models import User, Resource
+# from tenant_portal_community_bulletin_board.models import Announcement
 
 class Community(models.Model):
     id = models.AutoField(primary_key=True)
@@ -11,7 +12,7 @@ class Community(models.Model):
         return Forum.objects.create(community=self, name=name, description=description)
 
     def post_announcement(self, title: str, content: str, category: str):
-        return Announcement.objects.create(community=self, title=title, content=content, category=category)
+        return CommunityAnnouncement.objects.create(community=self, title=title, content=content, category=category)
 
     def schedule_event(self, name: str, description: str, date, time, location: str):
         return CommunityEvent.objects.create(
@@ -60,28 +61,16 @@ class Reply(models.Model):
     status = models.CharField(max_length=50, default='pending')
 
 
-class Announcement(models.Model):
-    id = models.AutoField(primary_key=True)
+class CommunityAnnouncement(models.Model):
     community = models.ForeignKey(Community, related_name='announcements', on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
-    content = models.TextField()
     category = models.CharField(max_length=255, choices=[('news', 'News'), ('updates', 'Updates'), ('events', 'Events')], default='news')
-    archived = models.BooleanField(default=False)
-
-    def publish(self):
-        self.save()
 
     def subscribe(self, user_id: int):
         return Subscriber.objects.create(announcement=self, user_id=user_id)
 
-    def archive(self):
-        self.archived = True
-        self.save()
-
-
 class Subscriber(models.Model):
     id = models.AutoField(primary_key=True)
-    announcement = models.ForeignKey(Announcement, related_name='subscribers', on_delete=models.CASCADE)
+    announcement = models.ForeignKey(CommunityAnnouncement, related_name='subscribers', on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 

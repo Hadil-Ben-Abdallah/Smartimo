@@ -9,9 +9,9 @@ from core.models import Property
 class HistoricalOccupancyData(models.Model):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    occupancy_rate = models.FloatField()
+    occupancy_rate = models.FloatField(blank=True, null=True)
     time_period = models.CharField(max_length=100, choices=[('month', 'Month'), ('quarter', 'Quater'), ('year', 'Year')], default='month')
-    market_trends = models.JSONField()
+    market_trends = models.JSONField(blank=True, null=True)
 
     def aggregate_data(self, property_id, start_date, end_date):
         data = HistoricalOccupancyData.objects.filter(
@@ -36,8 +36,8 @@ class MarketConditionAnalysis(models.Model):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     external_data_source = models.CharField(max_length=255, choices=[('real-time', 'Real Time'), ('market_data', 'Market Data'), ('economic_indicators', 'Economic Indicators')], default='real-time')
-    investment_opportunities = models.JSONField()
-    risk_factors = models.JSONField()
+    investment_opportunities = models.JSONField(blank=True, null=True)
+    risk_factors = models.JSONField(blank=True, null=True)
 
     def gather_market_data(self, property_id, data_source):
         data = pd.DataFrame({
@@ -60,9 +60,9 @@ class MarketConditionAnalysis(models.Model):
 class RentalIncomeForecast(models.Model):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    historical_rental_income = models.FloatField()
-    cash_flow_projections = models.JSONField()
-    expense_projections = models.JSONField()
+    historical_rental_income = models.FloatField(blank=True, null=True)
+    cash_flow_projections = models.JSONField(blank=True, null=True)
+    expense_projections = models.JSONField(blank=True, null=True)
 
     def generate_income_projections(self, property_id, historical_data):
         data = pd.DataFrame(historical_data)
@@ -84,9 +84,9 @@ class RentalIncomeForecast(models.Model):
 class PropertyValueForecast(models.Model):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    historical_sales_data = models.JSONField()
-    appreciation_rate_forecast = models.FloatField()
-    time_series_forecast = models.JSONField()
+    historical_sales_data = models.JSONField(blank=True, null=True)
+    appreciation_rate_forecast = models.FloatField(blank=True, null=True)
+    time_series_forecast = models.JSONField(blank=True, null=True)
 
     def aggregate_sales_data(self, property_id):
         data = PropertyValueForecast.objects.filter(property=property_id).values('historical_sales_data')
@@ -105,9 +105,9 @@ class PropertyValueForecast(models.Model):
 class EmergingMarketTrends(models.Model):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    market_trends = models.JSONField()
-    economic_indicators = models.JSONField()
-    scenario_analysis = models.JSONField()
+    market_trends = models.JSONField(blank=True, null=True)
+    economic_indicators = models.JSONField(blank=True, null=True)
+    scenario_analysis = models.JSONField(blank=True, null=True)
 
     def monitor_trends(self, property_id):
         data = pd.DataFrame({
@@ -127,10 +127,10 @@ class EmergingMarketTrends(models.Model):
 class DemographicImpactAnalysis(models.Model):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    demographic_data = models.JSONField()
-    urbanization_trends = models.JSONField()
-    regulatory_changes = models.JSONField()
-    impact_forecast = models.JSONField()
+    demographic_data = models.JSONField(blank=True, null=True)
+    urbanization_trends = models.JSONField(blank=True, null=True)
+    regulatory_changes = models.JSONField(blank=True, null=True)
+    impact_forecast = models.JSONField(blank=True, null=True)
 
     def aggregate_demographic_data(self, property_id, data_source):
         data = pd.DataFrame({

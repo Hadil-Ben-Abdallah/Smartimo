@@ -1,7 +1,7 @@
 from ninja import Router
-from .models import Community, Forum, Announcement, CommunityEvent, CommunityResource, Poll
+from .models import Community, Forum, CommunityAnnouncement, CommunityEvent, CommunityResource, Poll
 from .schemas import (
-    CommunitySchema, ForumSchema, AnnouncementSchema, CommunityEventSchema,
+    CommunitySchema, ForumSchema, CommunityAnnouncementSchema, CommunityEventSchema,
     CommunityResourceSchema, PollSchema
 )
 
@@ -36,9 +36,9 @@ def delete_community(request, community_id: int):
 def create_forum(request, data: ForumSchema):
     return Forum.objects.create(**data.dict(exclude={'id'}))
 
-@router.post("/announcements/", response=AnnouncementSchema)
-def post_announcement(request, data: AnnouncementSchema):
-    return Announcement.objects.create(**data.dict(exclude={'id'}))
+@router.post("/announcements/", response=CommunityAnnouncementSchema)
+def post_announcement(request, data: CommunityAnnouncementSchema):
+    return CommunityAnnouncement.objects.create(**data.dict(exclude={'id'}))
 
 @router.post("/events/", response=CommunityEventSchema)
 def schedule_event(request, data: CommunityEventSchema):

@@ -43,13 +43,9 @@ class ReplySchema(BaseModel):
         from_attributes = True
         populate_by_name = True
 
-class AnnouncementSchema(BaseModel):
-    id: Optional[int] = Field(default=None, alias='id')
+class CommunityAnnouncementSchema(BaseModel):
     community_id: int
-    title: str
-    content: str
     category: str
-    archived: bool
 
     class Config:
         from_attributes = True
