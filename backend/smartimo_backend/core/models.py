@@ -229,7 +229,7 @@ class Category(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
 
-    def create_category(self, name, description, property):
+    def create_category(self, name, description):
         self.name = name
         self.description = description
         self.save()
