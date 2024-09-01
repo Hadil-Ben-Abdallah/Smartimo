@@ -108,11 +108,18 @@ class SalesOpportunity(models.Model):
     value = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=50)
 
-    def create_opportunity(self):
-        pass
+    def create_opportunity(self, value, status):
+        self.value = value
+        self.status = status
+        self.save()
 
-    def update_opportunity(self):
-        pass
+
+    def update_opportunity(self, value, status):
+        if value:
+            self.value = value
+        if status:
+            self.status = status
+        self.save()
 
 class Resource(models.Model):
     resource_id = models.AutoField(primary_key=True)
