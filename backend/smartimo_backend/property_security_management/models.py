@@ -1,8 +1,8 @@
 from django.db import models
-from core.models import Property
+from core.models import Property, TimeStampedModel
 from lease_rental_management.models import Tenant
 
-class AccessControlSystem(models.Model):
+class AccessControlSystem(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     control_hardware = models.JSONField(blank=True, null=True)
@@ -28,7 +28,7 @@ class AccessControlSystem(models.Model):
         suspicious_activity = [log for log in self.access_logs if log.get('status') == 'unauthorized']
         return suspicious_activity
 
-class SurveillanceSystem(models.Model):
+class SurveillanceSystem(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     camera_details = models.JSONField(blank=True, null=True)
@@ -52,7 +52,7 @@ class SurveillanceSystem(models.Model):
         incident_footage = [video for video in self.video_storage if video['incident_id'] == incident_id]
         return incident_footage
 
-class AlarmSystem(models.Model):
+class AlarmSystem(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     sensor_details = models.JSONField(blank=True, null=True)
@@ -82,7 +82,7 @@ class AlarmSystem(models.Model):
                 event_analysis['false_alarms'] += 1
         return event_analysis
 
-class TenantSecurityPortal(models.Model):
+class TenantSecurityPortal(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     security_info = models.JSONField(blank=True, null=True)
@@ -109,7 +109,7 @@ class TenantSecurityPortal(models.Model):
         updates = {"advisories": "Be cautious of...", "safety_tips": "Remember to..."}
         return updates
 
-class SecurityAnalytics(models.Model):
+class SecurityAnalytics(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     access_control_data = models.JSONField(blank=True, null=True)

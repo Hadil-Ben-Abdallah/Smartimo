@@ -1,11 +1,11 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from datetime import date, timedelta
-from core.models import Notification, Property, User
+from core.models import Notification, Property, User, TimeStampedModel
 from property_listing.models import PropertyOwner
 
 
-class PropertyTaxInfo(models.Model):
+class PropertyTaxInfo(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     assessment_value = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
@@ -55,7 +55,7 @@ class PropertyTaxInfo(models.Model):
                 )
 
 
-class TaxEstimator(models.Model):
+class TaxEstimator(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     assessed_value = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
@@ -91,7 +91,7 @@ class TaxEstimator(models.Model):
         self.save()
 
 
-class TaxPaymentRecord(models.Model):
+class TaxPaymentRecord(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     payment_date = models.DateField(blank=True, null=True)
@@ -123,7 +123,7 @@ class TaxPaymentRecord(models.Model):
             return "Payments reconciled successfully."
 
 
-class TaxExemptionApplication(models.Model):
+class TaxExemptionApplication(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     owner = models.ForeignKey(PropertyOwner, on_delete=models.CASCADE)

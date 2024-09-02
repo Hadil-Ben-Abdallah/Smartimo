@@ -1,7 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
-from django.utils import timezone
-from core.models import Document, Notification
+from core.models import Document, Notification, TimeStampedModel
 from lease_rental_management.models import Tenant, PropertyManager
 
 class PortfolioDocument(Document):
@@ -59,7 +57,7 @@ class PortfolioDocument(Document):
         return cls.objects.all()
 
 
-class DocumentAccessPermission(models.Model):
+class DocumentAccessPermission(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     role = models.CharField(max_length=255, choices=[('property_manager', 'Property Manager'), ('owner', 'Owner'), ('administrator' ,'Administrator')], default='property_manager')
     document = models.ForeignKey(PortfolioDocument, on_delete=models.CASCADE)
@@ -133,7 +131,7 @@ class PortfolioDocumentNotification(Notification):
         return cls.objects.all()
 
 
-class DocumentShare(models.Model):
+class DocumentShare(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     document = models.ForeignKey(PortfolioDocument, on_delete=models.CASCADE)
     shared_with = models.ForeignKey(Tenant, on_delete=models.CASCADE)
@@ -174,7 +172,7 @@ class DocumentShare(models.Model):
         return cls.objects.all()
 
 
-class AuditLog(models.Model):
+class AuditLog(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     document = models.ForeignKey(PortfolioDocument, on_delete=models.CASCADE)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)

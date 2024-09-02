@@ -1,14 +1,15 @@
 from django.db import models
 from lease_rental_management.models import PropertyManager
+from core.models import TimeStampedModel
 
-class KPIFramework(models.Model):
+class KPIFramework(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
-    kpi_definitions = models.JSONField(default=dict)
-    property_type = models.CharField(max_length=100)
-    location = models.CharField(max_length=100)
-    market_segment = models.CharField(max_length=100)
-    industry_guidelines = models.TextField()
+    kpi_definitions = models.JSONField(default=dict, blank=True, null=True)
+    property_type = models.CharField(max_length=100, blank=True, null=True)
+    location = models.CharField(max_length=100, blank=True, null=True)
+    market_segment = models.CharField(max_length=100, blank=True, null=True)
+    industry_guidelines = models.TextField(blank=True, null=True)
 
     def define_kpi(self, kpi_name, kpi_definition):
         self.kpi_definitions[kpi_name] = kpi_definition
@@ -21,13 +22,13 @@ class KPIFramework(models.Model):
         return self.industry_guidelines
 
 
-class PerformanceDataCollector(models.Model):
+class PerformanceDataCollector(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
-    data_sources = models.JSONField(default=list)
-    aggregated_data = models.JSONField()
-    real_time_metrics = models.JSONField()
-    historical_trends = models.JSONField()
+    data_sources = models.JSONField(default=list, blank=True, null=True)
+    aggregated_data = models.JSONField(blank=True, null=True)
+    real_time_metrics = models.JSONField(blank=True, null=True)
+    historical_trends = models.JSONField(blank=True, null=True)
 
     def collect_data(self, source_name, data):
         if source_name in self.data_sources:
@@ -49,13 +50,13 @@ class PerformanceDataCollector(models.Model):
         return dashboard
 
 
-class BenchmarkAnalyzer(models.Model):
+class BenchmarkAnalyzer(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
-    kpi_definitions = models.JSONField()
-    industry_benchmarks = models.JSONField()
-    competitor_metrics = models.JSONField()
-    benchmark_results = models.JSONField()
+    kpi_definitions = models.JSONField(blank=True, null=True)
+    industry_benchmarks = models.JSONField(blank=True, null=True)
+    competitor_metrics = models.JSONField(blank=True, null=True)
+    benchmark_results = models.JSONField(blank=True, null=True)
 
     def compare_to_benchmarks(self):
         results = {}
@@ -87,13 +88,13 @@ class BenchmarkAnalyzer(models.Model):
         return outliers
 
 
-class AnomalyDetector(models.Model):
+class AnomalyDetector(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
-    performance_data = models.JSONField()
-    anomaly_thresholds = models.JSONField()
-    alerts = models.JSONField(default=dict)
-    investigation_tools = models.JSONField()
+    performance_data = models.JSONField(blank=True, null=True)
+    anomaly_thresholds = models.JSONField(blank=True, null=True)
+    alerts = models.JSONField(default=dict, blank=True, null=True)
+    investigation_tools = models.JSONField(blank=True, null=True)
 
     def detect_anomalies(self):
         for kpi, data in self.performance_data.items():
@@ -115,12 +116,12 @@ class AnomalyDetector(models.Model):
         return investigation
 
 
-class PerformanceMonitor(models.Model):
+class PerformanceMonitor(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
-    historical_performance_data = models.JSONField()
-    current_metrics = models.JSONField()
-    trend_reports = models.JSONField()
+    historical_performance_data = models.JSONField(blank=True, null=True)
+    current_metrics = models.JSONField(blank=True, null=True)
+    trend_reports = models.JSONField(blank=True, null=True)
 
     def track_performance(self):
         performance_changes = {}

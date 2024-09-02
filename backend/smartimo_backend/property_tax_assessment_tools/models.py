@@ -1,8 +1,8 @@
 from django.db import models
-from core.models import Document, Resource, Notification
+from core.models import Document, Resource, Notification, TimeStampedModel
 from property_listing.models import PropertyOwner
 
-class PropertyTaxAssessmentTool(models.Model):
+class PropertyTaxAssessmentTool(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_owner = models.ForeignKey(PropertyOwner, on_delete=models.CASCADE)
     property_info = models.JSONField(blank=True, null=True) 
@@ -50,7 +50,7 @@ class PropertyTaxGuidanceResource(Resource):
             return PropertyTaxGuidanceResource.objects.filter(resource_type=resource_type)
         return PropertyTaxGuidanceResource.objects.all()
 
-class TaxAssessmentDocumentManager(models.Model):
+class TaxAssessmentDocumentManager(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_owner = models.ForeignKey(PropertyOwner, on_delete=models.CASCADE)
     uploaded_documents = models.ManyToManyField(Document, related_name='tax_documents')
@@ -62,9 +62,9 @@ class TaxAssessmentDocumentManager(models.Model):
         self.uploaded_documents.add(document)
         self.save()
 
-    def categorize_document(self, document, category):
-        document.category = category
-        document.save()
+    def categorize_document(self, category):
+        self.document_category = category
+        self.save()
 
     def check_document_completeness(self):
         complete = all(item['status'] == 'complete' for item in self.checklist)
@@ -84,7 +84,7 @@ class TaxAssessmentNotification(Notification):
     def schedule_reminder(self, reminder_date, action_required):
         return f'Reminder scheduled for {reminder_date} to {action_required}.'
 
-class TaxAppealPreparationTool(models.Model):
+class TaxAppealPreparationTool(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_owner = models.ForeignKey(PropertyOwner, on_delete=models.CASCADE)
     guidance_content = models.TextField(blank=True, null=True)

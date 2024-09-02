@@ -1,10 +1,10 @@
 from django.db import models
-from core.models import Property
+from core.models import Property, TimeStampedModel
 from decimal import Decimal
 import numpy as np
 
 
-class PropertyInvestmentAnalysis(models.Model):
+class PropertyInvestmentAnalysis(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     purchase_price = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
@@ -100,7 +100,7 @@ class PropertyInvestmentAnalysis(models.Model):
         report = self.generate_reports()
         workspace.share_documents(report)
 
-class MarketData(models.Model):
+class MarketData(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     valuation_data = models.JSONField(blank=True, null=True)
@@ -136,7 +136,7 @@ class MarketData(models.Model):
         }
         return report
 
-class AnalysisRiskAssessment(models.Model):
+class AnalysisRiskAssessment(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     risk_factors = models.JSONField(blank=True, null=True)
@@ -160,7 +160,7 @@ class AnalysisRiskAssessment(models.Model):
         self.risk_mitigation_strategies = {"diversification": "invest in different regions", "insurance": "obtain property insurance"}
         self.save()
 
-class CollaborativeWorkspace(models.Model):
+class CollaborativeWorkspace(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     analysis = models.ForeignKey(PropertyInvestmentAnalysis, on_delete=models.CASCADE)
     stakeholders = models.JSONField(blank=True, null=True)

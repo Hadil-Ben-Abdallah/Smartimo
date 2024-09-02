@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import Category, Report
+from core.models import Category, Report, TimeStampedModel
 from property_portfolio_risk_management.models import RiskAssessment
 
 class RiskCategory(Category):
@@ -20,7 +20,7 @@ class RiskCategory(Category):
         }
 
 
-class KeyRiskIndicator(models.Model):
+class KeyRiskIndicator(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     risk_assessment = models.ForeignKey(RiskAssessment, on_delete=models.CASCADE)
     indicator_name = models.CharField(max_length=255, blank=True, null=True)
@@ -52,7 +52,7 @@ class KeyRiskIndicator(models.Model):
             "alert_status": self.alert_status,
         }
 
-class RiskScenario(models.Model):
+class RiskScenario(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     risk_assessment = models.ForeignKey(RiskAssessment, on_delete=models.CASCADE)
     scenario_name = models.CharField(max_length=255, blank=True, null=True)

@@ -1,8 +1,9 @@
 from django.db import models
 from lease_rental_management.models import PropertyManager
 import json
+from core.models import TimeStampedModel
 
-class HistoricalDataAnalyzer(models.Model):
+class HistoricalDataAnalyzer(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     historical_data = models.JSONField(blank=True, null=True)
@@ -39,7 +40,7 @@ class HistoricalDataAnalyzer(models.Model):
         return regression_results
 
 
-class DemandForecaster(models.Model):
+class DemandForecaster(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     predictive_model = models.JSONField(blank=True, null=True)
@@ -71,7 +72,7 @@ class DemandForecaster(models.Model):
         return visualizations
 
 
-class RentalIncomePredictor(models.Model):
+class RentalIncomePredictor(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     income_model = models.JSONField(blank=True, null=True)
@@ -101,7 +102,7 @@ class RentalIncomePredictor(models.Model):
         return report
 
 
-class MarketTrendAnalyzer(models.Model):
+class MarketTrendAnalyzer(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     market_data = models.JSONField(blank=True, null=True)
@@ -134,7 +135,7 @@ class MarketTrendAnalyzer(models.Model):
         return opportunities
 
 
-class InvestmentScenarioEvaluator(models.Model):
+class InvestmentScenarioEvaluator(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     scenario_models = models.JSONField(blank=True, null=True)

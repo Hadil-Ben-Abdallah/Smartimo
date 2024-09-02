@@ -1,10 +1,10 @@
 from django.db import models
 from django.utils import timezone
 from lease_rental_management.models import PropertyManager
-from core.models import Property, Report
+from core.models import Property, Report, TimeStampedModel
 
 
-class PortfolioDashboard(models.Model):
+class PortfolioDashboard(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     dashboard_name = models.CharField(max_length=255, blank=True, null=True)
@@ -43,7 +43,7 @@ class PortfolioDashboard(models.Model):
         }
 
 
-class PropertyMetric(models.Model):
+class PropertyMetric(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     dashboard = models.ForeignKey(PortfolioDashboard, on_delete=models.CASCADE)
     metric_name = models.CharField(max_length=255, blank=True, null=True)
@@ -107,7 +107,7 @@ class PropertyReport(Report):
         }
 
 
-class ForecastingModel(models.Model):
+class ForecastingModel(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     dashboard = models.ForeignKey(PortfolioDashboard, on_delete=models.CASCADE)
     model_name = models.CharField(max_length=255, blank=True, null=True)

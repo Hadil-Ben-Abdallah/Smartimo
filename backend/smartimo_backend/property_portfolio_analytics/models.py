@@ -1,8 +1,8 @@
 from django.db import models
-from core.models import Report
+from core.models import Report, TimeStampedModel
 from lease_rental_management.models import PropertyManager
 
-class PropertyPortfolioDashboard(models.Model):
+class PropertyPortfolioDashboard(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     kpi_widgets = models.JSONField(default=dict, blank=True, null=True)
@@ -57,7 +57,7 @@ class PortfolioPerformanceReport(Report):
         self.save()
 
 
-class OccupancyAnalytics(models.Model):
+class OccupancyAnalytics(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     occupancy_data = models.JSONField(default=dict, blank=True, null=True)
@@ -81,7 +81,7 @@ class OccupancyAnalytics(models.Model):
         self.save()
 
 
-class FinancialAnalytics(models.Model):
+class FinancialAnalytics(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     rental_yield_data = models.JSONField(default=dict, blank=True, null=True)
@@ -106,7 +106,7 @@ class FinancialAnalytics(models.Model):
         self.save()
 
 
-class ScenarioAnalysis(models.Model):
+class ScenarioAnalysis(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     market_conditions = models.JSONField(default=dict, blank=True, null=True)

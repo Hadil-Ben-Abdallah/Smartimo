@@ -1,8 +1,8 @@
 from django.db import models
-from core.models import Property
+from core.models import Property, TimeStampedModel
 from lease_rental_management.models import PropertyManager
 
-class RiskAssessment(models.Model):
+class RiskAssessment(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     assessment_date = models.DateField(auto_now=True)
@@ -78,7 +78,7 @@ class RiskAssessment(models.Model):
             "risk_summary": self.risk_summary
         }
 
-class RiskDashboard(models.Model):
+class RiskDashboard(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     risk_data = models.JSONField(blank=True, null=True)
@@ -99,7 +99,7 @@ class RiskDashboard(models.Model):
     def export_risk_reports(self):
         return self.risk_data
 
-class RiskMitigationPlan(models.Model):
+class RiskMitigationPlan(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     risk = models.ForeignKey(RiskAssessment, on_delete=models.CASCADE)
@@ -131,7 +131,7 @@ class RiskMitigationPlan(models.Model):
             "effectiveness": "Review in progress"
         }
 
-class RiskMonitor(models.Model):
+class RiskMonitor(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     risk_factors = models.JSONField(blank=True, null=True)

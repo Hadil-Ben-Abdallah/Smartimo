@@ -1,8 +1,8 @@
 from django.db import models
-from core.models import Property, Report
+from core.models import Property, Report, TimeStampedModel
 from property_listing.models import RealEstateAgent
 
-class PropertyValuationTool(models.Model):
+class PropertyValuationTool(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     methodologies = models.JSONField(blank=True, null=True)
     data_sources = models.JSONField(blank=True, null=True)
@@ -46,7 +46,7 @@ class ValuationReport(Report):
             'agent': self.agent.username
         }
 
-class MarketValuations(models.Model):
+class MarketValuations(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     market_trends = models.JSONField(blank=True, null=True)
@@ -74,7 +74,7 @@ class MarketValuations(models.Model):
         }
         return simulation_result
 
-class AdvancedValuationModel(models.Model):
+class AdvancedValuationModel(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     model_type = models.CharField(max_length=100, choices=[('dcf', 'DCF'), ('cap_rate', 'Cap Rate')], default='dcf')
@@ -97,9 +97,9 @@ class AdvancedValuationModel(models.Model):
         }
         return shared_model
 
-class PortfolioValuation(models.Model):
+class PortfolioValuation(TimeStampedModel):
     id = models.AutoField(primary_key=True)
-    properties = models.ManyToManyField(Property, blank=True, null=True)
+    properties = models.ManyToManyField(Property)
     performance_metrics = models.JSONField(blank=True, null=True)
 
     def evaluate_performance(self):

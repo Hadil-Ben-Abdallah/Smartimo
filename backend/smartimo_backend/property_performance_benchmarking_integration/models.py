@@ -1,7 +1,7 @@
 from django.db import models
-from core.models import Property
+from core.models import Property, TimeStampedModel
 
-class PropertyPerformance(models.Model):
+class PropertyPerformance(TimeStampedModel):
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     occupancy_rate = models.FloatField(blank=True, null=True)
     rental_yield = models.FloatField(blank=True, null=True)
@@ -38,7 +38,7 @@ class PropertyPerformance(models.Model):
             }
         return comparison
 
-class BenchmarkingCriteria(models.Model):
+class BenchmarkingCriteria(TimeStampedModel):
     PROPERTY_TYPES = [
         ('residential', 'Residential'),
         ('commercial', 'Commercial'),
@@ -81,7 +81,7 @@ class BenchmarkingCriteria(models.Model):
     def list_criteria(self):
         return BenchmarkingCriteria.objects.all()
 
-class PropertyPerformanceAlert(models.Model):
+class PropertyPerformanceAlert(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     metric = models.CharField(max_length=255, blank=True, null=True)
@@ -118,7 +118,7 @@ class PropertyPerformanceAlert(models.Model):
     def send_notification(self):
         pass
 
-class CompetitiveBenchmarking(models.Model):
+class CompetitiveBenchmarking(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     peer_group = models.CharField(max_length=255, blank=True, null=True)
@@ -144,7 +144,7 @@ class CompetitiveBenchmarking(models.Model):
     def list_benchmarks(self):
         return CompetitiveBenchmarking.objects.all()
 
-class PerformanceImprovementInitiative(models.Model):
+class PerformanceImprovementInitiative(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     description = models.TextField(blank=True, null=True)

@@ -3,9 +3,9 @@ from django.utils import timezone
 import numpy as np
 from property_performance_benchmarking_integration.models import PropertyPerformance
 from property_listing.models import PropertyOwner
-from core.models import Property
+from core.models import Property, TimeStampedModel
 
-class PerformanceBenchmark(models.Model):
+class PerformanceBenchmark(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     benchmark_name = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
@@ -71,7 +71,7 @@ class PropertyPortfolioPerformance(PropertyPerformance):
 
         return None
 
-class MarketingEffectiveness(models.Model):
+class MarketingEffectiveness(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     time_on_market = models.IntegerField(blank=True, null=True)

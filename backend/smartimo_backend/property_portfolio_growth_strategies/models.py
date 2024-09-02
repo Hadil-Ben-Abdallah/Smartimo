@@ -1,7 +1,7 @@
 from django.db import models
-from core.models import Property
+from core.models import Property, TimeStampedModel
 
-class MarketResearchAnalysis(models.Model):
+class MarketResearchAnalysis(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     target_region = models.CharField(max_length=255, blank=True, null=True)
     property_type = models.CharField(max_length=255, blank=True, null=True)
@@ -36,7 +36,7 @@ class MarketResearchAnalysis(models.Model):
         return report
 
 
-class InvestmentOpportunityEvaluation(models.Model):
+class InvestmentOpportunityEvaluation(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     acquisition_cost = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
@@ -56,7 +56,7 @@ class InvestmentOpportunityEvaluation(models.Model):
         return round(roi, 2)
 
 
-class DevelopmentProjectFeasibility(models.Model):
+class DevelopmentProjectFeasibility(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     scenario_analysis = models.TextField(blank=True, null=True)
@@ -83,7 +83,7 @@ class DevelopmentProjectFeasibility(models.Model):
         return prioritized_projects
 
 
-class DueDiligenceProcess(models.Model):
+class DueDiligenceProcess(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     inspection_report = models.TextField(blank=True, null=True)
@@ -108,7 +108,7 @@ class DueDiligenceProcess(models.Model):
         return checklist
 
 
-class PartnershipStrategy(models.Model):
+class PartnershipStrategy(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     partnership_name = models.CharField(max_length=255, blank=True, null=True)
     collaboration_type = models.CharField(max_length=255, blank=True, null=True)
