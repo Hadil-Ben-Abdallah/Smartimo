@@ -1,10 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
-from core.models import Property, Resource
+from core.models import Property, Resource, TimeStampedModel
 from lease_rental_management.models import Tenant
 from task_calendar_management.models import Event
 
-class CommunityHub(models.Model):
+class CommunityHub(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=True, null=True)
@@ -68,7 +68,7 @@ class TenantProfile(Tenant):
     def list_profiles():
         return TenantProfile.objects.all()
 
-class CommunityGroup(models.Model):
+class CommunityGroup(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     hub = models.ForeignKey(CommunityHub, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=True, null=True)
@@ -142,7 +142,7 @@ class CommunityEngagementEvent(Event):
     def list_events():
         return CommunityEngagementEvent.objects.all()
 
-class CommunityEngagementDiscussion(models.Model):
+class CommunityEngagementDiscussion(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     group = models.ForeignKey(CommunityGroup, on_delete=models.CASCADE)
     title = models.CharField(max_length=255, blank=True, null=True)
@@ -233,26 +233,26 @@ class CommunityEngagementResource(Resource):
     def list_resources():
         return CommunityEngagementResource.objects.all()
 
-class EngagementReward(models.Model):
+class EngagementReward(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     points = models.IntegerField(blank=True, null=True)
     badge = models.CharField(max_length=255, blank=True, null=True)
 
     def track_engagement(self, tenant, points):
-        reward, created = EngagementReward.objects.get_or_create(tenant=tenant)
+        reward = EngagementReward.objects.get_or_create(tenant=tenant)
         reward.points += points
         reward.save()
         return reward
 
     def award_points(self, tenant, points):
-        reward, created = EngagementReward.objects.get_or_create(tenant=tenant)
+        reward = EngagementReward.objects.get_or_create(tenant=tenant)
         reward.points += points
         reward.save()
         return reward
 
     def assign_badge(self, tenant, badge):
-        reward, created = EngagementReward.objects.get_or_create(tenant=tenant)
+        reward = EngagementReward.objects.get_or_create(tenant=tenant)
         reward.badge = badge
         reward.save()
         return reward

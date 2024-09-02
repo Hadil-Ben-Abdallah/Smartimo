@@ -1,15 +1,15 @@
 from django.db import models
-from core.models import Property
+from core.models import Property, TimeStampedModel
 from task_calendar_management.models import Event
 
-class RegulationRepository(models.Model):
+class RegulationRepository(TimeStampedModel):
     id = models.AutoField(primary_key=True)
-    title = models.CharField(max_length=255)
-    content = models.TextField()
-    location = models.CharField(max_length=255)
-    property_type = models.CharField(max_length=255)
-    compliance_category = models.CharField(max_length=255)
-    version = models.CharField(max_length=50)
+    title = models.CharField(max_length=255, blank=True, null=True)
+    content = models.TextField(blank=True, null=True)
+    location = models.CharField(max_length=255, blank=True, null=True)
+    property_type = models.CharField(max_length=255, blank=True, null=True)
+    compliance_category = models.CharField(max_length=255, blank=True, null=True)
+    version = models.CharField(max_length=50, blank=True, null=True)
 
     def store_regulation(self):
         self.save()
@@ -28,13 +28,13 @@ class RegulationRepository(models.Model):
     def notify_updates(self):
         return f"Notification sent for regulation updates: {self.title}"
 
-class LegalDocumentGenerator(models.Model):
+class LegalDocumentGenerator(TimeStampedModel):
     id = models.AutoField(primary_key=True)
-    template_name = models.CharField(max_length=255)
-    template_content = models.TextField()
-    property_details = models.JSONField()
-    transaction_details = models.JSONField()
-    signatures = models.JSONField()
+    template_name = models.CharField(max_length=255, blank=True, null=True)
+    template_content = models.TextField(blank=True, null=True)
+    property_details = models.JSONField(blank=True, null=True)
+    transaction_details = models.JSONField(blank=True, null=True)
+    signatures = models.JSONField(blank=True, null=True)
 
     def generate_document(self):
         return self.template_content
@@ -49,11 +49,11 @@ class LegalDocumentGenerator(models.Model):
         self.save()
         return f"Signatures updated for document ID: {self.id}"
 
-class ComplianceCalendar(models.Model):
+class ComplianceCalendar(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     reminders = models.JSONField(null=True, blank=True)
-    compliance_task = models.CharField(max_length=255)
+    compliance_task = models.CharField(max_length=255, blank=True, null=True)
 
     def add_event(self, event_id, task):
         self.event = event_id
@@ -69,12 +69,12 @@ class ComplianceCalendar(models.Model):
     def track_deadlines(self):
         return f"Tracking deadlines for event ID: {self.event}"
 
-class DueDiligenceChecker(models.Model):
+class DueDiligenceChecker(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    check_type = models.CharField(max_length=255)
-    results = models.TextField()
-    risk_assessment = models.TextField()
+    check_type = models.CharField(max_length=255, blank=True, null=True)
+    results = models.TextField(blank=True, null=True)
+    risk_assessment = models.TextField(blank=True, null=True)
 
     def perform_check(self, check_type):
         self.check_type = check_type
@@ -88,11 +88,11 @@ class DueDiligenceChecker(models.Model):
     def share_findings(self, stakeholders):
         return f"Findings shared with: {', '.join(stakeholders)}"
 
-class FairHousingCompliance(models.Model):
+class FairHousingCompliance(TimeStampedModel):
     id = models.AutoField(primary_key=True)
-    training_module = models.TextField()
-    checklist = models.JSONField()
-    audit_trail = models.JSONField()
+    training_module = models.TextField(blank=True, null=True)
+    checklist = models.JSONField(blank=True, null=True)
+    audit_trail = models.JSONField(blank=True, null=True)
 
     def access_training(self):
         return self.training_module

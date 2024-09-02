@@ -1,12 +1,11 @@
 from django.db import models
 from task_calendar_management.models import Event
-from core.models import User, Resource
-# from tenant_portal_community_bulletin_board.models import Announcement
+from core.models import User, Resource, TimeStampedModel
 
-class Community(models.Model):
+class Community(TimeStampedModel):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255)
-    description = models.TextField()
+    name = models.CharField(max_length=255, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
 
     def create_forum(self, name: str, description: str):
         return Forum.objects.create(community=self, name=name, description=description)
@@ -23,11 +22,11 @@ class Community(models.Model):
         return CommunityResource.objects.create(community=self, category=category)
 
 
-class Forum(models.Model):
+class Forum(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     community = models.ForeignKey(Community, related_name='forums', on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
-    description = models.TextField()
+    name = models.CharField(max_length=255, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
 
     def create_thread(self, title: str, content: str):
         return Thread.objects.create(forum=self, title=title, content=content)
@@ -47,28 +46,28 @@ class Forum(models.Model):
         reply.save()
 
 
-class Thread(models.Model):
+class Thread(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     forum = models.ForeignKey(Forum, related_name='threads', on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
-    content = models.TextField()
+    title = models.CharField(max_length=255, blank=True, null=True)
+    content = models.TextField(blank=True, null=True)
 
 
-class Reply(models.Model):
+class Reply(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     thread = models.ForeignKey(Thread, related_name='replies', on_delete=models.CASCADE)
-    content = models.TextField()
+    content = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=50, default='pending')
 
 
-class CommunityAnnouncement(models.Model):
+class CommunityAnnouncement(TimeStampedModel):
     community = models.ForeignKey(Community, related_name='announcements', on_delete=models.CASCADE)
     category = models.CharField(max_length=255, choices=[('news', 'News'), ('updates', 'Updates'), ('events', 'Events')], default='news')
 
     def subscribe(self, user_id: int):
         return Subscriber.objects.create(announcement=self, user_id=user_id)
 
-class Subscriber(models.Model):
+class Subscriber(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     announcement = models.ForeignKey(CommunityAnnouncement, related_name='subscribers', on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -81,7 +80,7 @@ class CommunityEvent(Event):
         return RSVP.objects.filter(event=self)
 
 
-class RSVP(models.Model):
+class RSVP(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     event = models.ForeignKey(CommunityEvent, related_name='rsvps', on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -103,17 +102,17 @@ class CommunityResource(Resource):
         self.save()
 
 
-class Review(models.Model):
+class Review(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     resource = models.ForeignKey(CommunityResource, related_name='reviews', on_delete=models.CASCADE)
-    details = models.TextField()
+    details = models.TextField(blank=True, null=True)
 
 
-class Poll(models.Model):
+class Poll(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     community = models.ForeignKey(Community, related_name='polls', on_delete=models.CASCADE)
-    question = models.CharField(max_length=255)
-    options = models.JSONField()
+    question = models.CharField(max_length=255, blank=True, null=True)
+    options = models.JSONField(blank=True, null=True)
 
     def create_poll(self, question: str, options: list):
         self.question = question
@@ -129,8 +128,8 @@ class Poll(models.Model):
         return results
 
 
-class PollVote(models.Model):
+class PollVote(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     poll = models.ForeignKey(Poll, related_name='votes', on_delete=models.CASCADE)
-    option = models.IntegerField()
+    option = models.IntegerField(blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -1,9 +1,9 @@
 from django.db import models
 from django.utils import timezone
-from core.models import Document, Notification
+from core.models import Document, Notification, TimeStampedModel
 
 class SigningDocument(Document):
-    signer_list = models.JSONField()
+    signer_list = models.JSONField(blank=True, null=True)
     status = models.CharField(max_length=50, choices=[('pending', 'Pending'), ('signed', 'Signed'), ('completed', 'Completed')], default='pending')
     
     def prepare_for_signature(self, signer_list):
@@ -22,13 +22,13 @@ class SigningDocument(Document):
         # Download the document
         return f"Downloading document: {self.title}"
 
-class Signer(models.Model):
+class Signer(TimeStampedModel):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255)
-    email = models.EmailField()
+    name = models.CharField(max_length=255, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
     signature = models.TextField(null=True, blank=True)  # Electronic signature provided by the signer.
     document = models.ForeignKey(SigningDocument, on_delete=models.CASCADE)
-    signed_at = models.DateTimeField(auto_now_add=True)
+    signed_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     
     def review_document(self, document):
         document = SigningDocument.objects.get(id=document)
@@ -52,19 +52,18 @@ class SigningNotification(Notification):
     delivery_method = models.CharField(max_length=50, choices=[('email', 'Email'), ('sms', 'SMS')], default='email')
 
     def update_status(self):
-        # Update the status of the notification
         return f"Notification {self.notification_id} status updated to delivered."
 
     def view_notification_history(self, signer_id):
         notifications = SigningNotification.objects.filter(signer=signer_id)
         return [notification.notification_id for notification in notifications]
 
-class Compliance(models.Model):
+class Compliance(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     document = models.ForeignKey(SigningDocument, on_delete=models.CASCADE)
-    regulation = models.CharField(max_length=100)
+    regulation = models.CharField(max_length=100, blank=True, null=True)
     compliance_status = models.CharField(max_length=50, choices=[('compliant', 'Compliant'), ('non_compliant', 'Non-compliant')], default='Non-compliant')
-    last_checked = models.DateTimeField()
+    last_checked = models.DateTimeField(blank=True, null=True)
 
     def check_compliance(self, document_id):
         self.compliance_status = 'compliant'
@@ -80,12 +79,12 @@ class Compliance(models.Model):
         records = Compliance.objects.filter(document=document_id)
         return [record.id for record in records]
 
-class SignatureTracker(models.Model):
+class SignatureTracker(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     document = models.ForeignKey(SigningDocument, on_delete=models.CASCADE)
     signer = models.ForeignKey(Signer, on_delete=models.CASCADE)
     status = models.CharField(max_length=50, choices=[('pending', 'Pending'), ('signed', 'Signed'), ('overdue', 'Overdue')])
-    reminder_sent = models.BooleanField(default=False)
+    reminder_sent = models.BooleanField(default=False, blank=True, null=True)
 
     def track_signature_status(self, document_id, signer_id):
         signer = Signer.objects.get(id=signer_id, document=document_id)

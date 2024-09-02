@@ -1,10 +1,10 @@
 from django.db import models
 from cryptography.fernet import Fernet
-from core.models import User
+from core.models import User, TimeStampedModel
 import datetime
 
-# EncryptionService Model
-class EncryptionService(models.Model):
+
+class EncryptionService(TimeStampedModel):
     encryption_algorithm = models.CharField(max_length=50, default="AES-256", blank=True, null=True)
     key_management = models.TextField(blank=True, null=True)
 
@@ -24,8 +24,7 @@ class EncryptionService(models.Model):
         return Fernet.generate_key().decode()
 
 
-# AuthenticationService Model
-class AuthenticationService(models.Model):
+class AuthenticationService(TimeStampedModel):
     mfa_enabled = models.BooleanField(default=False, blank=True, null=True)
     rbac_policy = models.TextField(blank=True, null=True)
 
@@ -45,7 +44,7 @@ class AuthenticationService(models.Model):
         return mfa_code.get('valid', False)
 
 
-class DataAccessControl(models.Model):
+class DataAccessControl(TimeStampedModel):
     user_role = models.CharField(max_length=50, blank=True, null=True)
     permissions = models.TextField(blank=True, null=True)
 
@@ -60,7 +59,7 @@ class DataAccessControl(models.Model):
         DataAccessControl.objects.create(event_type="access", details=event_details)
 
 
-class GDPRCompliance(models.Model):
+class GDPRCompliance(TimeStampedModel):
     consent_records = models.TextField(blank=True, null=True)
     data_requests = models.TextField(blank=True, null=True)
 
@@ -75,7 +74,7 @@ class GDPRCompliance(models.Model):
         }
 
 
-class CCPACompliance(models.Model):
+class CCPACompliance(TimeStampedModel):
     opt_out_requests = models.TextField(blank=True, null=True)
     data_deletion_requests = models.TextField(blank=True, null=True)
 
@@ -95,7 +94,7 @@ class CCPACompliance(models.Model):
         }
 
 
-class ComplianceAudit(models.Model):
+class ComplianceAudit(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     audit_date = models.DateField(default=datetime.date.today, blank=True, null=True)
     audit_findings = models.TextField(blank=True, null=True)
@@ -117,7 +116,7 @@ class ComplianceAudit(models.Model):
         }
 
 
-class DataProtectionOfficer(models.Model):
+class DataProtectionOfficer(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, blank=True, null=True)
     contact_information = models.TextField(blank=True, null=True)

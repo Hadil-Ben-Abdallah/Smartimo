@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import User, Property, Document, Reminder, Category
+from core.models import User, Property, Document, Reminder, Category, TimeStampedModel
 from django.utils import timezone
 
 class PropertyDocument(Document):
@@ -33,9 +33,9 @@ class DocumentCategory(Category):
             "property": self.property.property_id
         }
 
-class DocumentTag(models.Model):
+class DocumentTag(TimeStampedModel):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, blank=True, null=True)
     document = models.ForeignKey(PropertyDocument, on_delete=models.CASCADE)
 
     def create_tag(self, name):
@@ -72,13 +72,13 @@ class DocumentExpirationReminder(Reminder):
             "status": self.status,
         }
 
-class DocumentSharing(models.Model):
+class DocumentSharing(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     document = models.ForeignKey(PropertyDocument, on_delete=models.CASCADE)
     shared_with = models.ForeignKey(User, on_delete=models.CASCADE)
-    shared_at = models.DateTimeField(auto_now_add=True)
-    access_permissions = models.JSONField(default=dict)
-    activity_log = models.JSONField(default=list)
+    shared_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    access_permissions = models.JSONField(default=dict, blank=True, null=True)
+    activity_log = models.JSONField(default=list, blank=True, null=True)
 
     def share_document(self, document_id, shared_with, access_permissions):
         self.document_id = document_id
@@ -97,16 +97,16 @@ class DocumentSharing(models.Model):
         self.activity_log.append(activity)
         self.save()
 
-class ESignatureIntegration(models.Model):
+class ESignatureIntegration(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     document = models.ForeignKey(PropertyDocument, on_delete=models.CASCADE)
-    signature_status = models.CharField(max_length=50, choices=[('pending', 'Pending'), ('completed', 'Completed')], default='pending')
+    signature_status = models.CharField(max_length=50, choices=[('pending', 'Pending'), ('completed', 'Completed'), ('signed', 'Signed'), ('initiated', 'Initiated')], default='pending')
     signed_at = models.DateTimeField(null=True, blank=True)
     signing_party = models.ForeignKey(User, on_delete=models.CASCADE)
-    signature_log = models.JSONField(default=list)
+    signature_log = models.JSONField(default=list, blank=True, null=True)
 
     def initiate_signature(self, document_id, signing_party):
-        self.document_id = document_id
+        self.document.document_id = document_id
         self.signing_party = signing_party
         self.signature_status = 'initiated'
         self.save()
@@ -124,7 +124,7 @@ class ESignatureIntegration(models.Model):
     def get_signature_details(self):
         return {
             "id": self.id,
-            "document_id": self.document_id,
+            "document": self.document.document_id,
             "signature_status": self.signature_status,
             "signed_at": self.signed_at,
             "signing_party": self.signing_party,

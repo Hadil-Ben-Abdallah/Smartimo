@@ -1,10 +1,11 @@
 from django.db import models
 from django.conf import settings
 from django.core.mail import send_mail
-from core.models import User, Notification, Property
+from core.models import User, Notification, Property, TimeStampedModel
 from client_management.models import Client
+import uuid
 
-class Email(models.Model):
+class Email(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_emails')
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_emails')
@@ -46,7 +47,6 @@ class Email(models.Model):
             "subject": self.subject,
             "body": self.body,
             "attachments": self.attachments,
-            "timestamp": self.timestamp,
             "status": self.status
         }
 
@@ -75,7 +75,7 @@ class CommunicationNotification(Notification):
             "type": self.type
         }
 
-class InstantMessage(models.Model):
+class InstantMessage(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_instant_messages')
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_instant_messages')
@@ -99,7 +99,7 @@ class InstantMessage(models.Model):
     def search_messages(self, query):
         pass
 
-class SMSNotification(models.Model):
+class SMSNotification(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_sms_notifications')
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_sms_notifications')
@@ -125,11 +125,10 @@ class SMSNotification(models.Model):
             "sender": self.sender.username,
             "recipient": self.recipient.username,
             "message": self.message,
-            "timestamp": self.timestamp,
             "status": self.status
         }
 
-class CommunicationLog(models.Model):
+class CommunicationLog(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)

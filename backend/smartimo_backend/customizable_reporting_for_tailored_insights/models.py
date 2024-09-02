@@ -2,14 +2,13 @@ from django.db import models
 from core.models import Report
 from property_listing.models import PropertyOwner, RealEstateAgent
 from lease_rental_management.models import PropertyManager
-from django.core.exceptions import ObjectDoesNotExist
 
 
 class CustomizableFinancialReport(Report):
     property_owner = models.ForeignKey(PropertyOwner, on_delete=models.CASCADE)
     filters = models.CharField(max_length=100, choices=[('property', 'Property'), ('timeframe', 'Timeframe')], default='property')
-    groupings = models.JSONField()
-    sort_options = models.JSONField()
+    groupings = models.JSONField(blank=True, null=True)
+    sort_options = models.JSONField(blank=True, null=True)
 
     def build_report(self, fields, filters, groupings, sort_options):
         report_data = {
@@ -36,10 +35,10 @@ class CustomizableFinancialReport(Report):
 
 class SalesReport(Report):
     real_estate_agent = models.ForeignKey(RealEstateAgent, on_delete=models.CASCADE)
-    template = models.TextField()
+    template = models.TextField(blank=True, null=True)
     fields = models.CharField(max_length=100, choices=[('listings', 'Listings'), ('leads', 'Leads'), (' transactions', ' Transactions')], default='listings')
     filters = models.CharField(max_length=100, choices=[('listing', 'Listing'), ('timeframe', 'Timeframe')], default='listing')
-    visualizations = models.JSONField()
+    visualizations = models.JSONField(blank=True, null=True)
 
     def create_report_from_template(self, template, fields, filters, visualizations):
         report_content = {
@@ -68,7 +67,7 @@ class MaintenanceReport(Report):
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     fields = models.CharField(max_length=100, choices=[('service_requests', 'Service Requests'), ('work_orders', 'Work Orders'), (' vendor_performance', 'Vendor Performance')], default='listings')
     filters = models.CharField(max_length=100, choices=[('location', 'Location'), ('category', 'Category'), ('urgency', 'Urgency')], default='location')
-    dashboard = models.JSONField()
+    dashboard = models.JSONField(blank=True, null=True)
 
     def generate_report(self, fields, filters):
         report_data = {
@@ -93,7 +92,7 @@ class MaintenanceReport(Report):
 class InvestmentReport(Report):
     fields = models.CharField(max_length=100, choices=[('property_performance', 'Property Performance'), ('market_trends', 'Market Trends'), (' investment_metrics', 'Investment Metrics')], default='property_performance')
     filters = models.CharField(max_length=100, choices=[('property', 'Property'), ('market', 'Market'), ('metrics', 'Metrics')], default='property')
-    external_data_sources = models.JSONField()
+    external_data_sources = models.JSONField(blank=True, null=True)
 
     def analyze_investment(self, fields, filters):
         analysis_result = {
@@ -116,7 +115,7 @@ class InvestmentReport(Report):
 
 
 class ComplianceReport(Report):
-    template = models.TextField()
+    template = models.TextField(blank=True, null=True)
     fields = models.CharField(max_length=100, choices=[('regulatory_requirements', 'Regulatory Requirements'), ('audit findings', 'Audit Findings'), (' compliance_status', 'Compliance Status')], default='regulatory_requirements')
     filters = models.CharField(max_length=100, choices=[('regulation', 'Regulation'), ('property', 'Property')], default='property')
 

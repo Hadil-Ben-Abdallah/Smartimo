@@ -1,9 +1,9 @@
 from django.db import models
 from django.utils import timezone
-from core.models import Resource
+from core.models import Resource, TimeStampedModel
 from property_listing.models import Agency, RealEstateAgent
 
-class Author(models.Model):
+class Author(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     bio = models.TextField(blank=True, null=True)
@@ -25,7 +25,7 @@ class Author(models.Model):
         self.resources.add(resource)
         return author
 
-class Trainer(models.Model):
+class Trainer(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     bio = models.TextField(blank=True, null=True)
@@ -47,7 +47,7 @@ class Trainer(models.Model):
         self.sessions.add(session)
         return trainer
 
-class EducationProvider(models.Model):
+class EducationProvider(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     contact_info = models.TextField(blank=True, null=True)
@@ -97,7 +97,7 @@ class EducationalResource(Resource):
         return self.filter(category=category, format=format)
     
 
-class LiveTrainingSession(models.Model):
+class LiveTrainingSession(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
@@ -133,7 +133,7 @@ class LiveTrainingSession(models.Model):
     def host_interactive_features(self, session_id):
         pass
 
-class CertificationCourse(models.Model):
+class CertificationCourse(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
@@ -191,7 +191,7 @@ class TrainingAgent(RealEstateAgent):
         return self.certifications.all()
 
 
-class TrainingProgram(models.Model):
+class TrainingProgram(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     agency = models.ForeignKey(Agency, on_delete=models.CASCADE)
     title = models.CharField(max_length=255, blank=True, null=True)
@@ -228,7 +228,7 @@ class TrainingProgram(models.Model):
         pass
 
 
-class CommunityDiscussion(models.Model):
+class CommunityDiscussion(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     topic = models.CharField(max_length=255)
     description = models.TextField()

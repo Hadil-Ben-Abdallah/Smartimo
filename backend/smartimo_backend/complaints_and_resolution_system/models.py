@@ -1,8 +1,8 @@
 from django.db import models
-from core.models import User, Property, Communication
+from core.models import User, Property, Communication, TimeStampedModel
 from lease_rental_management.models import Tenant
 
-class Complaint(models.Model):
+class Complaint(TimeStampedModel):
     COMPLAINT_CATEGORIES = [
         ('maintenance', 'Maintenance'),
         ('noise', 'Noise'),
@@ -61,7 +61,7 @@ class Complaint(models.Model):
             "resolved_at": self.resolved_at,
         }
 
-class ComplaintTicket(models.Model):
+class ComplaintTicket(TimeStampedModel):
     STATUS_CHOICES = [
         ('assigned', 'Assigned'),
         ('in_progress', 'In Progress'),
@@ -121,7 +121,7 @@ class SatisfactionCommunication(Communication):
             for comm in history
         ]
 
-class ComplaintAnalytics(models.Model):
+class ComplaintAnalytics(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     metric_name = models.CharField(max_length=100, blank=True, null=True)

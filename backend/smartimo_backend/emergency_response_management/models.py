@@ -1,8 +1,8 @@
 from django.db import models
-from core.models import Communication
+from core.models import Communication, TimeStampedModel
 from lease_rental_management.models import Tenant, PropertyManager
 
-class EmergencyResponsePlan(models.Model):
+class EmergencyResponsePlan(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     protocols = models.TextField(blank=True, null=True)
@@ -48,10 +48,8 @@ class EmergencyAlertCommunication(Communication):
         self.save()
 
     def send_alert(self):
-        # Example:
         channels = self.distribution_channels.split(',')
         for channel in channels:
-            # Simulate sending alert
             print(f"Sending alert via {channel}: {self.message_template}")
         self.status = 'sent'
         self.save()
@@ -64,7 +62,7 @@ class EmergencyAlertCommunication(Communication):
         report = f"Alert {self.id}: Status: {self.status}, Sent at: {self.date}"
         return report
 
-class TenantEmergencyInformation(models.Model):
+class TenantEmergencyInformation(TimeStampedModel):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     emergency_contacts = models.TextField(blank=True, null=True)
     safety_guidelines = models.TextField(blank=True, null=True)
@@ -91,10 +89,9 @@ class TenantEmergencyInformation(models.Model):
         }
 
     def request_assistance(self, request_message):
-        # Handle assistance requests
         return f"Assistance requested: {request_message}"
 
-class IncidentManagementDashboard(models.Model):
+class IncidentManagementDashboard(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     incident_type = models.CharField(max_length=100, choices=[('fire', 'fire'), ('flood', 'Flood')], default='fire')
     status_updates = models.TextField(blank=True, null=True)
@@ -117,11 +114,10 @@ class IncidentManagementDashboard(models.Model):
         self.save()
 
     def generate_incident_reports(self):
-        # Logic to generate a report for the incident
         report = f"Incident {self.id}: Type: {self.incident_type}, Status Updates: {self.status_updates}"
         return report
 
-class PostIncidentReview(models.Model):
+class PostIncidentReview(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     incident = models.ForeignKey(IncidentManagementDashboard, on_delete=models.CASCADE)
     findings = models.TextField(blank=True, null=True)
@@ -143,6 +139,5 @@ class PostIncidentReview(models.Model):
         self.save()
 
     def share_best_practices(self):
-        # Share best practices across the platform
         return f"Best Practices: Findings: {self.findings}, Recommendations: {self.recommendations}"
 

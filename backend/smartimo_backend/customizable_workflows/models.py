@@ -1,9 +1,9 @@
 from django.db import models
-from core.models import User, Notification
+from core.models import User, Notification, TimeStampedModel
 from vendor_management.models import Vendor
 from datetime import datetime, timedelta
 
-class WorkflowStep(models.Model):
+class WorkflowStep(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     step_name = models.CharField(max_length=255, blank=True, null=True)
     task = models.TextField(blank=True, null=True)
@@ -27,7 +27,7 @@ class WorkflowStep(models.Model):
         self.due_date = new_due_date
         self.save()
 
-class Trigger(models.Model):
+class Trigger(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     trigger_type = models.CharField(max_length=50, choices=[('time-based', 'Time-Based'), ('event-based', 'Event-Based')], default='time-based')
     condition = models.TextField(blank=True, null=True)
@@ -47,7 +47,7 @@ class Trigger(models.Model):
         self.action = new_action
         self.save()
 
-class Workflow(models.Model):
+class Workflow(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
@@ -80,7 +80,7 @@ class Workflow(models.Model):
             'progress_percentage': (completed_steps / total_steps) * 100 if total_steps > 0 else 0
         }
 
-class TaskTemplate(models.Model):
+class TaskTemplate(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     template_name = models.CharField(max_length=255, blank=True, null=True)
     tasks = models.ManyToManyField(WorkflowStep, related_name='templates', blank=True, null=True)
@@ -103,7 +103,7 @@ class TaskTemplate(models.Model):
                 self.description = new_task_description
             task.save()
 
-class WorkflowPerformanceMetric(models.Model):
+class WorkflowPerformanceMetric(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE, related_name='metrics')
     metric_name = models.CharField(max_length=255, blank=True, null=True)

@@ -1,11 +1,11 @@
 from django.db import models
 from property_listing.models import RealEstateAgent
-from core.models import User, Notification, ClientInteraction, Reminder
+from core.models import User, Notification, ClientInteraction, Reminder, TimeStampedModel
 
 class Client(User):
-    preferences = models.JSONField(default=dict)
+    preferences = models.JSONField(default=dict, blank=True, null=True)
     client_status = models.CharField(max_length=20, choices=[('new', 'New'), ('loyal', 'Loyal'), ('regular', 'Regular')], default='new')
-    tags = models.JSONField(default=list)
+    tags = models.JSONField(default=list, blank=True, null=True)
     agent = models.ForeignKey(RealEstateAgent, on_delete=models.CASCADE, related_name="clients")
 
     def add_client(self, data):
@@ -41,14 +41,14 @@ class Interaction(ClientInteraction):
 class ClientReminder(Reminder):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     agent = models.ForeignKey(RealEstateAgent, on_delete=models.CASCADE)
-    task = models.TextField()
+    task = models.TextField(blank=True, null=True)
     
     def get_reminders(self, client_id):
         return Reminder.objects.filter(client_id=client_id)
 
-class ClientAnalytics(models.Model):
+class ClientAnalytics(TimeStampedModel):
     client_id = models.OneToOneField(Client, on_delete=models.CASCADE)
-    engagement_metrics = models.JSONField(default=dict)
+    engagement_metrics = models.JSONField(default=dict, blank=True, null=True)
     
     def generate_report(self):
         return self.engagement_metrics
