@@ -1,13 +1,13 @@
 from django.db import models
-from core.models import Communication
+from core.models import Communication, TimeStampedModel
 from property_listing.models import RealEstateAgent
 from sales_management.models import Lead
 
-class LeadCaptureForm(models.Model):
+class LeadCaptureForm(TimeStampedModel):
     id = models.AutoField(primary_key=True)
-    form_fields = models.JSONField()  # List of fields
-    form_url = models.URLField()
-    customization_options = models.JSONField()
+    form_fields = models.JSONField(blank=True, null=True)
+    form_url = models.URLField(blank=True, null=True)
+    customization_options = models.JSONField(blank=True, null=True)
 
     def create_form(self):
         self.save()
@@ -22,12 +22,12 @@ class LeadCaptureForm(models.Model):
         return f"Form published at {self.form_url}"
     
 
-class SocialMediaLead(models.Model):
+class SocialMediaLead(TimeStampedModel):
     lead = models.ForeignKey(Lead, on_delete=models.CASCADE)
     platform = models.CharField(max_length=255, choices=[('facebook', 'Facebook'), ('instagram', 'Instagram'), ('tiktok', 'Tiktok'), ('twitter', 'Twitter')], default='facebook')
-    campaign_id = models.CharField(max_length=255)
-    ad_creative = models.CharField(max_length=255)
-    engagement_metrics = models.JSONField()  # Metrics like clicks, impressions
+    campaign_id = models.CharField(max_length=255, blank=True, null=True)
+    ad_creative = models.CharField(max_length=255, blank=True, null=True)
+    engagement_metrics = models.JSONField(blank=True, null=True)
 
     def track_lead(self):
         return f"Tracking lead from {self.platform} campaign {self.campaign_id}"
@@ -39,16 +39,16 @@ class SocialMediaLead(models.Model):
         return f"Optimizing campaign with ad creative {self.ad_creative}"
 
 
-class OfflineLead(models.Model):
+class OfflineLead(TimeStampedModel):
     lead = models.ForeignKey(Lead, on_delete=models.CASCADE)
-    source = models.CharField(max_length=255)
-    event_details = models.TextField()
-    contact_information = models.JSONField()
+    source = models.CharField(max_length=255, blank=True, null=True)
+    event_details = models.TextField(blank=True, null=True)
+    contact_information = models.JSONField(blank=True, null=True)
 
     def import_lead(self):
         return f"Lead imported from {self.source}"
 
-    def categorize_lead(self, category, status):
+    def categorize_lead(self, category):
         self.source = category
         self.save()
 
@@ -56,12 +56,12 @@ class OfflineLead(models.Model):
         return f"Tracking engagement for lead {self.lead.user_id}"
 
 
-class LeadAssignment(models.Model):
+class LeadAssignment(TimeStampedModel):
     assignment = models.AutoField(primary_key=True)
     lead = models.ForeignKey(Lead, on_delete=models.CASCADE)
     agent = models.ForeignKey(RealEstateAgent, on_delete=models.CASCADE)
-    criteria = models.JSONField()  # Criteria used for assignment
-    assignment_date = models.DateField()
+    criteria = models.JSONField(blank=True, null=True)
+    assignment_date = models.DateField(blank=True, null=True)
 
     def assign_lead(self):
         return f"Lead {self.lead.user_id} assigned to agent {self.agent.user_id}"
@@ -93,12 +93,12 @@ class LeadCommunication(Communication):
         return LeadCommunication.objects.filter(lead=self.lead.user_id).order_by('-created_at')
 
 
-class LeadNurturing(models.Model):
+class LeadNurturing(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     lead = models.ForeignKey(Lead, on_delete=models.CASCADE)
-    communication_tools = models.JSONField()
-    follow_up_actions = models.JSONField()
-    engagement_metrics = models.JSONField()
+    communication_tools = models.JSONField(blank=True, null=True)
+    follow_up_actions = models.JSONField(blank=True, null=True)
+    engagement_metrics = models.JSONField(blank=True, null=True)
 
     def schedule_follow_up(self, actions):
         self.follow_up_actions = actions

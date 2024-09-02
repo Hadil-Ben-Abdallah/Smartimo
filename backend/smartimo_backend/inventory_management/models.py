@@ -1,11 +1,11 @@
 from django.db import models
 from datetime import datetime
-from core.models import Property, Notification
+from core.models import Property, Notification, TimeStampedModel
 from lease_rental_management.models import PropertyManager
 
 class InventoryProperty(Property):
     listing_type = models.CharField(max_length=50, choices=[('rental', 'Rental'), ('sale', 'Sale')], default='rental')
-    furnished = models.BooleanField(default=False)
+    furnished = models.BooleanField(default=False, blank=True, null=True)
     
     def add_inventory_item(self, item):
         item.property = self
@@ -27,15 +27,15 @@ class InventoryProperty(Property):
     def get_inventory(self):
         return self.get_inventory_items()
 
-class InventoryItem(models.Model):
+class InventoryItem(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(InventoryProperty, on_delete=models.CASCADE, related_name='inventory_items')
     category = models.CharField(max_length=50, choices=[('furniture', 'furniture'), ('appliances', 'Appliances'), ('electronics', 'Electronics')], default='furniture')
-    name = models.CharField(max_length=100)
-    quantity = models.IntegerField()
-    description = models.TextField()
+    name = models.CharField(max_length=100, blank=True, null=True)
+    quantity = models.IntegerField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
     condition = models.CharField(max_length=50, choices=[('new', 'New'), ('good', 'Good'), ('fair', 'Fair'), ('poor', 'Poor')], default='new')
-    photos = models.JSONField(default=list)
+    photos = models.JSONField(default=list, blank=True, null=True)
 
     def update_item_details(self, details):
         for key, value in details.items():
@@ -54,13 +54,13 @@ class InventoryItem(models.Model):
             self.photos.remove(photo_url)
             self.save()
 
-class MaintenanceLog(models.Model):
+class MaintenanceLog(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     item = models.ForeignKey(InventoryItem, related_name='maintenance_logs', on_delete=models.CASCADE)
-    activity = models.TextField()
-    service_provider = models.CharField(max_length=100)
-    cost = models.DecimalField(max_digits=10, decimal_places=2)
-    date = models.DateField()
+    activity = models.TextField(blank=True, null=True)
+    service_provider = models.CharField(max_length=100, blank=True, null=True)
+    cost = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    date = models.DateField(blank=True, null=True)
     next_maintenance_date = models.DateField(null=True, blank=True)
 
     def record_maintenance(self, activity, service_provider, cost, date, next_maintenance_date=None):
@@ -78,17 +78,17 @@ class MaintenanceLog(models.Model):
         self.next_maintenance_date = date
         self.save()
 
-class DepreciationRecord(models.Model):
+class DepreciationRecord(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     item = models.ForeignKey(InventoryItem, related_name='depreciation_records', on_delete=models.CASCADE)
-    initial_value = models.DecimalField(max_digits=10, decimal_places=2)
-    current_value = models.DecimalField(max_digits=10, decimal_places=2)
-    depreciation_rate = models.DecimalField(max_digits=5, decimal_places=2)
-    depreciation_value = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
-    last_depreciation_date = models.DateField(auto_now_add=True)
+    initial_value = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    current_value = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    depreciation_rate = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    depreciation_value = models.DecimalField(max_digits=10, decimal_places=2, default=0.0, blank=True, null=True)
+    last_depreciation_date = models.DateField(auto_now_add=True, blank=True, null=True)
 
     def calculate_depreciation(self):
-        time_elapsed = (datetime.date.today() - self.last_depreciation_date).days / 365
+        time_elapsed = (datetime.date.today() - self.last_depreciation_date) / 365
         self.depreciation_value = self.initial_value * (self.depreciation_rate / 100) * time_elapsed
         self.current_value -= self.depreciation_value
         self.last_depreciation_date = datetime.date.today()

@@ -1,7 +1,8 @@
 from django.db import models
 from lease_rental_management.models import PropertyManager
+from core.models import TimeStampedModel
 
-class Permission(models.Model):
+class Permission(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     permission_name = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
@@ -22,7 +23,7 @@ class Permission(models.Model):
         permission.delete()
 
 
-class Role(models.Model):
+class Role(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     role_name = models.CharField(max_length=255, blank=True, null=True)
     permissions = models.ManyToManyField(Permission, blank=True, null=True)
@@ -45,7 +46,7 @@ class Role(models.Model):
         employee.save()
 
 
-class EmployeeProfile(models.Model):
+class EmployeeProfile(TimeStampedModel):
     employment_history = models.TextField(blank=True, null=True)
     performance_records = models.TextField(blank=True, null=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
@@ -69,7 +70,7 @@ class EmployeeProfile(models.Model):
         return self.performance_records
 
 
-class HRISIntegration(models.Model):
+class HRISIntegration(TimeStampedModel):
     employee_records = models.TextField(blank=True, null=True)
     hris_system = models.CharField(max_length=255, blank=True, null=True)
 
@@ -85,8 +86,8 @@ class HRISIntegration(models.Model):
         offboarding_steps = f"Offboarding process started for employee {employee_id}"
         return offboarding_steps
 
-# EmployeeSelfService model
-class EmployeeSelfService(models.Model):
+
+class EmployeeSelfService(TimeStampedModel):
     employee = models.ForeignKey(EmployeeProfile, on_delete=models.CASCADE)
     personal_information = models.TextField(blank=True, null=True)
     work_schedule = models.TextField(blank=True, null=True)
@@ -114,8 +115,8 @@ class EmployeeSelfService(models.Model):
         progress = f"Tracking progress on goals: {self.performance_goals}"
         return progress
 
-# AttendanceTracking model
-class AttendanceTracking(models.Model):
+
+class AttendanceTracking(TimeStampedModel):
     employee = models.ForeignKey(EmployeeProfile, on_delete=models.CASCADE)
     clock_in_out_data = models.TextField(blank=True, null=True)
     work_hours = models.FloatField(blank=True, null=True)
@@ -138,7 +139,7 @@ class AttendanceTracking(models.Model):
         return alerts
 
 
-class PerformanceManagement(models.Model):
+class PerformanceManagement(TimeStampedModel):
     employee = models.ForeignKey(EmployeeProfile, on_delete=models.CASCADE)
     performance_goals = models.TextField(blank=True, null=True)
     performance_reviews = models.TextField(blank=True, null=True)
@@ -165,7 +166,7 @@ class PerformanceManagement(models.Model):
         return potential_employees
 
 
-class RoleBasedAccessControl(models.Model):
+class RoleBasedAccessControl(TimeStampedModel):
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
     employee = models.ForeignKey(EmployeeProfile, on_delete=models.CASCADE)
     access_levels = models.TextField(blank=True, null=True)
@@ -190,7 +191,7 @@ class RoleBasedAccessControl(models.Model):
         rbac.delete()
 
 
-class TalentManagement(models.Model):
+class TalentManagement(TimeStampedModel):
     employee = models.ForeignKey(EmployeeProfile, on_delete=models.CASCADE)
     career_path = models.TextField(blank=True, null=True)
     succession_plan = models.TextField(blank=True, null=True)
@@ -213,7 +214,7 @@ class TalentManagement(models.Model):
         return candidates
 
 
-class DepartmentManager(models.Model):
+class DepartmentManager(TimeStampedModel):
     manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     department = models.CharField(max_length=255, blank=True, null=True)
     employees = models.ManyToManyField(EmployeeProfile, blank=True, null=True)

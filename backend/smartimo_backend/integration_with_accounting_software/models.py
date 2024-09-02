@@ -1,27 +1,25 @@
 from django.db import models
-from core.models import Property, Report
+from core.models import Property, Report, TimeStampedModel
 from lease_rental_management.models import PropertyManager
 from datetime import datetime
 import csv
 import io
 
 class IntegrationPropertyManager(PropertyManager):
-    financial_data = models.JSONField()
+    financial_data = models.JSONField(blank=True, null=True)
 
     def sync_financial_data(self):
         pass
 
     def view_financial_reports(self):
-        pass
-
-    def start_reconciliation(self):
-        pass
+        return {
+            "financial_data": self.financial_data
+        }
 
     def generate_invoices(self):
         pass
 
     def export_financial_data(self, export_format):
-        # Example: Exporting financial data to CSV
         data = [
             {"date": "2024-08-01", "description": "Rent", "amount": 1000},
             {"date": "2024-08-02", "description": "Utilities", "amount": 150},
@@ -35,12 +33,12 @@ class IntegrationPropertyManager(PropertyManager):
         return None
 
 
-class IntegrationSettings(models.Model):
+class IntegrationSettings(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(IntegrationPropertyManager, on_delete=models.CASCADE)
     accounting_software = models.CharField(max_length=255, choices=[('quickBooks', 'QuickBooks'), ('xero', 'Xero'), ('freshBooks', 'FreshBooks')], default='quickBooks')
     sync_frequency = models.CharField(max_length=255, choices=[('daily', 'Daily'), ('weekly', 'Weekly'), ('on_demand', 'On-demand')], default='weekly')
-    data_mapping_rules = models.JSONField()
+    data_mapping_rules = models.JSONField(blank=True, null=True)
 
     def configure_settings(self, accounting_software, sync_frequency, data_mapping_rules):
         self.accounting_software = accounting_software
@@ -64,19 +62,25 @@ class IntegrationSettings(models.Model):
 class IntegrationFinancialReport(Report):
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     report_type = models.CharField(max_length=255, choices=[('profit_and_loss_statement', 'Profit and Loss Statement'), ('balance_sheet', 'Balance Sheet'), ('cash_flow_summary', 'Cash Flow Summary')], default='profit_and_loss_statement')
-    generated_at = models.DateTimeField(auto_now_add=True)
+    generated_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
-    def generate_report(self, report_type, property_id):
-        pass
+    def generate_report(self):
+        return {
+            "id": self.report_id,
+            "title": self.title,
+            "data": self.data,
+            "property": self.property.property_id,
+            "report_type": self.report_type,
+            "generated_at": self.generated_at
+        }
 
     def customize_report(self, report_id, filters):
         pass
 
-    def view_detailed_data(self, report_id):
-        pass
+    def view_detailed_data(self):
+        return self.data
 
     def export_report(self, export_format):
-        # Example: Exporting report to CSV
         report_data = {
             "date": datetime.now().strftime("%Y-%m-%d"),
             "report_type": self.report_type,
@@ -91,34 +95,42 @@ class IntegrationFinancialReport(Report):
         return None
 
 
-class Reconciliation(models.Model):
+class Reconciliation(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(IntegrationPropertyManager, on_delete=models.CASCADE)
-    bank_transactions = models.JSONField()
-    ledger_entries = models.JSONField()
-    reconciliation_date = models.DateField()
-    discrepancies = models.JSONField()
+    bank_transactions = models.JSONField(blank=True, null=True)
+    ledger_entries = models.JSONField(blank=True, null=True)
+    reconciliation_date = models.DateField(blank=True, null=True)
+    discrepancies = models.JSONField(blank=True, null=True)
     status = models.CharField(max_length=255, choices=[('pending', 'Pending'), ('completed', 'Completed'), ('flagged', 'Flagged')], default='pending')
 
-    def start_reconciliation(self, bank_transactions, ledger_entries):
+    def start_reconciliation(self):
         pass
 
-    def review_discrepancies(self, reconciliation_id):
+    def review_discrepancies(self):
         pass
 
-    def adjust_transactions(self, transaction_id, adjustments):
-        pass
+    def adjust_transactions(self, transaction_id):
+        self.bank_transactions = transaction_id
+        return self.bank_transactions
 
-    def generate_reconciliation_report(self, reconciliation_id):
-        pass
+    def generate_reconciliation_report(self):
+        return {
+            "id": self.id,
+            "property_manager": self.property_manager.user_id,
+            "bank_transactions": self.bank_transactions,
+            "ledger_entries": self.ledger_entries,
+            "discrepancies": self.discrepancies,
+            "status": self.status
+        }
 
 
-class Export(models.Model):
+class Export(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(IntegrationPropertyManager, on_delete=models.CASCADE)
-    export_type = models.CharField(max_length=255, choices=[('financial_data', 'Financial Data'), ('transaction_records', 'Transaction Records')])
+    export_type = models.CharField(max_length=255, choices=[('financial_data', 'Financial Data'), ('transaction_records', 'Transaction Records')], default='financial_data')
     export_format = models.CharField(max_length=50, choices=[('csv', 'CSV'), ('excel', 'Excel'), ('xml', 'XML')], default='csv')
-    date_range = models.CharField(max_length=255)
+    date_range = models.CharField(max_length=255, blank=True, null=True)
 
     def configure_export(self, export_type, export_format, date_range):
         self.export_type = export_type

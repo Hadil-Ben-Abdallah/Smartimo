@@ -1,10 +1,10 @@
 from django.db import models
 from django.utils import timezone
-from core.models import Property, User
+from core.models import Property, User, TimeStampedModel
 from property_listing.models import RealEstateAgent
 
 
-class VRTour(models.Model):
+class VRTour(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     vr_content = models.URLField(blank=True, null=True)
@@ -37,7 +37,7 @@ class VRTour(models.Model):
             "viewing_settings": self.viewing_settings,
         }
 
-class VRTourAccess(models.Model):
+class VRTourAccess(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     tour = models.ForeignKey(VRTour, on_delete=models.CASCADE)
@@ -58,7 +58,7 @@ class VRTourAccess(models.Model):
             "interaction_data": self.interaction_data,
         }
 
-class VRPresentation(models.Model):
+class VRPresentation(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     agent = models.ForeignKey(RealEstateAgent, on_delete=models.CASCADE)
     tour = models.ForeignKey(VRTour, on_delete=models.CASCADE)
@@ -84,7 +84,7 @@ class VRPresentation(models.Model):
         self.presentation_notes = notes
         self.save()
 
-class VRTourAnalytics(models.Model):
+class VRTourAnalytics(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     tour = models.ForeignKey(VRTour, on_delete=models.CASCADE)
     views = models.PositiveIntegerField(default=0, blank=True, null=True)
@@ -108,7 +108,7 @@ class VRTourAnalytics(models.Model):
             "popular_segments": self.popular_segments,
         }
 
-class AdvancedVRFeature(models.Model):
+class AdvancedVRFeature(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     feature_name = models.CharField(max_length=100, choices=[('spatial_audio', 'Spatial Audio'), ('interactive_hotspots', 'Interactive Hotspots'), ('annotations', 'Annotations'), ('3D_modeling', '3D Modeling')], default='spatial_audio')
     feature_description = models.TextField(blank=True, null=True)

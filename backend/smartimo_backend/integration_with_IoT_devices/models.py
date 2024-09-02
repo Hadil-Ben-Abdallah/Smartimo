@@ -1,6 +1,7 @@
 from django.db import models
+from core.models import TimeStampedModel
 
-class IoTDevice(models.Model):
+class IoTDevice(TimeStampedModel):
     DEVICE_TYPES = [
         ('thermostat', 'Smart Thermostat'),
         ('camera', 'Security Camera'),

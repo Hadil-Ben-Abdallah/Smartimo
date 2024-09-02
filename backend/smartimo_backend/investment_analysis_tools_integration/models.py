@@ -1,7 +1,7 @@
 from django.db import models
-from core.models import Property
+from core.models import Property, TimeStampedModel
 
-class CashFlowProjection(models.Model):
+class CashFlowProjection(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     purchase_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
@@ -52,7 +52,7 @@ class CashFlowProjection(models.Model):
         return self.net_operating_income / self.purchase_price * 100
 
 
-class ROICalculator(models.Model):
+class ROICalculator(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     purchase_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
@@ -97,7 +97,7 @@ class ROICalculator(models.Model):
         self.save()
 
 
-class InvestmentRiskAssessment(models.Model):
+class InvestmentRiskAssessment(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     market_risk = models.CharField(max_length=255, blank=True, null=True)
@@ -150,7 +150,7 @@ class InvestmentRiskAssessment(models.Model):
         return strategies
 
 
-class SensitivityAnalysis(models.Model):
+class SensitivityAnalysis(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     variables = models.JSONField(blank=True, null=True)
@@ -183,7 +183,7 @@ class SensitivityAnalysis(models.Model):
         self.save()
 
 
-class InvestmentPerformanceAnalytics(models.Model):
+class InvestmentPerformanceAnalytics(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     total_return = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)

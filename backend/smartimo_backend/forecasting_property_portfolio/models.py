@@ -4,9 +4,9 @@ from sklearn.linear_model import LinearRegression
 import numpy as np
 import pandas as pd
 from datetime import datetime
-from core.models import Property
+from core.models import Property, TimeStampedModel
 
-class HistoricalOccupancyData(models.Model):
+class HistoricalOccupancyData(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     occupancy_rate = models.FloatField(blank=True, null=True)
@@ -32,7 +32,7 @@ class HistoricalOccupancyData(models.Model):
         forecast = fit.forecast(steps=12)
         return forecast
 
-class MarketConditionAnalysis(models.Model):
+class MarketConditionAnalysis(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     external_data_source = models.CharField(max_length=255, choices=[('real-time', 'Real Time'), ('market_data', 'Market Data'), ('economic_indicators', 'Economic Indicators')], default='real-time')
@@ -57,7 +57,7 @@ class MarketConditionAnalysis(models.Model):
         allocations = {'Property A': 0.4, 'Property B': 0.6}
         return allocations
 
-class RentalIncomeForecast(models.Model):
+class RentalIncomeForecast(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     historical_rental_income = models.FloatField(blank=True, null=True)
@@ -81,7 +81,7 @@ class RentalIncomeForecast(models.Model):
         self.save()
         return self.cash_flow_projections
 
-class PropertyValueForecast(models.Model):
+class PropertyValueForecast(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     historical_sales_data = models.JSONField(blank=True, null=True)
@@ -102,7 +102,7 @@ class PropertyValueForecast(models.Model):
         analysis = comparable_data.mean()
         return analysis
 
-class EmergingMarketTrends(models.Model):
+class EmergingMarketTrends(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     market_trends = models.JSONField(blank=True, null=True)
@@ -124,7 +124,7 @@ class EmergingMarketTrends(models.Model):
         adjustments = {'Property A': 'Sell', 'Property B': 'Hold'}
         return adjustments
 
-class DemographicImpactAnalysis(models.Model):
+class DemographicImpactAnalysis(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     demographic_data = models.JSONField(blank=True, null=True)

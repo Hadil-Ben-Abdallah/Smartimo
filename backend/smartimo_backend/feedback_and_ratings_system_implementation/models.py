@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import User, Feedback, Report
+from core.models import User, Feedback, Report, TimeStampedModel
 from lease_rental_management.models import PropertyManager
 from property_listing.models import ThePropertyListing
 from feedback_and_review_system.models import FeedbackNotification
@@ -30,7 +30,7 @@ class SystemImplementationFeedback(Feedback):
         }
         return feedback_details
 
-class RatingCriteria(models.Model):
+class RatingCriteria(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     criteria_name = models.CharField(max_length=100, blank=True, null=True)
 
@@ -57,7 +57,7 @@ class ImplementationFeedbackNotification(FeedbackNotification):
         notification_message = f"New feedback received for property {self.feedback.property.address}."
         return notification_message
 
-class FeedbackDashboard(models.Model):
+class FeedbackDashboard(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     feedback_data = models.JSONField(blank=True, null=True)
@@ -84,7 +84,7 @@ class FeedbackDashboard(models.Model):
         }
         return report
 
-class PropertyProfile(models.Model):
+class PropertyProfile(TimeStampedModel):
     property = models.ForeignKey(ThePropertyListing, on_delete=models.CASCADE)
     feedback_data = models.JSONField(blank=True, null=True)
 
@@ -99,7 +99,7 @@ class PropertyProfile(models.Model):
         sorted_feedback = sorted(self.feedback_data, key=lambda x: x['rating'], reverse=(order == "desc"))
         return sorted_feedback
 
-class FeedbackModerator(models.Model):
+class FeedbackModerator(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     moderation_logs = models.JSONField(blank=True, null=True)
     reported_issues = models.JSONField(blank=True, null=True)
@@ -162,7 +162,7 @@ class FeedbackReport(Report):
         report.save()
         return f"Report {report_id} status updated to {new_status}."
 
-class FeedbackAnalytics(models.Model):
+class FeedbackAnalytics(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(ThePropertyListing, on_delete=models.CASCADE)
     summary = models.TextField(blank=True, null=True)

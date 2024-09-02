@@ -1,14 +1,14 @@
 from django.db import models
-from core.models import Property, User
+from core.models import Property, User, TimeStampedModel
 from lease_rental_management.models import Tenant, PropertyManager
 from predictive_analytics_for_market_insights.models import RealEstateDeveloper
 
-class EnergyMonitoringDevice(models.Model):
+class EnergyMonitoringDevice(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     device_type = models.CharField(max_length=255, choices=[('smart_meter', 'Smart Meter'), ('energy_sensor', 'Energy Sensor')], default='smart_meter')
-    installation_date = models.DateField()
-    last_maintenance_date = models.DateField()
+    installation_date = models.DateField(blank=True, null=True)
+    last_maintenance_date = models.DateField(blank=True, null=True)
 
     def collect_data(self):
         return f"Collected data from device {self.id}"
@@ -24,12 +24,12 @@ class EnergyMonitoringDevice(models.Model):
         return f"Performance report for device {self.id}"
 
 
-class EnergyDashboard(models.Model):
+class EnergyDashboard(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    energy_consumption = models.FloatField()
-    cost_metrics = models.FloatField()
-    historical_trends = models.JSONField()
+    energy_consumption = models.FloatField(blank=True, null=True)
+    cost_metrics = models.FloatField(blank=True, null=True)
+    historical_trends = models.JSONField(blank=True, null=True)
 
     def visualize_energy_data(self):
         return f"Visualizing data for dashboard {self.id}"
@@ -44,12 +44,12 @@ class EnergyDashboard(models.Model):
         return f"Savings report for dashboard {self.id}"
 
 
-class EnergyGoal(models.Model):
+class EnergyGoal(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    target_value = models.FloatField()
-    benchmark = models.CharField(max_length=255)
-    current_value = models.FloatField()
+    target_value = models.FloatField(blank=True, null=True)
+    benchmark = models.CharField(max_length=255, blank=True, null=True)
+    current_value = models.FloatField(blank=True, null=True)
     status = models.CharField(max_length=50, choices=[('met', 'Met'), ('not_met', 'Not Met'), ('in_progress', 'In Progress')], default='in_progress')
 
     def set_goal(self, target_value, benchmark):
@@ -68,11 +68,11 @@ class EnergyGoal(models.Model):
         return f"Goal report for goal {self.id}"
 
 
-class EnergyRecommendation(models.Model):
+class EnergyRecommendation(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
-    recommendation_text = models.TextField()
-    category = models.CharField(max_length=255, choices=[('thermostat_setting', 'Thermostat Setting'), ('lighting_optimization', 'Lighting Optimization')])
+    recommendation_text = models.TextField(blank=True, null=True)
+    category = models.CharField(max_length=255, choices=[('thermostat_setting', 'Thermostat Setting'), ('lighting_optimization', 'Lighting Optimization')], default='thermostat_setting')
 
     def generate_recommendation(self, usage_data):
         return f"Recommendation for tenant {self.tenant.user_id}: {self.recommendation_text}"
@@ -87,12 +87,12 @@ class EnergyRecommendation(models.Model):
         return f"Evaluating impact of recommendation {self.id}"
 
 
-class EnergyModelingTool(models.Model):
+class EnergyModelingTool(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     developer = models.ForeignKey(RealEstateDeveloper, on_delete=models.CASCADE)
-    building_design = models.JSONField()
-    energy_performance = models.FloatField()
-    roi_projections = models.FloatField()
+    building_design = models.JSONField(blank=True, null=True)
+    energy_performance = models.FloatField(blank=True, null=True)
+    roi_projections = models.FloatField(blank=True, null=True)
 
     def simulate_scenario(self, design_parameters):
         return f"Simulating scenario for tool {self.id}"
@@ -107,11 +107,11 @@ class EnergyModelingTool(models.Model):
         return f"Tracking certification for tool {self.id}"
 
 
-class EnergyAudit(models.Model):
+class EnergyAudit(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property= models.ForeignKey(Property, on_delete=models.CASCADE)
-    audit_date = models.DateField()
-    audit_results = models.JSONField()
+    audit_date = models.DateField(blank=True, null=True)
+    audit_results = models.JSONField(blank=True, null=True)
     status = models.CharField(max_length=50, choices=[('pending', 'Pending'), ('completed', 'Completed'), ('follow_up_required', 'Follow-up Required')], default='pending')
 
     def conduct_audit(self):
@@ -127,14 +127,14 @@ class EnergyAudit(models.Model):
         return f"Follow-up scheduled for audit {self.id} on {date}"
 
 
-class EnergyProject(models.Model):
+class EnergyProject(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     project_type = models.CharField(max_length=255, choices=[('lighting_upgrade', 'Lighting Upgrade'), ('HVAC_optimization', 'HVAC Optimization')], default='lighting_upgrade')
-    start_date = models.DateField()
-    end_date = models.DateField()
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
     status = models.CharField(max_length=50, choices=[('planned', 'Planned'), ('in_progress', 'In Progress'), ('completed', 'Completed')], default='planned')
-    impact_metrics = models.JSONField()
+    impact_metrics = models.JSONField(blank=True, null=True)
 
     def initiate_project(self, project_type, start_date):
         self.project_type = project_type

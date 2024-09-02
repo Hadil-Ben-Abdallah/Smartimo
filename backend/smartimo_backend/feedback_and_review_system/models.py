@@ -1,6 +1,6 @@
 from django.db import models
 from datetime import timezone
-from core.models import User, Notification, Property, Feedback
+from core.models import User, Notification, Property, Feedback, TimeStampedModel
 
 class UserFeedback(Feedback):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -9,11 +9,12 @@ class UserFeedback(Feedback):
     def submit_feedback(self, details):
         Feedback.objects.create(user=self.user, property=self.property, **details)
 
-class Survey(models.Model):
+class Survey(TimeStampedModel):
     id = models.AutoField(primary_key=True)
-    title = models.CharField(max_length=255)
-    description = models.TextField()
-    questions = models.JSONField()
+    title = models.CharField(max_length=255, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    questions = models.JSONField(blank=True, null=True)
+
     def create_survey(self, title, description, questions):
         self.title = title
         self.description = description
@@ -37,7 +38,6 @@ class Review(Feedback):
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
 
     def submit_review(self, rating, comments):
-        # Ensure the review is valid before saving
         if not (1 <= rating <= 5):
             raise ValueError("Rating must be between 1 and 5.")
         self.rating = rating
@@ -82,11 +82,11 @@ class FeedbackNotification(Notification):
         notifications = FeedbackNotification.objects.filter(user_id=user_id)
         return notifications
 
-class Analytics(models.Model):
+class Analytics(TimeStampedModel):
     id = models.AutoField(primary_key=True)
-    feedback_data = models.JSONField()
-    survey_data = models.JSONField()
-    review_data = models.JSONField()
+    feedback_data = models.JSONField(blank=True, null=True)
+    survey_data = models.JSONField(blank=True, null=True)
+    review_data = models.JSONField(blank=True, null=True)
 
     def generate_feedback_report(self, criteria):
         report = {}
@@ -116,7 +116,6 @@ class Analytics(models.Model):
 
     def identify_trends(self, data):
         trends = {}
-        # we're counting occurrences of specific values
         for entry in data:
             key = entry.get('type')
             if key:

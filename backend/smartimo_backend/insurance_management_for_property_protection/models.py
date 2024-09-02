@@ -1,9 +1,9 @@
 from django.db import models
 import datetime
-from core.models import Property
+from core.models import Property, TimeStampedModel
 from tenant_screening_and_background_checks.models import PropertyManagementCompany
 
-class InsurancePolicy(models.Model):
+class InsurancePolicy(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     propert = models.ForeignKey(Property, on_delete=models.CASCADE)
     policy_number = models.CharField(max_length=100, blank=True, null=True)
@@ -38,7 +38,7 @@ class InsurancePolicy(models.Model):
         # Setting a reminder
         return f"Reminder set for policy {policy_id} renewal on {self.renewal_date}"
     
-class Incident(models.Model):
+class Incident(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     incident_details = models.TextField(blank=True, null=True)
@@ -64,7 +64,7 @@ class Incident(models.Model):
         claim = InsuranceClaim.objects.get(pk=claim_id)
         return claim
 
-class InsuranceClaim(models.Model):
+class InsuranceClaim(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     policy = models.ForeignKey(InsurancePolicy, on_delete=models.CASCADE)
@@ -92,16 +92,15 @@ class InsuranceClaim(models.Model):
         claim.save()
         return claim
 
-    def track_claim_progress(self, claim_id):
-        claim = self.get(pk=claim_id)
+    def track_claim_progress(self):
         return {
-            "status": claim.claim_status,
-            "submitted_date": claim.submitted_date,
-            "resolution_date": claim.resolution_date
+            "status": self.claim_status,
+            "submitted_date": self.submitted_date,
+            "resolution_date": self.resolution_date
         }
 
 
-class InsuranceProvider(models.Model):
+class InsuranceProvider(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     provider_name = models.CharField(max_length=200)
     contact_info = models.TextField(blank=True, null=True)
@@ -122,10 +121,9 @@ class InsuranceProvider(models.Model):
 
     def offer_policy(self, provider_id, policy_details):
         provider = self.get(pk=provider_id)
-        # Offering a policy
         return policy_details
 
-class InsuranceAdvisoryService(models.Model):
+class InsuranceAdvisoryService(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     company = models.ForeignKey(PropertyManagementCompany, on_delete=models.CASCADE)
     service_name = models.CharField(max_length=200)
@@ -151,10 +149,9 @@ class InsuranceAdvisoryService(models.Model):
 
     def offer_support(self, service_id, client_id):
         service = self.get(pk=service_id)
-        # Offering support
         return f"Support offered to client {client_id} for service {service_id}"
 
-class InsuranceQuote(models.Model):
+class InsuranceQuote(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     provider = models.ForeignKey(InsuranceProvider, on_delete=models.CASCADE)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
@@ -179,5 +176,4 @@ class InsuranceQuote(models.Model):
 
     def accept_quote(self, quote_id):
         quote = self.get(pk=quote_id)
-        # Accepting a quote
         return f"Quote {quote_id} accepted with premium amount {self.premium_amount}"

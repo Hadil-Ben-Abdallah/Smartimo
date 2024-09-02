@@ -1,8 +1,8 @@
 from django.db import models
-from core.models import Property
+from core.models import Property, TimeStampedModel
 from property_listing.models import PropertyOwner 
 
-class MapInterface(models.Model):
+class MapInterface(TimeStampedModel):
     map_service = models.CharField(max_length=255, blank=True, null=True)
     property_markers = models.JSONField(default=list, blank=True, null=True)
     search_filters = models.JSONField(default=dict, blank=True, null=True)
@@ -19,9 +19,7 @@ class MapInterface(models.Model):
         }
 
     def update_markers(self, new_filters):
-        # Updates property markers based on search filters
         self.search_filters.update(new_filters)
-        # Update property markers based on filters
         self.property_markers = self.filter_properties(self.search_filters)
         self.save()
 
@@ -34,7 +32,7 @@ class MapInterface(models.Model):
         self.save()
 
 
-class MappingProperty(models.Model):
+class MappingProperty(TimeStampedModel):
     location = models.CharField(max_length=255, blank=True, null=True)
     property_type = models.CharField(max_length=255, blank=True, null=True)
     owner = models.ForeignKey(PropertyOwner, on_delete=models.CASCADE)
@@ -47,16 +45,15 @@ class MappingProperty(models.Model):
         }
 
     def filter_properties(self, filters):
-        # Filters property listings based on search criteria
         filtered_properties = MappingProperty.objects.all()
         if 'property_type' in filters:
             filtered_properties = filtered_properties.filter(property_type=filters['property_type'])
         if 'location' in filters:
             filtered_properties = filtered_properties.filter(location__icontains=filters['location'])
-        return [{"id": prop.id, "location": prop.location} for prop in filtered_properties]
+        return [{"id": prop, "location": prop.location} for prop in filtered_properties]
 
 
-class GISData(models.Model):
+class GISData(TimeStampedModel):
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     boundary_info = models.TextField(blank=True, null=True)
     lot_size = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
@@ -76,7 +73,7 @@ class GISData(models.Model):
         return self.land_use
 
 
-class MarketAnalytics(models.Model):
+class MarketAnalytics(TimeStampedModel):
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     market_trends = models.JSONField(default=dict, blank=True, null=True)
     property_values = models.JSONField(default=dict, blank=True, null=True)
@@ -96,7 +93,7 @@ class MarketAnalytics(models.Model):
         return opportunities
 
 
-class TenantResources(models.Model):
+class TenantResources(TimeStampedModel):
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     nearby_amenities = models.JSONField(default=list, blank=True, null=True)
     neighborhood_guides = models.JSONField(default=dict, blank=True, null=True)
@@ -112,7 +109,7 @@ class TenantResources(models.Model):
         return self.community_resources
 
 
-class GeolocationMarketing(models.Model):
+class GeolocationMarketing(TimeStampedModel):
     id = models.CharField(max_length=255)
     target_area = models.JSONField(default=dict, blank=True, null=True)
     user_preferences = models.JSONField(default=dict, blank=True, null=True)
@@ -133,9 +130,9 @@ class GeolocationMarketing(models.Model):
     def track_campaign_performance(self):
         performance_data = {
             "campaign_id": self.id,
-            "click_through_rate": 0.05,  # Example
-            "conversion_rate": 0.02,     # Example
-            "roi": 15000,                # Example
+            "click_through_rate": 0.05,
+            "conversion_rate": 0.02,
+            "roi": 15000,
         }
         return performance_data
 
