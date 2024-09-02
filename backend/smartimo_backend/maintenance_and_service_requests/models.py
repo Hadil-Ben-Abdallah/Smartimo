@@ -1,9 +1,9 @@
 from django.db import models
 from django.utils import timezone
-from core.models import Notification, Property
+from core.models import Notification, Property, TimeStampedModel
 from lease_rental_management.models import PropertyManager, Tenant
 
-class MaintenanceRequest(models.Model):
+class MaintenanceRequest(TimeStampedModel):
     STATUS_CHOICES = [
         ('submitted', 'Submitted'),
         ('in_review', 'In Review'),
@@ -16,15 +16,15 @@ class MaintenanceRequest(models.Model):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name='maintenance_requests')
     manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE, related_name='agreements')
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='properties')
-    issue_type = models.CharField(max_length=255)
-    severity = models.CharField(max_length=50)
-    location = models.CharField(max_length=255)
-    description = models.TextField()
-    photos = models.JSONField(default=list)
+    issue_type = models.CharField(max_length=255, blank=True, null=True)
+    severity = models.CharField(max_length=50, blank=True, null=True)
+    location = models.CharField(max_length=255, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    photos = models.JSONField(default=list, blank=True, null=True)
     urgency_level = models.CharField(max_length=50, choices=[('low', 'Low'), ('medium', 'Medium'), ('high', 'High')], default='low')
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='submitted')
-    submission_date = models.DateTimeField(auto_now_add=True)
-    completion_date = models.DateTimeField(auto_now=True)
+    submission_date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    completion_date = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     def submit_request(self):
         property_manager = self.get_property_manager()
@@ -83,10 +83,10 @@ class MaintenanceRequest(models.Model):
     def delete_request(self):
         self.delete()
 
-class TenantRequest(models.Model):
+class TenantRequest(TimeStampedModel):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name='tenant_requests')
-    unit_number = models.CharField(max_length=50)
-    maintenance_requests = models.ManyToManyField(MaintenanceRequest, related_name='tenant_requests')
+    unit_number = models.CharField(max_length=50, blank=True, null=True)
+    maintenance_requests = models.ManyToManyField(MaintenanceRequest, related_name='tenant_requests', blank=True, null=True)
 
     def view_requests(self):
         return self.maintenance_requests.all()
@@ -97,9 +97,9 @@ class TenantRequest(models.Model):
     def rate_service(self, request_id, rating):
         pass
 
-class MaintenancePropertyManager(models.Model):
+class MaintenancePropertyManager(TimeStampedModel):
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE, related_name='property_managers')
-    assigned_requests = models.ManyToManyField(MaintenanceRequest, related_name='assigned_requests')
+    assigned_requests = models.ManyToManyField(MaintenanceRequest, related_name='assigned_requests', blank=True, null=True)
 
     def view_requests_dashboard(self):
         return self.assigned_requests.all()
@@ -125,13 +125,13 @@ class MaintenancePropertyManager(models.Model):
         }
 
     def _calculate_average_resolution_time(self):
-        # total_time = 0
-        # completed_requests = self.assigned_requests.filter(status='completed')
-        # for request in completed_requests:
-        #     if request.created_at and request.updated_at:
-        #         total_time += (request.updated_at - request.created_at).total_seconds()
-        # count = completed_requests.count()
-        # return total_time / count if count > 0 else 0
+        total_time = 0
+        completed_requests = self.assigned_requests.filter(status='completed')
+        for request in completed_requests:
+            if request.created_at and request.updated_at:
+                total_time += (request.updated_at - request.created_at).total_seconds()
+        count = completed_requests.count()
+        return total_time / count if count > 0 else 0
         pass
 
     def generate_reports(self):
@@ -139,13 +139,13 @@ class MaintenancePropertyManager(models.Model):
             "requests": self.track_performance(),
         }
 
-class MaintenanceTechnician(models.Model):
+class MaintenanceTechnician(TimeStampedModel):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255)
-    email = models.EmailField()
-    phone = models.CharField(max_length=20)
-    skills = models.TextField()
-    assigned_tasks = models.ManyToManyField(MaintenanceRequest, related_name='technicians')
+    name = models.CharField(max_length=255, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    skills = models.TextField(blank=True, null=True)
+    assigned_tasks = models.ManyToManyField(MaintenanceRequest, related_name='technicians', blank=True, null=True)
 
     def view_assigned_tasks(self):
         return self.assigned_tasks.all()

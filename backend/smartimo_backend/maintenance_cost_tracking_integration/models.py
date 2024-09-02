@@ -1,9 +1,9 @@
 from django.db import models
 from django.contrib.postgres.fields import JSONField
-from core.models import Property, Report
+from core.models import Property, Report, TimeStampedModel
 from vendor_management.models import Vendor
 
-class MaintenanceExpense(models.Model):
+class MaintenanceExpense(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     expense_date = models.DateField(blank=True, null=True)
@@ -60,7 +60,7 @@ class MaintenanceExpense(models.Model):
             'custom_fields': self.custom_fields
         }
 
-class RecurringMaintenanceRule(models.Model):
+class RecurringMaintenanceRule(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     maintenance_type = models.CharField(max_length=255, blank=True, null=True)
@@ -137,7 +137,7 @@ class MaintenanceCostReport(Report):
             'custom_filters': self.custom_filters
         }
 
-class MaintenanceBudget(models.Model):
+class MaintenanceBudget(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     budget_target = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
@@ -177,7 +177,7 @@ class MaintenanceBudget(models.Model):
             'variance_tolerances': self.variance_tolerances
         }
 
-class FinancialIntegration(models.Model):
+class FinancialIntegration(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     system_type = models.CharField(max_length=255, blank=True, null=True)

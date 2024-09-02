@@ -1,12 +1,12 @@
 from django.db import models
-from core.models import  User, Property
+from core.models import  User, Property, TimeStampedModel
 
 class MarketplacePropertyListing(Property):
     marketplace_id = models.CharField(max_length=255, unique=True, null=True, blank=True)
     
     def upload_to_marketplace(self):
         if not self.marketplace_id:
-            self.marketplace_id = "marketplace123"  # Replace with actual API call
+            self.marketplace_id = "marketplace123"
             self.save()
             return {"success": True, "marketplace_id": self.marketplace_id}
         return {"success": False, "message": "Already uploaded"}
@@ -27,13 +27,13 @@ class MarketplacePropertyListing(Property):
         elif notification.get('type') == 'status_change':
             pass
 
-class Booking(models.Model):
+class Booking(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    start_date = models.DateField()
-    end_date = models.DateField()
-    status = models.CharField(max_length=50, default='pending')
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
+    status = models.CharField(max_length=50, choices=[('pending', 'Pending'), ('confirmed', 'Confirmed'), ('cancelled', 'Cancelled')], default='pending')
     marketplace_booking_id = models.CharField(max_length=255, unique=True, null=True, blank=True)
 
     def view_bookings(self):
@@ -59,19 +59,19 @@ class Booking(models.Model):
         self.save()
         return {"success": True, "updated_status": self.status}
 
-class Transaction(models.Model):
+class Transaction(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='property_transactions')
     marketplace_property = models.ForeignKey(MarketplacePropertyListing, on_delete=models.CASCADE, related_name='marketplace_transactions')
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    commission = models.DecimalField(max_digits=10, decimal_places=2)
-    date = models.DateField()
-    status = models.CharField(max_length=50)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    commission = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    date = models.DateField(blank=True, null=True)
+    status = models.CharField(max_length=50, blank=True, null=True)
     marketplace_transaction_id = models.CharField(max_length=255, unique=True, null=True, blank=True)
 
     def record_transaction(self):
         if not self.marketplace_transaction_id:
-            self.marketplace_transaction_id = "transaction123"  # Replace with actual API call
+            self.marketplace_transaction_id = "transaction123"
             self.save()
             return {"success": True, "transaction_id": self.marketplace_transaction_id}
         return {"success": False, "message": "Transaction already recorded"}
@@ -102,11 +102,11 @@ class Transaction(models.Model):
             "status": self.status,
         }
 
-class Availability(models.Model):
+class Availability(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    availability_dates = models.JSONField(default=list)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    availability_dates = models.JSONField(default=list, blank=True, null=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     def update_availability(self):
         self.save()
@@ -125,15 +125,15 @@ class Availability(models.Model):
         if notification.get('type') == 'availability_update':
             self.synchronize_availability()
 
-class UserAccount(models.Model):
+class UserAccount(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    password = models.CharField(max_length=128)
+    password = models.CharField(max_length=128, blank=True, null=True)
     marketplace_user_id = models.CharField(max_length=255, unique=True, null=True, blank=True)
 
     def single_sign_on(self):
         if not self.marketplace_user_id:
-            self.marketplace_user_id = "user123"  # Replace with actual SSO integration
+            self.marketplace_user_id = "user123"
             self.save()
             return {"success": True, "marketplace_user_id": self.marketplace_user_id}
         return {"success": False, "message": "User already connected"}

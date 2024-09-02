@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import Property
+from core.models import Property, TimeStampedModel
 
 class MarketingProperty(Property):
     virtual_tours = models.JSONField(null=True, blank=True)
@@ -35,18 +35,18 @@ class MarketingProperty(Property):
         self.save()
         return recommendations
 
-class ListingDistribution(models.Model):
+class ListingDistribution(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(MarketingProperty, on_delete=models.CASCADE)
-    channel = models.CharField(max_length=255)
-    target_audience = models.TextField()
-    category = models.CharField(max_length=255)
-    views = models.IntegerField(default=0)
-    inquiries = models.IntegerField(default=0)
+    channel = models.CharField(max_length=255, blank=True, null=True)
+    target_audience = models.TextField(blank=True, null=True)
+    category = models.CharField(max_length=255, blank=True, null=True)
+    views = models.IntegerField(default=0, blank=True, null=True)
+    inquiries = models.IntegerField(default=0, blank=True, null=True)
     engagement_metrics = models.JSONField(null=True, blank=True)
 
     def distribute_listing(self):
-        self.views += 100  # Simulating the distribution and increase in views
+        self.views += 100
         self.inquiries += 10
         self.engagement_metrics = {"likes": 50, "shares": 20, "comments": 5}
         self.save()
@@ -64,12 +64,12 @@ class ListingDistribution(models.Model):
             "engagement_metrics": self.engagement_metrics
         }
 
-class SocialMediaPost(models.Model):
+class SocialMediaPost(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(MarketingProperty, on_delete=models.CASCADE)
-    platform = models.CharField(max_length=255)
-    content = models.TextField()
-    scheduled_time = models.DateTimeField()
+    platform = models.CharField(max_length=255, blank=True, null=True)
+    content = models.TextField(blank=True, null=True)
+    scheduled_time = models.DateTimeField(blank=True, null=True)
     engagement_metrics = models.JSONField(null=True, blank=True)
 
     def create_post(self):
@@ -84,17 +84,17 @@ class SocialMediaPost(models.Model):
     def track_performance(self):
         return self.engagement_metrics or {"likes": 0, "shares": 0, "comments": 0}
 
-class AdvertisingCampaign(models.Model):
+class AdvertisingCampaign(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(MarketingProperty, on_delete=models.CASCADE)
-    platform = models.CharField(max_length=255)
-    target_audience = models.TextField()
-    budget = models.DecimalField(max_digits=10, decimal_places=2)
-    bidding_strategy = models.CharField(max_length=255)
-    impressions = models.IntegerField(default=0)
-    clicks = models.IntegerField(default=0)
-    conversions = models.IntegerField(default=0)
-    cpa = models.DecimalField(max_digits=10, decimal_places=2)
+    platform = models.CharField(max_length=255, blank=True, null=True)
+    target_audience = models.TextField(blank=True, null=True)
+    budget = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    bidding_strategy = models.CharField(max_length=255, blank=True, null=True)
+    impressions = models.IntegerField(default=0, blank=True, null=True)
+    clicks = models.IntegerField(default=0, blank=True, null=True)
+    conversions = models.IntegerField(default=0, blank=True, null=True)
+    cpa = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     def launch_campaign(self):
         self.impressions += 1000
@@ -117,15 +117,15 @@ class AdvertisingCampaign(models.Model):
             "cpa": self.cpa
         }
 
-class MarketingAnalytics(models.Model):
+class MarketingAnalytics(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(MarketingProperty, on_delete=models.CASCADE)
     campaign = models.ForeignKey(AdvertisingCampaign, on_delete=models.CASCADE)
-    impressions = models.IntegerField(default=0)
-    clicks = models.IntegerField(default=0)
-    conversions = models.IntegerField(default=0)
-    cpl = models.DecimalField(max_digits=10, decimal_places=2)
-    roi = models.DecimalField(max_digits=10, decimal_places=2)
+    impressions = models.IntegerField(default=0, blank=True, null=True)
+    clicks = models.IntegerField(default=0, blank=True, null=True)
+    conversions = models.IntegerField(default=0, blank=True, null=True)
+    cpl = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    roi = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     custom_reports = models.JSONField(null=True, blank=True)
 
     def generate_report(self):

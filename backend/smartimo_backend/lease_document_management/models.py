@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import Property, Document, Notification
+from core.models import Property, Document, Notification, TimeStampedModel
 from lease_rental_management.models import Tenant, PropertyManager
 from data_security_and_compliance_implementation.models import ComplianceAudit
 
@@ -35,7 +35,7 @@ class LeaseDocument(Document):
             return None
 
 
-class LeaseDocumentRevision(models.Model):
+class LeaseDocumentRevision(TimeStampedModel):
     document = models.ForeignKey(LeaseDocument, on_delete=models.CASCADE)
     revision_number = models.IntegerField(blank=True, null=True)
     revision_date = models.DateTimeField(auto_now_add=True)
@@ -64,7 +64,7 @@ class LeaseDocumentRevision(models.Model):
         return LeaseDocumentRevision.objects.filter(document=self).order_by('-revision_number')
 
 
-class TenantDocumentAccess(models.Model):
+class TenantDocumentAccess(TimeStampedModel):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     document = models.ForeignKey(LeaseDocument, on_delete=models.CASCADE)
     access_date = models.DateTimeField(auto_now_add=True)
@@ -120,4 +120,3 @@ class LeaseDocumentNotification(Notification):
 
     def get_notification_history(self):
         return LeaseDocumentNotification.objects.filter(document=self.document).order_by('-id')
-

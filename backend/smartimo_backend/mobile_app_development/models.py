@@ -2,14 +2,14 @@ from django.db import models
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.core.exceptions import ValidationError
-from core.models import User, Property, Communication, Notification
+from core.models import User, Property, Communication, Notification, TimeStampedModel
 
-class MobileApp(models.Model):
+class MobileApp(TimeStampedModel):
     id = models.AutoField(primary_key=True)
-    app_name = models.CharField(max_length=255)
-    version = models.CharField(max_length=50)
-    platform = models.CharField(max_length=50)
-    store_url = models.URLField()
+    app_name = models.CharField(max_length=255, blank=True, null=True)
+    version = models.CharField(max_length=50, blank=True, null=True)
+    platform = models.CharField(max_length=50, blank=True, null=True)
+    store_url = models.URLField(blank=True, null=True)
 
     def install(self):
         return f"Guide for installing {self.app_name} on {self.platform} can be found at {self.store_url}"
@@ -21,8 +21,8 @@ class MobileApp(models.Model):
         return f"Navigating to {destination} within {self.app_name}."
 
 class AppProperty(Property):
-    features = models.JSONField(default=list)
-    saved = models.BooleanField(default=False)
+    features = models.JSONField(default=list, blank=True, null=True)
+    saved = models.BooleanField(default=False, blank=True, null=True)
 
     def search_listings(self, search_criteria):
         properties = Property.objects.filter(**search_criteria)
@@ -54,8 +54,8 @@ class AppProperty(Property):
         return f"Property at {self.address} has been saved as a favorite."
 
 class CommunicationManager(Communication):
-    notifications = models.JSONField(default=list)
-    inbox = models.JSONField(default=list)
+    notifications = models.JSONField(default=list, blank=True, null=True)
+    inbox = models.JSONField(default=list, blank=True, null=True)
 
     def send_message(self, recipient, message):
         self.message.append({"recipient": recipient, "message": message})
@@ -73,7 +73,7 @@ class CommunicationManager(Communication):
         return "User has been notified."
 
 class NotificationManager(Notification):
-    user_preferences = models.JSONField(default=dict)
+    user_preferences = models.JSONField(default=dict, blank=True, null=True)
 
     def update_preferences(self, preferences):
         self.user_preferences.update(preferences)
@@ -84,7 +84,7 @@ class NotificationManager(Notification):
         return f"Tracking event: {event}"
 
 class MobileUserAccount(User):
-    ssologin = models.BooleanField(default=False)
+    ssologin = models.BooleanField(default=False, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         # Ensure the password is hashed before saving
@@ -93,13 +93,6 @@ class MobileUserAccount(User):
         super(MobileUserAccount, self).save(*args, **kwargs)
 
     def login(self, request, username, password):
-        """
-        Authenticates the user and logs them in.
-        :param request: The HTTP request object
-        :param username: The username of the user
-        :param password: The password of the user
-        :return: Success or failure message
-        """
         user = authenticate(request, username=username, password=password)
         if user is not None:
             auth_login(request, user)
@@ -108,22 +101,10 @@ class MobileUserAccount(User):
             return "Invalid credentials"
 
     def logout(self, request):
-        """
-        Logs the user out.
-        :param request: The HTTP request object
-        :return: Success message
-        """
         auth_logout(request)
         return "Logout successful"
 
     def register(self, username, email, password):
-        """
-        Registers a new user account.
-        :param username: The username for the new account
-        :param email: The email for the new account
-        :param password: The password for the new account
-        :return: Success or failure message
-        """
         if User.objects.filter(username=username).exists():
             return "Username already taken"
 
@@ -138,12 +119,6 @@ class MobileUserAccount(User):
             return f"Registration failed: {e}"
 
     def update_profile(self, user, profile_data):
-        """
-        Updates the user's profile information.
-        :param user: The user object
-        :param profile_data: A dictionary containing profile fields to update
-        :return: Success or failure message
-        """
         try:
             if 'username' in profile_data:
                 if User.objects.filter(username=profile_data['username']).exclude(id=user.id).exists():

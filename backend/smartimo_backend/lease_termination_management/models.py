@@ -1,9 +1,9 @@
 from django.db import models
-from core.models import Property
+from core.models import Property, TimeStampedModel
 from lease_rental_management.models import Tenant, PropertyManager, LeaseAgreement
 from remote_property_monitoring.models import Inspector
 
-class LeaseTermination(models.Model):
+class LeaseTermination(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     lease = models.ForeignKey(LeaseAgreement, on_delete=models.CASCADE)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
@@ -37,7 +37,7 @@ class LeaseTermination(models.Model):
     def get_termination_details(self, termination_id):
         return LeaseTermination.objects.get(id=termination_id)
 
-class MoveOutGuidance(models.Model):
+class MoveOutGuidance(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
@@ -65,7 +65,7 @@ class MoveOutGuidance(models.Model):
         guidance.save()
         return guidance
 
-class PropertyInspection(models.Model):
+class PropertyInspection(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     termination = models.ForeignKey(LeaseTermination, on_delete=models.CASCADE)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
@@ -91,7 +91,7 @@ class PropertyInspection(models.Model):
     def view_inspection_report(self, inspection_id):
         return PropertyInspection.objects.get(id=inspection_id)
 
-class SecurityDepositRefund(models.Model):
+class SecurityDepositRefund(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     termination = models.ForeignKey(LeaseTermination, on_delete=models.CASCADE)
     refund_amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
@@ -134,7 +134,7 @@ class SecurityDepositRefund(models.Model):
         refund.save()
         return refund
 
-class LeaseTerminationConfirmation(models.Model):
+class LeaseTerminationConfirmation(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     termination = models.ForeignKey(LeaseTermination, on_delete=models.CASCADE)
     confirmation_date = models.DateField(auto_now_add=True, blank=True, null=True)

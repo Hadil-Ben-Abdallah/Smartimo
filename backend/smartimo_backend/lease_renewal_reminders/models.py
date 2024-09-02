@@ -1,10 +1,10 @@
 from django.db import models
-from core.models import Communication
+from core.models import Communication, TimeStampedModel
 from lease_rental_management.models import PropertyManager, Tenant
 from lease_renewal_automation.models import LeaseRenewalReminder
 
 
-class RenewalTrackingDashboard(models.Model):
+class RenewalTrackingDashboard(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     renewal_data = models.JSONField(blank=True, null=True)

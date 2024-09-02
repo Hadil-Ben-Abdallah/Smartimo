@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import Reminder, Document, Communication, Notification
+from core.models import Reminder, Document, Communication, Notification, TimeStampedModel
 from lease_rental_management.models import Tenant, PropertyManager, LeaseAgreement
 
 class LeaseRenewalReminder(Reminder):
@@ -57,7 +57,7 @@ class LeaseRenewalCommunication(Communication):
     status = models.CharField(max_length=50, choices=[('sent', 'Sent'), ('received', 'Received'), ('responded', 'Responded')], default='sent')
     version_control = models.CharField(max_length=50, blank=True, null=True)
 
-    def send_renewal_offer(self, offer_details):
+    def send_renewal_offer(self):
         self.status = 'sent'
         self.save()
 
@@ -91,7 +91,7 @@ class TenantNotification(Notification):
         return notifications
 
 
-class LeaseRenewalProgress(models.Model):
+class LeaseRenewalProgress(TimeStampedModel):
     lease = models.ForeignKey(LeaseAgreement, on_delete=models.CASCADE)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     renewal_status = models.CharField(max_length=50, choices=[('initiated', 'Initiated'), ('in_negotiation', 'In Negotiation'), ('completed', 'Completed')])

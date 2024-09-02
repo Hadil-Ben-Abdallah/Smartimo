@@ -3,11 +3,11 @@ from django.utils import timezone
 from io import BytesIO
 from django.template.loader import render_to_string
 from xhtml2pdf import pisa
-from core.models import Property, Document
+from core.models import Property, Document, TimeStampedModel
 from lease_rental_management.models import Tenant, PropertyManager
 
-# Model Definitions
-class DocumentTemplate(models.Model):
+
+class DocumentTemplate(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     template_name = models.CharField(max_length=255, blank=True, null=True)
     template_type = models.CharField(max_length=255, choices=[('lease_agreement', 'Lease Agreement'), ('eviction_notice', 'Eviction Notice')], default='lease_agreement')
@@ -31,7 +31,7 @@ class DocumentTemplate(models.Model):
         return document
 
 
-class DocumentTemplateLibrary(models.Model):
+class DocumentTemplateLibrary(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     template_category = models.CharField(max_length=255, choices=[('lease', 'Lease'), ('agreements', 'Agreements'), ('disclosures', 'Disclosures')], default='lease')
     templates = models.ManyToManyField(DocumentTemplate, blank=True, null=True)
@@ -138,7 +138,7 @@ class LegalDocumentPropertyManager(PropertyManager):
         return "Notifications sent for document updates."
 
 
-class DocumentManagementSystem(models.Model):
+class DocumentManagementSystem(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     documents = models.ManyToManyField(LeaseAgreementDocument, blank=True, null=True)
     version_control = models.JSONField(blank=True, null=True)
@@ -155,7 +155,7 @@ class DocumentManagementSystem(models.Model):
         return f"Audit trail generated for document {document_id}"
 
 
-class ElectronicSignature(models.Model):
+class ElectronicSignature(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     document = models.ForeignKey(LeaseAgreementDocument, on_delete=models.CASCADE)
     signer = models.ForeignKey(AgreementTenant, on_delete=models.CASCADE, null=True, blank=True)

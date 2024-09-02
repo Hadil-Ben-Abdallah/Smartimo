@@ -1,8 +1,8 @@
 from django.db import models
-from core.models import Property
+from core.models import Property, TimeStampedModel
 from lease_rental_management.models import Tenant
 
-class LeaseAgreementGenerator(models.Model):
+class LeaseAgreementGenerator(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
@@ -58,7 +58,7 @@ class LeaseAgreementGenerator(models.Model):
             "legal_template_version": self.legal_template_version,
         }
 
-class LeaseAgreementTemplate(models.Model):
+class LeaseAgreementTemplate(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     template_name = models.CharField(max_length=100, blank=True, null=True)
     template_content = models.JSONField(default=dict, blank=True, null=True)
@@ -88,7 +88,7 @@ class LeaseAgreementTemplate(models.Model):
             "version": self.version
         }
 
-class MultiPartyAgreement(models.Model):
+class MultiPartyAgreement(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     lease_agreement = models.ForeignKey(LeaseAgreementGenerator, on_delete=models.CASCADE)
     party_roles = models.JSONField(default=dict, blank=True, null=True)
@@ -116,7 +116,7 @@ class MultiPartyAgreement(models.Model):
             "custom_provisions": self.custom_provisions
         }
 
-class BrandingOptions(models.Model):
+class BrandingOptions(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     generator = models.ForeignKey(LeaseAgreementGenerator, on_delete=models.CASCADE)
     logo_url = models.URLField(blank=True, null=True)

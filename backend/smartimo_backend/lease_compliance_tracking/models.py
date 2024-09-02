@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from lease_rental_management.models import LeaseAgreement, Tenant
-from core.models import Reminder
+from core.models import Reminder, TimeStampedModel
 
 class LeaseReminder(Reminder):
     lease = models.ForeignKey(LeaseAgreement, on_delete=models.CASCADE)
@@ -13,7 +13,7 @@ class LeaseReminder(Reminder):
         reminder.custom_parameters = settings
         reminder.save()
 
-class RentalPaymentHistory(models.Model):
+class RentalPaymentHistory(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     lease = models.ForeignKey(LeaseAgreement, on_delete=models.CASCADE)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
@@ -51,7 +51,7 @@ class RentalPaymentHistory(models.Model):
         )
         return list(overdue_payments.values())
 
-class MaintenanceCompliance(models.Model):
+class MaintenanceCompliance(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     lease = models.ForeignKey(LeaseAgreement, on_delete=models.CASCADE)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
@@ -97,7 +97,7 @@ class MaintenanceCompliance(models.Model):
         )
         return list(non_compliant_tasks.values())
 
-class LegalCompliance(models.Model):
+class LegalCompliance(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     lease = models.ForeignKey(LeaseAgreement, on_delete=models.CASCADE)
     regulation = models.CharField(max_length=255, blank=True, null=True)

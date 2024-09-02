@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils import timezone
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 
 
@@ -47,7 +46,7 @@ class Notification(TimeStampedModel):
     notification_id = models.AutoField(primary_key=True)
     message = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=50, blank=True, null=True)
-    date = models.DateTimeField(default=timezone.now, blank=True, null=True)
+    date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     def send_notification(self):
         pass

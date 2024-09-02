@@ -1,9 +1,10 @@
 from django.db import models
 from datetime import datetime
 from maintenance_and_service_requests.models import MaintenanceRequest
+from core.models import TimeStampedModel
 
 
-class MaintenanceRequestMedia(models.Model):
+class MaintenanceRequestMedia(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     request = models.ForeignKey(MaintenanceRequest, on_delete=models.CASCADE)
     file_path = models.CharField(max_length=255, blank=True, null=True)

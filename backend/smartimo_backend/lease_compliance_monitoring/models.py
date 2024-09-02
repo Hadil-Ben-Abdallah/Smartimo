@@ -1,6 +1,6 @@
 from django.db import models
 from datetime import datetime, timedelta
-from core.models import Notification, Report
+from core.models import Notification, Report, TimeStampedModel
 from lease_rental_management.models import Tenant, LeaseAgreement, PropertyManager
 from property_listing.models import PropertyOwner
 from tenant_portal_maintenance_tracking.models import MaintenanceTask
@@ -27,7 +27,7 @@ class LeaseNotification(Notification):
         print(f"Sending notification: {message}")
 
 
-class RentalPaymentTracker(models.Model):
+class RentalPaymentTracker(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     lease = models.ForeignKey(LeaseAgreement, on_delete=models.CASCADE)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
@@ -62,7 +62,7 @@ class RentalPaymentTracker(models.Model):
         self.track_payment(payment_date=datetime.now().date(), payment_amount=amount)
 
 
-class MaintenanceComplianceMonitor(models.Model):
+class MaintenanceComplianceMonitor(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     lease = models.ForeignKey(LeaseAgreement, on_delete=models.CASCADE)
     maintenance_task = models.ForeignKey(MaintenanceTask, on_delete=models.CASCADE)
@@ -99,7 +99,7 @@ class MaintenanceComplianceMonitor(models.Model):
         return report
 
 
-class LeaseInfoPortal(models.Model):
+class LeaseInfoPortal(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     lease = models.ForeignKey(LeaseAgreement, on_delete=models.CASCADE)

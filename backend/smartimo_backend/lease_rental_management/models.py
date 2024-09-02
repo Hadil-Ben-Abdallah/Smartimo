@@ -1,17 +1,17 @@
 from django.db import models
-from core.models import Property, User, Communication
+from core.models import Property, User, Communication, TimeStampedModel
 from django.utils import timezone
 
-class LeaseAgreement(models.Model):
+class LeaseAgreement(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     tenant = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lease_agreements')
-    terms = models.JSONField(default=dict)
-    rent_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    security_deposit = models.DecimalField(max_digits=10, decimal_places=2)
+    terms = models.JSONField(default=dict, blank=True, null=True)
+    rent_amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    security_deposit = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     signed_document = models.URLField(max_length=255, blank=True, null=True)
-    start_date = models.DateField()
-    end_date = models.DateField()
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
 
     def create_lease_agreement(self):
         self.save()
@@ -22,7 +22,6 @@ class LeaseAgreement(models.Model):
         self.security_deposit = security_deposit
         self.start_date = start_date
         self.end_date = end_date
-        self.updated_at = timezone.now()
         self.save()
 
     def sign_lease_agreement(self, signed_document_url):
@@ -44,7 +43,7 @@ class LeaseAgreement(models.Model):
 
 class Tenant(User):
     lease_agreements = models.ManyToManyField(LeaseAgreement, related_name='tenants')
-    payment_history = models.JSONField(default=list)
+    payment_history = models.JSONField(default=list, blank=True, null=True)
 
     def view_lease_agreement(self):
         return self.lease_agreements.all()
@@ -67,8 +66,8 @@ class Tenant(User):
         return communication
 
 class PropertyManager(User):
-    properties = models.ManyToManyField(Property, related_name='managers')
-    lease_agreements = models.ManyToManyField(LeaseAgreement, related_name='property_managers')
+    properties = models.ManyToManyField(Property, related_name='managers', blank=True, null=True)
+    lease_agreements = models.ManyToManyField(LeaseAgreement, related_name='property_managers', blank=True, null=True)
 
     def create_lease_agreement(self, property, tenant, terms, rent_amount, security_deposit, start_date, end_date):
         lease_agreement = LeaseAgreement.objects.create(
@@ -109,14 +108,14 @@ class PropertyManager(User):
         communication.save()
         return communication
 
-class RentalPayment(models.Model):
+class RentalPayment(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     lease_agreement = models.ForeignKey(LeaseAgreement, on_delete=models.CASCADE)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    payment_date = models.DateField()
-    payment_method = models.CharField(max_length=50)
-    status = models.CharField(max_length=50, default='pending')
+    amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    payment_date = models.DateField(blank=True, null=True)
+    payment_method = models.CharField(max_length=50, blank=True, null=True)
+    status = models.CharField(max_length=50, choices=[('pending', 'Pending'), ('completed', 'Completed')], default='pending')
 
     def make_payment(self, amount, payment_method):
         self.amount = amount
@@ -146,7 +145,7 @@ class RentalPayment(models.Model):
 class LeaseRentalCommunication(Communication):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
-    type = models.CharField(max_length=50)
+    type = models.CharField(max_length=50, blank=True, null=True)
     response = models.TextField(blank=True, null=True)
 
     def get_messages(self):
