@@ -1,9 +1,9 @@
 from django.db import models
-from core.models import Property, User, Reminder, Report, Communication, Notification
+from core.models import Property, Reminder, Report, Communication, Notification, TimeStampedModel
 from remote_property_monitoring.models import Inspector
 
 
-class InspectionSchedule(models.Model):
+class InspectionSchedule(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     inspection_frequency = models.CharField(max_length=50, choices=[('monthly', 'Monthly'), ('quarterly', 'Quarterly'), ('annually', 'Annually')], default='monthly')
@@ -58,7 +58,7 @@ class PropertyInspectionReminder(Reminder):
         )
 
 
-class InspectionTask(models.Model):
+class InspectionTask(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     schedule = models.ForeignKey(InspectionSchedule, on_delete=models.CASCADE)
     assigned_to = models.ForeignKey(Inspector, on_delete=models.SET_NULL, null=True)
@@ -125,7 +125,7 @@ class PropertyInspectionReport(Report):
         self.save()
 
 
-class InspectionAnalytics(models.Model):
+class InspectionAnalytics(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     period = models.CharField(max_length=50, choices=[('monthly', 'Monthly'), ('quarterly', 'Quarterly'), ('annually', 'Annually')], default='monthly')

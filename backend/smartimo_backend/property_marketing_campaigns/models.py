@@ -1,9 +1,9 @@
 from django.db import models
-from core.models import Property, User
+from core.models import Property, User, TimeStampedModel
 from property_listing.models import PropertyOwner
 
 
-class MarketingCampaign(models.Model):
+class MarketingCampaign(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, blank=True, null=True)
     properties = models.ForeignKey(Property, on_delete=models.CASCADE)
@@ -62,7 +62,7 @@ class MarketingCampaign(models.Model):
             'status': self.status,
         }
 
-class CampaignApproval(models.Model):
+class CampaignApproval(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     owner = models.ForeignKey(PropertyOwner, on_delete=models.CASCADE)
     campaign = models.ForeignKey(MarketingCampaign, on_delete=models.CASCADE)
@@ -87,7 +87,7 @@ class CampaignApproval(models.Model):
         self.save()
         return self
 
-class CampaignTemplate(models.Model):
+class CampaignTemplate(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, blank=True, null=True)
     type = models.CharField(max_length=50, choices=[('social_media', 'Social Media'), ('email', 'Email'), ('flyer', 'Flyer')])
@@ -110,7 +110,7 @@ class CampaignTemplate(models.Model):
         campaign.save()
         return campaign
 
-class CampaignPerformance(models.Model):
+class CampaignPerformance(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     campaign = models.ForeignKey(MarketingCampaign, on_delete=models.CASCADE)
     impressions = models.IntegerField(blank=True, null=True)
@@ -142,7 +142,7 @@ class CampaignPerformance(models.Model):
         }
         return trends
 
-class MarketingTeamCollaboration(models.Model):
+class MarketingTeamCollaboration(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     team_members = models.ManyToManyField(User)
     campaign = models.ForeignKey(MarketingCampaign, on_delete=models.CASCADE)

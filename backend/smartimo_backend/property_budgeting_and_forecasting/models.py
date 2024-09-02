@@ -1,11 +1,11 @@
 from django.db import models
 from datetime import datetime
-from core.models import Property
+from core.models import Property, TimeStampedModel
 from lease_rental_management.models import PropertyManager
 from property_listing.models import PropertyOwner
 from property_performance_benchmarking.models import PerformanceDashboard
 
-class PropertyBudget(models.Model):
+class PropertyBudget(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     created_by = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
@@ -56,7 +56,7 @@ class PropertyBudget(models.Model):
             "status": self.status,
         }
 
-class BudgetApproval(models.Model):
+class BudgetApproval(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     budget = models.ForeignKey(PropertyBudget, on_delete=models.CASCADE)
     property_owner = models.ForeignKey(PropertyOwner, on_delete=models.CASCADE)
@@ -87,7 +87,7 @@ class BudgetApproval(models.Model):
             "approval_date": self.approval_date,
         }
 
-class BudgetPerformance(models.Model):
+class BudgetPerformance(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     budget = models.ForeignKey(PropertyBudget, on_delete=models.CASCADE)
     actual_income = models.JSONField(default=dict, blank=True, null=True)
@@ -139,7 +139,7 @@ class BudgetPerformance(models.Model):
             "variance_analysis": self.variance_analysis,
         }
 
-class BudgetInsight(models.Model):
+class BudgetInsight(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     budget = models.ForeignKey(PropertyBudget, on_delete=models.CASCADE)
     insight_summary = models.TextField(blank=True, null=True)
@@ -181,7 +181,7 @@ class PropertyPerformanceDashboard(PerformanceDashboard):
             "performance_trends": self.performance_trends,
         }
 
-class BudgetingInvestmentAnalysis(models.Model):
+class BudgetingInvestmentAnalysis(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     investment_metrics = models.JSONField(default=dict, blank=True, null=True)

@@ -1,9 +1,9 @@
 from django.db import models
 from django.utils import timezone
-from core.models import Report, Property
+from core.models import Report, Property, TimeStampedModel
 from property_asset_management.models import MaintenanceTeam
 
-class PropertyMaintenanceTask(models.Model):
+class PropertyMaintenanceTask(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='maintenance_tasks')
     description = models.TextField(blank=True, null=True)

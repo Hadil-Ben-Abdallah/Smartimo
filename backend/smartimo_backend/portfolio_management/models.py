@@ -1,15 +1,14 @@
 from django.db import models
-from django.utils import timezone
-from core.models import Property, Report, User
+from core.models import Property, Report, User, TimeStampedModel
 from property_listing.models import PropertyOwner
 from vendor_management.models import Vendor
 
 
-class Portfolio(models.Model):
+class Portfolio(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, blank=True, null=True)
     owner = models.ForeignKey(PropertyOwner, on_delete=models.CASCADE)
-    properties = models.ManyToManyField(Property)
+    properties = models.ManyToManyField(Property, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
 
     def add_property(self, property: Property):
@@ -31,7 +30,7 @@ class Portfolio(models.Model):
         self.description = new_description
         self.save()
 
-class DashboardWidget(models.Model):
+class DashboardWidget(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     widget_type = models.CharField(max_length=100, choices=[('kpi', 'KPI'), ('chart', 'Chart'), ('report', 'Report')], default='kpi')
     data_source = models.CharField(max_length=255, blank=True, null=True)
@@ -44,7 +43,7 @@ class DashboardWidget(models.Model):
         self.settings.update(new_settings)
         self.save()
 
-class Dashboard(models.Model):
+class Dashboard(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     widgets = models.ManyToManyField(DashboardWidget)
@@ -81,7 +80,7 @@ class PortfolioFinancialReport(Report):
     def drill_down_details(self):
         return f"Drilling down details for Portfolio ID {self.id}"
 
-class OperationalTask(models.Model):
+class OperationalTask(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     assigned_to = models.ForeignKey(Vendor, on_delete=models.CASCADE)
@@ -99,7 +98,7 @@ class OperationalTask(models.Model):
     def track_performance(self):
         return f"Tracking performance for Vendor ID {self.assigned_to.id}"
 
-class PortfolioAnalysis(models.Model):
+class PortfolioAnalysis(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
     parameters = models.JSONField(blank=True, null=True)
@@ -114,7 +113,7 @@ class PortfolioAnalysis(models.Model):
     def generate_recommendations(self):
         return "Generating recommendations based on analysis"
 
-class ReportGeneration(models.Model):
+class ReportGeneration(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     content = models.TextField(blank=True, null=True)
     distribution_list = models.JSONField(blank=True, null=True)

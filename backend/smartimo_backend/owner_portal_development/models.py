@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import Property, Report, Notification, Communication, Resource, Portal
+from core.models import Property, Report, Notification, Communication, Resource, Portal, TimeStampedModel
 from property_listing.models import PropertyOwner
 from lease_rental_management.models import PropertyManager
 
@@ -9,8 +9,8 @@ class OwnerPortal(Portal):
 class OwnerFinancialReport(Report):
     owner = models.ForeignKey(PropertyOwner, on_delete=models.CASCADE)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    report_type = models.CharField(max_length=255)
-    document_url = models.URLField()
+    report_type = models.CharField(max_length=255, blank=True, null=True)
+    document_url = models.URLField(blank=True, null=True)
 
     def view_report(self):
         return self.document_url
@@ -27,15 +27,15 @@ class OwnerFinancialReport(Report):
         return query
 
 
-class PerformanceMetric(models.Model):
+class PerformanceMetric(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     owner = models.ForeignKey(PropertyOwner, on_delete=models.CASCADE)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    metric_name = models.CharField(max_length=255)
-    occupancy_rate = models.DecimalField(max_digits=5, decimal_places=2)
-    rental_income = models.DecimalField(max_digits=10, decimal_places=2)
-    value = models.DecimalField(max_digits=10, decimal_places=2)
-    date = models.DateField()
+    metric_name = models.CharField(max_length=255, blank=True, null=True)
+    occupancy_rate = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    rental_income = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    value = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    date = models.DateField(blank=True, null=True)
 
     def view_performance(self):
         return {
@@ -58,9 +58,9 @@ class PerformanceMetric(models.Model):
 
 class OwnerNotification(Notification):
     owner = models.ForeignKey(PropertyOwner, on_delete=models.CASCADE)
-    notification_type = models.CharField(max_length=255)
-    delivery_method = models.CharField(max_length=255)
-    frequency = models.CharField(max_length=255)
+    notification_type = models.CharField(max_length=255, blank=True, null=True)
+    delivery_method = models.CharField(max_length=255, blank=True, null=True)
+    frequency = models.CharField(max_length=255, blank=True, null=True)
 
     def customize_preferences(self, preferences):
         self.delivery_method = preferences.get("delivery_method", self.delivery_method)
@@ -73,8 +73,8 @@ class OwnerNotification(Notification):
 class PortalCommunication(Communication):
     owner = models.ForeignKey(PropertyOwner, on_delete=models.CASCADE)
     manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
-    attachments = models.JSONField(default=list)
-    communication_log = models.TextField()
+    attachments = models.JSONField(default=list, blank=True, null=True)
+    communication_log = models.TextField(blank=True, null=True)
 
     def view_log(self):
         return self.communication_log
@@ -87,11 +87,9 @@ class OwnerResource(Resource):
     owner = models.ForeignKey(PropertyOwner, on_delete=models.CASCADE)
 
     def access_resource(self):
-        # access a specific resource, such as a document or guide.
         return f"Accessing resources for owner {self.owner}"
 
     def download_template(self, template_name):
-        # download a specific template or form.
         return f"Downloading template: {template_name}"
 
     def request_consultation(self):

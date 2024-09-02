@@ -139,8 +139,8 @@ class FinancialTransaction(TimeStampedModel):
 class FinancialPortal(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
-    invoices = models.ManyToManyField(Invoice, blank=True, null=True)
-    payment_history = models.ManyToManyField(Payment, blank=True, null=True)
+    invoices = models.ManyToManyField(Invoice)
+    payment_history = models.ManyToManyField(Payment)
 
     def view_invoice(self, invoice_id):
         return self.invoices.get(id=invoice_id)

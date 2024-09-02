@@ -1,6 +1,7 @@
 from django.db import models
 from property_marketing_campaigns.models import MarketingCampaign
 from sales_management.models import Lead
+from core.models import TimeStampedModel
 
 class MarketingCampaignTrack(MarketingCampaign):
     message = models.TextField(blank=True, null=True)
@@ -9,7 +10,7 @@ class MarketingCampaignTrack(MarketingCampaign):
     def delete_campaign(self):
         self.delete()
 
-class WebsiteTraffic(models.Model):
+class WebsiteTraffic(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     campaign = models.ForeignKey(MarketingCampaignTrack, on_delete=models.CASCADE)
     page_views = models.IntegerField(blank=True, null=True)
@@ -66,7 +67,7 @@ class PropertyMarketingLead(Lead):
             "lead_source": self.lead_source,
         }
 
-class CampaignPerformanceTrack(models.Model):
+class CampaignPerformanceTrack(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     campaign = models.ForeignKey(MarketingCampaignTrack, on_delete=models.CASCADE)
     leads_generated = models.IntegerField(blank=True, null=True)
@@ -95,7 +96,7 @@ class CampaignPerformanceTrack(models.Model):
             "other_campaign": other_campaign.generate_performance_report(),
         }
 
-class TrackingPixel(models.Model):
+class TrackingPixel(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     campaign = models.ForeignKey(MarketingCampaignTrack, on_delete=models.CASCADE)
     pixel_code = models.TextField(blank=True, null=True)
@@ -112,7 +113,7 @@ class TrackingPixel(models.Model):
     def get_pixel_code(self):
         return self.pixel_code
 
-class CampaignAnalysis(models.Model):
+class CampaignAnalysis(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     campaign = models.ForeignKey(MarketingCampaignTrack, on_delete=models.CASCADE)
     channel_performance = models.JSONField(blank=True, null=True)

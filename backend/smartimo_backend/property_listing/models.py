@@ -1,17 +1,17 @@
 from django.db import models
-from core.models import User, Property, Notification
+from core.models import User, Property, Notification, TimeStampedModel
 
-class Agency(models.Model):
+class Agency(TimeStampedModel):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255)
-    bank_partnership = models.CharField(max_length=255)
-    founding_date = models.DateField()
-    bank_code = models.CharField(max_length=100)
-    description = models.TextField()
-    email = models.EmailField()
-    website_link = models.URLField()
-    phone_number = models.CharField(max_length=20)
-    location = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, blank=True, null=True)
+    bank_partnership = models.CharField(max_length=255, blank=True, null=True)
+    founding_date = models.DateField(blank=True, null=True)
+    bank_code = models.CharField(max_length=100, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    website_link = models.URLField(blank=True, null=True)
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
+    location = models.CharField(max_length=255, blank=True, null=True)
 
     def create_agency(self, **kwargs):
         return Agency.objects.create(**kwargs)
@@ -108,7 +108,7 @@ class PropertyOwner(User):
             return None
 
 class ProspectiveBuyerRenter(User):
-    preferences = models.JSONField()
+    preferences = models.JSONField(blank=True, null=True)
     saved_listings = models.ManyToManyField('ThePropertyListing', related_name='saved_by')
 
     def search_properties(self):
@@ -122,7 +122,7 @@ class ProspectiveBuyerRenter(User):
     def subscribe_notifications(self):
         pass
 
-class SavedListing(models.Model):
+class SavedListing(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(ProspectiveBuyerRenter, on_delete=models.CASCADE)
     property = models.ForeignKey(ThePropertyListing, on_delete=models.CASCADE)

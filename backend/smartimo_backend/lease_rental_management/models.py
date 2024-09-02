@@ -66,8 +66,8 @@ class Tenant(User):
         return communication
 
 class PropertyManager(User):
-    properties = models.ManyToManyField(Property, related_name='managers', blank=True, null=True)
-    lease_agreements = models.ManyToManyField(LeaseAgreement, related_name='property_managers', blank=True, null=True)
+    properties = models.ManyToManyField(Property, related_name='managers')
+    lease_agreements = models.ManyToManyField(LeaseAgreement, related_name='property_managers')
 
     def create_lease_agreement(self, property, tenant, terms, rent_amount, security_deposit, start_date, end_date):
         lease_agreement = LeaseAgreement.objects.create(

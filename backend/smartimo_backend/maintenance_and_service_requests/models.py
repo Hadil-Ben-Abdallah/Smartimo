@@ -86,7 +86,7 @@ class MaintenanceRequest(TimeStampedModel):
 class TenantRequest(TimeStampedModel):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name='tenant_requests')
     unit_number = models.CharField(max_length=50, blank=True, null=True)
-    maintenance_requests = models.ManyToManyField(MaintenanceRequest, related_name='tenant_requests', blank=True, null=True)
+    maintenance_requests = models.ManyToManyField(MaintenanceRequest, related_name='tenant_requests')
 
     def view_requests(self):
         return self.maintenance_requests.all()
@@ -99,7 +99,7 @@ class TenantRequest(TimeStampedModel):
 
 class MaintenancePropertyManager(TimeStampedModel):
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE, related_name='property_managers')
-    assigned_requests = models.ManyToManyField(MaintenanceRequest, related_name='assigned_requests', blank=True, null=True)
+    assigned_requests = models.ManyToManyField(MaintenanceRequest, related_name='assigned_requests')
 
     def view_requests_dashboard(self):
         return self.assigned_requests.all()
@@ -145,7 +145,7 @@ class MaintenanceTechnician(TimeStampedModel):
     email = models.EmailField(blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
     skills = models.TextField(blank=True, null=True)
-    assigned_tasks = models.ManyToManyField(MaintenanceRequest, related_name='technicians', blank=True, null=True)
+    assigned_tasks = models.ManyToManyField(MaintenanceRequest, related_name='technicians')
 
     def view_assigned_tasks(self):
         return self.assigned_tasks.all()

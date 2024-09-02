@@ -1,10 +1,10 @@
 from django.db import models
 from django.utils import timezone
-from core.models import Property, User
+from core.models import Property, User, TimeStampedModel
 from lease_rental_management.models import PropertyManager
 from maintenance_and_service_requests.models import MaintenanceTechnician
 
-class PropertyAsset(models.Model):
+class PropertyAsset(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     asset_type = models.CharField(max_length=255, blank=True, null=True)
@@ -51,7 +51,7 @@ class PropertyAsset(models.Model):
         }
 
 
-class MaintenanceTeam(models.Model):
+class MaintenanceTeam(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, blank=True, null=True)
     contact_info = models.CharField(max_length=255, blank=True, null=True)
@@ -72,7 +72,7 @@ class MaintenanceTeam(models.Model):
         }
 
 
-class AssetAssignment(models.Model):
+class AssetAssignment(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     asset = models.ForeignKey(PropertyAsset, on_delete=models.CASCADE)
     assigned_to = models.ForeignKey(MaintenanceTeam, on_delete=models.CASCADE)
@@ -100,7 +100,7 @@ class AssetAssignment(models.Model):
         }
 
 
-class MaintenanceSchedule(models.Model):
+class MaintenanceSchedule(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     asset = models.ForeignKey(PropertyAsset, on_delete=models.CASCADE)
     task = models.CharField(max_length=255, blank=True, null=True)
@@ -127,7 +127,7 @@ class MaintenanceSchedule(models.Model):
         return MaintenanceSchedule.objects.filter(asset=asset_id).values()
 
 
-class DepreciationTracker(models.Model):
+class DepreciationTracker(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     asset = models.ForeignKey(PropertyAsset, on_delete=models.CASCADE)
     depreciation_method = models.CharField(max_length=255, choices=[('straight_line', 'Straight-Line'), ('accelerated', 'Accelerated')], default='straight_line')
@@ -159,7 +159,7 @@ class DepreciationTracker(models.Model):
         self.save()
 
 
-class AssetPerformance(models.Model):
+class AssetPerformance(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     asset = models.ForeignKey(PropertyAsset, on_delete=models.CASCADE)
     utilization_rate = models.FloatField(blank=True, null=True)
@@ -188,7 +188,7 @@ class AssetPerformance(models.Model):
         }
 
 
-class AssetAnalytics(models.Model):
+class AssetAnalytics(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     asset_data = models.JSONField(default=dict, blank=True, null=True)

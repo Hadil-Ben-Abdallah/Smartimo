@@ -1,8 +1,8 @@
 from django.db import models
-from core.models import Property, User
+from core.models import Property, User, TimeStampedModel
 from maintenance_and_service_requests.models import MaintenanceTechnician
 
-class DataSource(models.Model):
+class DataSource(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     type = models.CharField(max_length=100, choices=[('IoT_sensor', 'IoT Sensor'), ('building_management_system', 'Building Management System')], default='building_management_system')
     data = models.JSONField(blank=True, null=True)
@@ -15,7 +15,7 @@ class DataSource(models.Model):
         return self.data
 
 
-class PredictionModel(models.Model):
+class PredictionModel(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, blank=True, null=True)
     algorithm = models.CharField(max_length=100, blank=True, null=True)
@@ -36,7 +36,7 @@ class PredictionModel(models.Model):
         self.save()
 
 
-class MaintenanceAlert(models.Model):
+class MaintenanceAlert(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     prediction = models.JSONField(blank=True, null=True)
@@ -61,7 +61,7 @@ class MaintenanceAlert(models.Model):
         return True
 
 
-class PredictiveMaintenanceSystem(models.Model):
+class PredictiveMaintenanceSystem(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, blank=True, null=True)
     data_sources = models.ManyToManyField(DataSource, blank=True, null=True)
@@ -88,7 +88,7 @@ class PredictiveMaintenanceSystem(models.Model):
         return reports
 
 
-class WorkOrder(models.Model):
+class WorkOrder(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     alert = models.ForeignKey(MaintenanceAlert, on_delete=models.CASCADE)
     assigned_to = models.ForeignKey(MaintenanceTechnician, on_delete=models.CASCADE)
@@ -109,7 +109,7 @@ class WorkOrder(models.Model):
         self.save()
 
 
-class MaintenancePerformanceMetric(models.Model):
+class MaintenancePerformanceMetric(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     metric_name = models.CharField(max_length=100, blank=True, null=True)
@@ -132,7 +132,7 @@ class MaintenancePerformanceMetric(models.Model):
         return trends
 
 
-class Integration(models.Model):
+class Integration(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     system_type = models.CharField(max_length=100, blank=True, null=True)
     api_endpoint = models.URLField(blank=True, null=True)

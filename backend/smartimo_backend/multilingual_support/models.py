@@ -1,10 +1,10 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from core.models import Property, User
+from core.models import Property, User, TimeStampedModel
 from property_listing.models import RealEstateAgent
 from lease_rental_management.models import Tenant
 
-class MultilingualContent(models.Model):
+class MultilingualContent(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     language = models.CharField(max_length=10, choices=[('en', 'English'), ('es', 'Spanish'), ('fr', 'French')], default='en')
@@ -35,7 +35,7 @@ class MultilingualContent(models.Model):
         return MultilingualContent.objects.get(id=content_id)
 
 
-class MultilingualTenantPortal(models.Model):
+class MultilingualTenantPortal(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     preferred_language = models.CharField(max_length=10, choices=[('en', _('English')), ('es', _('Spanish')), ('fr', _('French'))], default='en')
@@ -61,7 +61,7 @@ class MultilingualTenantPortal(models.Model):
         return portal.property_info
 
 
-class MultilingualMarketing(models.Model):
+class MultilingualMarketing(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     agent = models.ForeignKey(RealEstateAgent, on_delete=models.CASCADE)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
@@ -90,7 +90,7 @@ class MultilingualMarketing(models.Model):
         return MultilingualMarketing.objects.get(marketing_id=marketing_id)
 
 
-class InvestorRelations(models.Model):
+class InvestorRelations(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     preferred_language = models.CharField(max_length=10, choices=[('en', 'English'), ('es', 'Spanish'), ('fr','French')], default='en')
     project_updates = models.TextField(blank=True, null=True)
@@ -119,7 +119,7 @@ class InvestorRelations(models.Model):
         return InvestorRelations.objects.get(id=investor_id).investment_documents
 
 
-class MultilingualSupport(models.Model):
+class MultilingualSupport(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     preferred_language = models.CharField(max_length=10, choices=[('en', 'English'), ('es', 'Spanish'), ('fr', 'French')], default='en')
@@ -145,7 +145,6 @@ class MultilingualSupport(models.Model):
         return support.support_channels
 
     def translate_support_content(self, content_id, target_language):
-        # Placeholder for translation logic
         support = MultilingualSupport.objects.get(support_id=content_id)
         translated_content = f"Translated to {target_language}: {support.faq_articles}"
         return translated_content

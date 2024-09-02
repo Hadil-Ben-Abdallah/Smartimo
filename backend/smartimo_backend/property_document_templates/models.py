@@ -1,6 +1,7 @@
 from django.db import models
 from lease_rental_management.models import PropertyManager
 from legal_document_templates.models import DocumentTemplateLibrary
+from core.models import TimeStampedModel
 
 class AgreementTemplate(DocumentTemplateLibrary):
     property_type = models.CharField(max_length=255, blank=True, null=True)
@@ -65,13 +66,13 @@ class PropertyRelatedDocumentTemplate(DocumentTemplateLibrary):
         self.save()
         return self.customizable_fields
 
-    def ensure_compliance(self, compliance_guidelines):
+    def ensure_compliance(self):
         self.compliance_status = True
         self.save()
         return self.compliance_status
 
 
-class LegalComplianceMonitor(models.Model):
+class LegalComplianceMonitor(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     template_type = models.CharField(max_length=255, blank=True, null=True)

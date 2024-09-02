@@ -1,8 +1,8 @@
 from django.db import models
 from django.utils import timezone
-from core.models import Property
+from core.models import Property, TimeStampedModel
 
-class Meter(models.Model):
+class Meter(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     meter_type = models.CharField(max_length=100, blank=True, null=True)
@@ -16,7 +16,7 @@ class Meter(models.Model):
             "installation_date": self.installation_date,
         }
 
-class EnergyConsumptionData(models.Model):
+class EnergyConsumptionData(TimeStampedModel):
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     meter = models.ForeignKey(Meter, on_delete=models.CASCADE)
     energy_type = models.CharField(max_length=100, choices=[('electricity', 'electricity'), ('gas', 'Gas'), ('water', 'Water'), ('other', 'Other')], default='electricity')
@@ -37,7 +37,7 @@ class EnergyConsumptionData(models.Model):
         )
         return aggregated_data
 
-class EnergyConsumptionAnalysis(models.Model):
+class EnergyConsumptionAnalysis(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     analysis_date = models.DateField(default=timezone.now, blank=True, null=True)
@@ -70,7 +70,7 @@ class EnergyConsumptionAnalysis(models.Model):
         }
         return insights
 
-class BenchmarkingTool(models.Model):
+class BenchmarkingTool(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     benchmark_date = models.DateField(default=timezone.now, blank=True, null=True)
@@ -95,7 +95,7 @@ class BenchmarkingTool(models.Model):
         }
         return report
 
-class EnergyEfficiencyInitiative(models.Model):
+class EnergyEfficiencyInitiative(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     initiative_name = models.CharField(max_length=200, blank=True, null=True)

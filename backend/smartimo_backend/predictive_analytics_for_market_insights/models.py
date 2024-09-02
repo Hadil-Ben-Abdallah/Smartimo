@@ -1,14 +1,14 @@
 from django.db import models
-from core.models import User, Property
+from core.models import User, Property, TimeStampedModel
 from lease_rental_management.models import PropertyManager
 import numpy as np
 import json
 
-class PredictiveAnalytics(models.Model):
+class PredictiveAnalytics(TimeStampedModel):
     id = models.AutoField(primary_key=True)
-    data_source = models.CharField(max_length=255)
-    algorithm = models.CharField(max_length=255)
-    parameters = models.JSONField()
+    data_source = models.CharField(max_length=255, blank=True, null=True)
+    algorithm = models.CharField(max_length=255, blank=True, null=True)
+    parameters = models.JSONField(blank=True, null=True)
 
     def train_model(self, data_source, algorithm, parameters):
         model_performance = np.random.rand()
@@ -17,7 +17,7 @@ class PredictiveAnalytics(models.Model):
         self.save()
         return model_performance
 
-    def update_model(self, predictive_id, new_data):
+    def update_model(self, predictive_id):
         model_instance = PredictiveAnalytics.objects.get(id=predictive_id)
         updated_performance = np.random.rand()
         model_instance.save()
@@ -34,11 +34,11 @@ class PredictiveAnalytics(models.Model):
         return performance_score
 
 
-class InvestmentDashboard(models.Model):
+class InvestmentDashboard(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    predicted_values = models.JSONField()
-    investment_returns = models.JSONField()
+    predicted_values = models.JSONField(blank=True, null=True)
+    investment_returns = models.JSONField(blank=True, null=True)
 
     def visualize_forecasts(self, dashboard_id):
         dashboard_instance = InvestmentDashboard.objects.get(id=dashboard_id)
@@ -64,11 +64,11 @@ class InvestmentDashboard(models.Model):
         return alerts
 
 
-class MarketTrendAnalysis(models.Model):
+class MarketTrendAnalysis(TimeStampedModel):
     id = models.AutoField(primary_key=True)
-    region = models.CharField(max_length=255)
-    property_type = models.CharField(max_length=255)
-    trend_data = models.JSONField()
+    region = models.CharField(max_length=255, blank=True, null=True)
+    property_type = models.CharField(max_length=255, blank=True, null=True)
+    trend_data = models.JSONField(blank=True, null=True)
 
     def analyze_market(self, region, property_type):
         trend_analysis = np.random.rand(10)
@@ -91,11 +91,11 @@ class MarketTrendAnalysis(models.Model):
         return shared_insight
 
 
-class RentalDemandForecast(models.Model):
+class RentalDemandForecast(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
-    demand_projections = models.JSONField()
-    tenant_preferences = models.JSONField()
+    demand_projections = models.JSONField(blank=True, null=True)
+    tenant_preferences = models.JSONField(blank=True, null=True)
 
     def forecast_demand(self, property_manager):
         demand_projection = np.random.rand(10) * 1000
@@ -118,11 +118,11 @@ class RentalDemandForecast(models.Model):
         return marketing_strategy
 
 
-class PropertyValuationModel(models.Model):
+class PropertyValuationModel(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    predicted_value = models.DecimalField(max_digits=12, decimal_places=2)
-    growth_factors = models.JSONField()
+    predicted_value = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    growth_factors = models.JSONField(blank=True, null=True)
 
     def calculate_valuation(self, property_id):
         property_instance = Property.objects.get(id=property_id)
@@ -148,9 +148,9 @@ class PropertyValuationModel(models.Model):
 
 
 class RealEstateDeveloper(User):
-    projects = models.JSONField()
+    projects = models.JSONField(blank=True, null=True)
     market_analysis = models.ForeignKey(MarketTrendAnalysis, on_delete=models.CASCADE)
-    investment_strategies = models.JSONField()
+    investment_strategies = models.JSONField(blank=True, null=True)
     demand_forecast = models.ForeignKey(RentalDemandForecast, on_delete=models.CASCADE)
 
     def create_development_project(self, project_data):
@@ -175,12 +175,12 @@ class RealEstateDeveloper(User):
         pass
 
 
-class DevelopmentFeasibilityTool(models.Model):
+class DevelopmentFeasibilityTool(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     developer = models.ForeignKey(RealEstateDeveloper, on_delete=models.CASCADE)
-    project_parameters = models.JSONField()
-    roi_projections = models.JSONField()
-    risk_factors = models.JSONField()
+    project_parameters = models.JSONField(blank=True, null=True)
+    roi_projections = models.JSONField(blank=True, null=True)
+    risk_factors = models.JSONField(blank=True, null=True)
 
     def evaluate_feasibility(self, developer_id, project_parameters):
         feasibility_score = np.random.rand() * 100

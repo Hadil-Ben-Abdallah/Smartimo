@@ -1,8 +1,8 @@
 from django.db import models
-from core.models import Property
+from core.models import Property, TimeStampedModel
 from lease_rental_management.models import PropertyManager
 
-class PropertyBenchmarkingTool(models.Model):
+class PropertyBenchmarkingTool(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     kpi = models.CharField(max_length=100, blank=True, null=True)
     benchmark_value = models.FloatField(blank=True, null=True)
@@ -20,7 +20,7 @@ class PropertyBenchmarkingTool(models.Model):
         self.save()
 
 
-class PerformanceDashboard(models.Model):
+class PerformanceDashboard(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     kpi_comparisons = models.JSONField(default=dict, blank=True, null=True)
@@ -41,7 +41,7 @@ class PerformanceDashboard(models.Model):
         self.generate_dashboard(self.property.property_id)
 
 
-class Recommendation(models.Model):
+class Recommendation(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     recommendation_text = models.TextField(blank=True, null=True)
@@ -63,8 +63,8 @@ class Recommendation(models.Model):
         self.generate_recommendations(self.property.property_id)
 
 
-class InvestmentAnalysis(models.Model):
-    id = models.OneToOneField(Property, on_delete=models.CASCADE, primary_key=True)
+class InvestmentAnalysis(TimeStampedModel):
+    property = models.ForeignKey(Property, on_delete=models.CASCADE)
     comparison_metrics = models.JSONField(default=dict, blank=True, null=True)
     financial_projections = models.JSONField(default=dict, blank=True, null=True)
 
@@ -88,9 +88,9 @@ class InvestmentAnalysis(models.Model):
         }
 
 
-class PropertyCollaboration(models.Model):
+class PropertyCollaboration(TimeStampedModel):
     id = models.AutoField(primary_key=True)
-    team = models.ManyToManyField(PropertyManager)
+    team = models.ManyToManyField(PropertyManager, blank=True, null=True)
     benchmarking_project = models.CharField(max_length=255, blank=True, null=True)
     shared_insights = models.JSONField(default=dict, blank=True, null=True)
 
