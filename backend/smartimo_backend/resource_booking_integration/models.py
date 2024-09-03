@@ -1,14 +1,14 @@
 from django.db import models
-from core.models import Resource, Notification
+from core.models import Resource, Notification, TimeStampedModel
 from lease_rental_management.models import Tenant, PropertyManager
 
 class ResourceInfo(Resource):
     location = models.CharField(max_length=255, blank=True, null=True)
     capacity = models.IntegerField(blank=True, null=True)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
-    amenities = models.JSONField(default=dict)
-    availability_calendar = models.JSONField(default=dict) 
-    booking_policies = models.JSONField(default=dict)
+    amenities = models.JSONField(default=dict, blank=True, null=True)
+    availability_calendar = models.JSONField(default=dict, blank=True, null=True)
+    booking_policies = models.JSONField(default=dict, blank=True, null=True)
 
     def view_resource_details(self):
         return {
@@ -47,7 +47,7 @@ class ResourceInfo(Resource):
         return True, "Booking is allowed."
 
 
-class ResourceBooking(models.Model):
+class ResourceBooking(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     resource = models.ForeignKey(ResourceInfo, on_delete=models.CASCADE)
@@ -56,7 +56,7 @@ class ResourceBooking(models.Model):
     end_time = models.TimeField(blank=True, null=True)
     purpose = models.TextField(blank=True, null=True)
     attendee_count = models.IntegerField(blank=True, null=True)
-    status = models.CharField(max_length=50, choices=[('confirmed', 'Confirmed'), ('pending', 'Pending'), ('canceled', 'Canceled')],default="pending")
+    status = models.CharField(max_length=50, choices=[('confirmed', 'Confirmed'), ('pending', 'Pending'), ('canceled', 'Canceled'), ('rejected', 'Rejected'), ('unavailable', 'Unavailable')],default="pending")
 
     def create_booking(self):
         if not self.id.check_availability(self.booking_date, self.start_time):
@@ -143,12 +143,12 @@ class BookingNotification(Notification):
         return f"Reminder scheduled for {remind_at}."
 
 
-class ResourceBookingAdmin(models.Model):
+class ResourceBookingAdmin(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     resource = models.ForeignKey(ResourceInfo, on_delete=models.CASCADE)
-    booking_policies = models.JSONField(default=dict)
-    availability_schedule = models.JSONField(default=dict)
+    booking_policies = models.JSONField(default=dict, blank=True, null=True)
+    availability_schedule = models.JSONField(default=dict, blank=True, null=True)
 
     def set_availability_schedule(self, new_schedule):
         self.availability_schedule = new_schedule
@@ -182,15 +182,14 @@ class ResourceBookingAdmin(models.Model):
         self.save()
 
 
-class ResourceBookingAnalytics(models.Model):
+class ResourceBookingAnalytics(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     resource = models.ForeignKey(ResourceInfo, on_delete=models.CASCADE)
-    booking_data = models.JSONField(default=dict)
-    revenue_generated = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    peak_booking_times = models.JSONField(default=dict)
+    booking_data = models.JSONField(default=dict, blank=True, null=True)
+    revenue_generated = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, blank=True, null=True)
+    peak_booking_times = models.JSONField(default=dict, blank=True, null=True)
 
     def generate_booking_report(self):
-        # Example of generating a basic report
         bookings = ResourceBooking.objects.filter(resource_id=self.resource.id)
         total_bookings = bookings.count()
         total_revenue = sum(booking.resource_id.apply_booking_policies()['price'] for booking in bookings)

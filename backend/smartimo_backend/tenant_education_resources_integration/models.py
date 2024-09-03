@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import Category, Resource, Feedback
+from core.models import Category, Resource, Feedback, TimeStampedModel
 from lease_rental_management.models import Tenant, PropertyManager
 
 class TenantEducationalResource(Resource):
@@ -43,7 +43,7 @@ class TenantEducationalResource(Resource):
             "contact_info": self.contact_info,
         }
 
-class TenantResourceEngagement(models.Model):
+class TenantResourceEngagement(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     resource = models.ForeignKey(TenantEducationalResource, on_delete=models.CASCADE)
@@ -98,7 +98,7 @@ class TenantFeedback(Feedback):
             "comments": self.comments,
         }
 
-class ResourceEngagementAnalytics(models.Model):
+class ResourceEngagementAnalytics(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     resource = models.ForeignKey(TenantEducationalResource, on_delete=models.CASCADE)
     view_count = models.IntegerField(default=0, blank=True, null=True)
@@ -138,7 +138,7 @@ class ResourceEngagementAnalytics(models.Model):
             "feedback_rating": self.feedback_rating,
         }
 
-class PromotionalCampaign(models.Model):
+class PromotionalCampaign(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(blank=True, null=True)

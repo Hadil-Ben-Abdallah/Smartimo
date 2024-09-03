@@ -1,8 +1,9 @@
 from django.db import models
 from django.utils import timezone
 from lease_rental_management.models import Tenant
+from core.models import TimeStampedModel
 
-class CommunicationTemplate(models.Model):
+class CommunicationTemplate(TimeStampedModel):
     
     id = models.AutoField(primary_key=True)
     template_name = models.CharField(max_length=255, blank=True, null=True)
@@ -62,12 +63,12 @@ class CommunicationTemplate(models.Model):
         return cls.objects.all()
 
 
-class CommunicationWorkflow(models.Model):
+class CommunicationWorkflow(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     template = models.ForeignKey(CommunicationTemplate, on_delete=models.CASCADE)
     event_trigger = models.CharField(max_length=255, blank=True, null=True)
     schedule = models.JSONField(blank=True, null=True)
-    recipient_list = models.ManyToManyField(Tenant, blank=True, null=True)
+    recipient_list = models.ManyToManyField(Tenant)
     status = models.CharField(max_length=10, choices=[('active', 'Active'), ('inactive', 'Inactive')], default='inactive')
 
     def create_workflow(self, template, event_trigger, schedule, recipient_list, status='active'):
@@ -118,7 +119,7 @@ class CommunicationWorkflow(models.Model):
         pass
 
 
-class TenantCommunicationLog(models.Model):
+class TenantCommunicationLog(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     workflow = models.ForeignKey(CommunicationWorkflow, on_delete=models.CASCADE)
     recipient = models.ForeignKey(Tenant, on_delete=models.CASCADE)
@@ -162,7 +163,7 @@ class TenantCommunicationLog(models.Model):
         pass
 
 
-class CommunicationAnalytics(models.Model):
+class CommunicationAnalytics(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     log = models.ForeignKey(TenantCommunicationLog, on_delete=models.CASCADE)
     open_rate = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
@@ -191,7 +192,7 @@ class CommunicationAnalytics(models.Model):
         return cls.objects.all()
 
 
-class TemplateVersionControl(models.Model):
+class TemplateVersionControl(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     template = models.ForeignKey(CommunicationTemplate, on_delete=models.CASCADE)
     version_number = models.IntegerField(blank=True, null=True)

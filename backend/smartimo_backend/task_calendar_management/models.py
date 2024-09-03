@@ -4,20 +4,20 @@ from django.core.mail import send_mail
 from django.utils import timezone
 from django.core.files.storage import default_storage
 import json
-from core.models import User, Property
+from core.models import User, Property, TimeStampedModel
 from property_listing.models import RealEstateAgent
 
 
-class Appointment(models.Model):
+class Appointment(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     agent = models.ForeignKey(RealEstateAgent, related_name='appointments_as_agent', on_delete=models.CASCADE)
     client = models.ForeignKey(User, related_name='appointments_as_client', on_delete=models.CASCADE)
-    date = models.DateField()
-    time = models.TimeField()
-    type = models.CharField(max_length=50)
-    status = models.CharField(max_length=50)
-    details = models.TextField()
+    date = models.DateField(blank=True, null=True)
+    time = models.TimeField(blank=True, null=True)
+    type = models.CharField(max_length=50, blank=True, null=True)
+    status = models.CharField(max_length=50, blank=True, null=True)
+    details = models.TextField(blank=True, null=True)
 
     def schedule_appointment(self):
         return f"Appointment scheduled for {self.id}."
@@ -49,14 +49,14 @@ class Appointment(models.Model):
         return f"Reminders sent for appointment {self.id}."
 
 
-class Inspection(models.Model):
+class Inspection(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     manager = models.ForeignKey(User, related_name='inspections', on_delete=models.CASCADE)
-    date = models.DateField()
-    time = models.TimeField()
-    checklist = models.JSONField()
-    status = models.CharField(max_length=50)
+    date = models.DateField(blank=True, null=True)
+    time = models.TimeField(blank=True, null=True)
+    checklist = models.JSONField(blank=True, null=True)
+    status = models.CharField(max_length=50, blank=True, null=True)
     report = models.FileField(upload_to='inspection_reports/', null=True, blank=True)
 
     def schedule_inspection(self):
@@ -85,13 +85,13 @@ class Inspection(models.Model):
         return f"Findings documented for inspection {self.id}."
 
 
-class Task(models.Model):
+class Task(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
-    description = models.TextField()
+    title = models.CharField(max_length=255, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
     priority = models.CharField(max_length=50, choices= [('low', 'Low'), ('medium', 'Medium'), ('high', 'High')], default= 'low')
-    deadline = models.DateTimeField()
+    deadline = models.DateTimeField(blank=True, null=True)
     status = models.CharField(max_length=50, choices= [('pending', 'Pending'), ('in_progress', 'In Progress'), ('completed', 'Completed')], default= 'pending')
     category = models.CharField(max_length=50, choices= [('sales', 'Sales'), ('rental', 'Rental'), ('maintenance', 'Maintenance')], default= 'sales')
 
@@ -122,11 +122,11 @@ class Task(models.Model):
         return f"Reminders sent for task {self.id}."
     
 
-class TaskManager(models.Model):
+class TaskManager(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     tasks = models.ForeignKey(Task, on_delete=models.CASCADE)
-    calendar = models.JSONField(default=dict)
-    reminders = models.JSONField(default=list)
+    calendar = models.JSONField(default=dict, blank=True, null=True)
+    reminders = models.JSONField(default=list, blank=True, null=True)
 
     def add_task(self, task):
         self.tasks.append(task)
@@ -143,16 +143,16 @@ class TaskManager(models.Model):
         self.save()
         return f"Reminder set for task {task_id} at {reminder_time}."
 
-class Event(models.Model):
+class Event(TimeStampedModel):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, blank=True, null=True)
     organizer = models.ForeignKey(User, related_name='events_organized', on_delete=models.CASCADE)
     participants = models.ManyToManyField(User, related_name='events_participated')
-    date = models.DateField()
-    time = models.TimeField()
-    topic = models.CharField(max_length=255)
-    agenda = models.TextField()
-    location = models.CharField(max_length=255)
+    date = models.DateField(blank=True, null=True)
+    time = models.TimeField(blank=True, null=True)
+    topic = models.CharField(max_length=255, blank=True, null=True)
+    agenda = models.TextField(blank=True, null=True)
+    location = models.CharField(max_length=255, blank=True, null=True)
     status = models.CharField(max_length=50, choices= [('scheduled', 'Scheduled'), ('cancelled', 'Cancelled'), ('completed', 'Completed')], default= 'pending')
 
     def schedule_event(self):
@@ -192,9 +192,9 @@ class Event(models.Model):
         return f"Reminders sent for event {self.id}."
 
 
-class CalendarIntegration(models.Model):
+class CalendarIntegration(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    calendar_service = models.CharField(max_length=50)
+    calendar_service = models.CharField(max_length=50, blank=True, null=True)
     sync_status = models.CharField(max_length=50, choices= [('active', 'Active'), ('inactive', 'Inactive')], default= 'active')
     last_sync = models.DateTimeField(null=True, blank=True)
 

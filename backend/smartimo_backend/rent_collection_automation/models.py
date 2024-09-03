@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import Notification, Report
+from core.models import Notification, Report, TimeStampedModel
 from lease_rental_management.models import Tenant
 from property_listing.models import PropertyOwner
 from django.utils import timezone
@@ -8,7 +8,7 @@ import paypalrestsdk
 from django.core.mail import send_mail
 from django.conf import settings
 
-class PaymentGateway(models.Model):
+class PaymentGateway(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, blank=True, null=True)
     api_key = models.CharField(max_length=255, blank=True, null=True)
@@ -76,7 +76,7 @@ class PaymentGateway(models.Model):
             raise Exception("Unsupported payment gateway.")
 
 
-class RecurringPayment(models.Model):
+class RecurringPayment(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
@@ -120,7 +120,7 @@ class RecurringPayment(models.Model):
             )
 
 
-class RentPayment(models.Model):
+class RentPayment(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
@@ -142,7 +142,7 @@ class RentPayment(models.Model):
         pass
 
 
-class LateFee(models.Model):
+class LateFee(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     rent_payment = models.ForeignKey(RentPayment, on_delete=models.CASCADE)

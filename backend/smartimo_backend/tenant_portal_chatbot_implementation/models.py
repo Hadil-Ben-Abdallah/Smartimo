@@ -1,7 +1,8 @@
 from django.db import models
 from lease_rental_management.models import Tenant, PropertyManager
+from core.models import TimeStampedModel
 
-class Chatbot(models.Model):
+class Chatbot(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     training_data = models.JSONField(blank=True, null=True)
     interaction_history = models.JSONField(blank=True, null=True)
@@ -41,7 +42,7 @@ class Chatbot(models.Model):
         return escalation
 
 
-class ChatbotInteraction(models.Model):
+class ChatbotInteraction(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     chatbot = models.ForeignKey(Chatbot, on_delete=models.CASCADE)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
@@ -70,7 +71,7 @@ class ChatbotInteraction(models.Model):
         return 'Normal'
 
 
-class ChatbotTask(models.Model):
+class ChatbotTask(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     chatbot = models.ForeignKey(Chatbot, on_delete=models.CASCADE)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
@@ -94,7 +95,7 @@ class ChatbotTask(models.Model):
         return "Task is not ready for confirmation."
 
 
-class Escalation(models.Model):
+class Escalation(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     interaction = models.ForeignKey(ChatbotInteraction, on_delete=models.CASCADE)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
@@ -119,7 +120,7 @@ class Escalation(models.Model):
         }
 
 
-class ChatbotAnalytics(models.Model):
+class ChatbotAnalytics(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     chatbot = models.ForeignKey(Chatbot, on_delete=models.CASCADE)
     usage_metrics = models.JSONField(blank=True, null=True)
@@ -159,7 +160,7 @@ class ChatbotAnalytics(models.Model):
         return recommendations
 
 
-class ChatbotCustomization(models.Model):
+class ChatbotCustomization(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     chatbot = models.ForeignKey(Chatbot, on_delete=models.CASCADE)
     custom_flows = models.JSONField(blank=True, null=True)

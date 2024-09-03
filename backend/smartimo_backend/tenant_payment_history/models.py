@@ -1,8 +1,8 @@
 from django.db import models
-from core.models import Report
+from core.models import Report, TimeStampedModel
 from lease_rental_management.models import Tenant, PropertyManager
 
-class TenantPaymentHistory(models.Model):
+class TenantPaymentHistory(TimeStampedModel):
     PAYMENT_TYPES = [
         ('rent', 'Rent'),
         ('security_deposit', 'Security Deposit'),
@@ -50,7 +50,7 @@ class TenantPaymentHistory(models.Model):
         )
 
 
-class PaymentFilter(models.Model):
+class PaymentFilter(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     payment_type = models.CharField(max_length=50, null=True, blank=True)
@@ -79,7 +79,7 @@ class PaymentFilter(models.Model):
         )
 
 
-class PaymentExport(models.Model):
+class PaymentExport(TimeStampedModel):
     EXPORT_FORMATS = [
         ('pdf', 'PDF'),
         ('csv', 'CSV'),
@@ -88,7 +88,7 @@ class PaymentExport(models.Model):
     id = models.AutoField(primary_key=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     export_format = models.CharField(max_length=50, choices=[('pdf', 'PDF'),('csv', 'CSV')], default='pdf')
-    export_date = models.DateTimeField(auto_now_add=True)
+    export_date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     file_path = models.CharField(max_length=255, blank=True, null=True)
 
     def download_payment_history(self):
@@ -107,7 +107,7 @@ class PaymentExport(models.Model):
         return f"Printing payment history for tenant: {self.tenant.username}"
 
 
-class PaymentValidation(models.Model):
+class PaymentValidation(TimeStampedModel):
     VALIDATION_STATUS_CHOICES = [
         ('validated', 'Validated'),
         ('pending', 'Pending'),

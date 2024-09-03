@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import User
+from core.models import User, TimeStampedModel
 from django.utils import timezone
 from django.core.mail import send_mail
 from io import BytesIO
@@ -15,19 +15,25 @@ class AnalyticsReport(Report):
     )
     type = models.CharField(max_length=50, choices=REPORT_TYPES, default='property_performance')
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    filters = models.JSONField(default=dict)
-    visualizations = models.JSONField(default=list) 
+    filters = models.JSONField(default=dict, blank=True, null=True)
+    visualizations = models.JSONField(default=list, blank=True, null=True) 
 
     def generate_report(self):
-        self.data = self._fetch_data_based_on_filters()
-        self.save()
-        return self.data
+        if self.type == 'property_performance':
+            return PropertyPerformanceReport.calculate_metrics(self.filters)
+        elif self.type == 'sales_trends':
+            return SalesTrendReport.analyze_trends(self.filters)
+        elif self.type == 'financial_performance':
+            return FinancialPerformanceReport.evaluate_investment(self.filters)
+        elif self.type == 'client_engagement':
+            return ClientEngagementReport.track_engagement(self.filters)
     
     def _fetch_data_based_on_filters(self):
         return {"sample_data": "This should be replaced with actual data"}
 
-    def customize_template(self, template):
-        pass
+    def customize_template(self, new_template):
+        self.filters['template'] = new_template
+        self.save()
 
     def add_visualization(self, visualization):
         self.visualizations.append(visualization)
@@ -64,11 +70,11 @@ class AnalyticsReport(Report):
         return buffer
 
 class PropertyPerformanceReport(AnalyticsReport):
-    occupancy_rate = models.FloatField()
-    average_rental_income = models.FloatField()
-    vacancy_rate = models.FloatField()
-    maintenance_costs = models.FloatField()
-    noi = models.FloatField()  # Net Operating Income
+    occupancy_rate = models.FloatField(blank=True, null=True)
+    average_rental_income = models.FloatField(blank=True, null=True)
+    vacancy_rate = models.FloatField(blank=True, null=True)
+    maintenance_costs = models.FloatField(blank=True, null=True)
+    noi = models.FloatField(blank=True, null=True)  # Net Operating Income
 
     def calculate_metrics(self):
         self.occupancy_rate = self._calculate_occupancy_rate()
@@ -78,26 +84,14 @@ class PropertyPerformanceReport(AnalyticsReport):
         self.noi = self._calculate_noi()
         self.save()
 
-    def _calculate_occupancy_rate(self):
-        pass
-
-    def _calculate_average_rental_income(self):
-        pass
-
-    def _calculate_vacancy_rate(self):
-        pass
-
-    def _calculate_maintenance_costs(self):
-        pass
-
     def _calculate_noi(self):
         return self.average_rental_income - self.maintenance_costs
 
 class SalesTrendReport(AnalyticsReport):
-    sales_volume = models.FloatField()
-    average_selling_price = models.FloatField()
-    time_on_market = models.FloatField()
-    regional_sales_distribution = models.JSONField(default=dict)
+    sales_volume = models.FloatField(blank=True, null=True)
+    average_selling_price = models.FloatField(blank=True, null=True)
+    time_on_market = models.FloatField(blank=True, null=True)
+    regional_sales_distribution = models.JSONField(default=dict, blank=True, null=True)
 
     def analyze_trends(self):
         self.sales_volume = self._calculate_sales_volume()
@@ -106,23 +100,12 @@ class SalesTrendReport(AnalyticsReport):
         self.regional_sales_distribution = self._calculate_regional_sales_distribution()
         self.save()
 
-    def _calculate_sales_volume(self):
-        pass
-
-    def _calculate_average_selling_price(self):
-        pass
-
-    def _calculate_time_on_market(self):
-        pass
-
-    def _calculate_regional_sales_distribution(self):
-        pass
 
 class FinancialPerformanceReport(AnalyticsReport):
-    rental_income = models.FloatField()
-    operating_expenses = models.FloatField()
-    cash_flow = models.FloatField()
-    roi = models.FloatField()  # Return on Investment
+    rental_income = models.FloatField(blank=True, null=True)
+    operating_expenses = models.FloatField(blank=True, null=True)
+    cash_flow = models.FloatField(blank=True, null=True)
+    roi = models.FloatField(blank=True, null=True)  # Return on Investment
 
     def evaluate_investment(self):
         self.rental_income = self._calculate_rental_income()
@@ -130,12 +113,6 @@ class FinancialPerformanceReport(AnalyticsReport):
         self.cash_flow = self._calculate_cash_flow()
         self.roi = self._calculate_roi()
         self.save()
-
-    def _calculate_rental_income(self):
-        pass
-
-    def _calculate_operating_expenses(self):
-        pass
 
     def _calculate_cash_flow(self):
         return self.rental_income - self.operating_expenses
@@ -154,21 +131,12 @@ class ClientEngagementReport(AnalyticsReport):
         self.client_satisfaction_score = self._calculate_client_satisfaction_score()
         self.save()
 
-    def _calculate_lead_conversion_rate(self):
-        pass
-
-    def _calculate_inquiry_response_time(self):
-        pass
-
-    def _calculate_client_satisfaction_score(self):
-        pass
-
-class AutomatedReportScheduler(models.Model):
+class AutomatedReportScheduler(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     report = models.ForeignKey(AnalyticsReport, on_delete=models.CASCADE)
     frequency = models.CharField(max_length=50, choices=[('daily', 'Daily'), ('weekly', 'Weekly'), ('monthly', 'Monthly')], default='daily')
-    recipients = models.JSONField(default=list)
-    delivery_channel = models.CharField(max_length=50) 
+    recipients = models.JSONField(default=list, blank=True, null=True)
+    delivery_channel = models.CharField(max_length=50, blank=True, null=True) 
     last_run = models.DateTimeField(null=True, blank=True)
 
     def schedule_report(self):

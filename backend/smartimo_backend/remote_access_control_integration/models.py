@@ -1,9 +1,9 @@
 from django.db import models
-from core.models import Property, User
+from core.models import Property, User, TimeStampedModel
 from lease_rental_management.models import Tenant
 from tenant_portal_development.models import TenantPortal
 
-class RemoteAccessControlSystem(models.Model):
+class RemoteAccessControlSystem(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     system_type = models.CharField(max_length=100, choices=[('keyless_entry', 'Keyless Entry'), ('digital_locks', 'Digital Locks')], default='keyless_entry')
     integration_status = models.CharField(max_length=50, choices=[('connected', 'Connected'), ('disconnected', 'Disconnected')], default='connected')
@@ -22,7 +22,7 @@ class RemoteAccessControlSystem(models.Model):
             'logs': []
         }
 
-class AccessPermission(models.Model):
+class AccessPermission(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
@@ -48,7 +48,7 @@ class AccessPermission(models.Model):
         return "User does not have access"
 
 class RemoteTenantPortal(TenantPortal):
-    access_permissions = models.ManyToManyField(AccessPermission, blank=True, null=True)
+    access_permissions = models.ManyToManyField(AccessPermission)
 
     def view_permissions(self):
         return {
@@ -67,10 +67,10 @@ class RemoteTenantPortal(TenantPortal):
 
     def receive_notifications(self):
         return {
-            'notifications': []  # Fetch notifications from system
+            'notifications': []
         }
 
-class ServiceProvider(models.Model):
+class ServiceProvider(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, blank=True, null=True)
     contact_information = models.JSONField(blank=True, null=True)
@@ -80,10 +80,10 @@ class ServiceProvider(models.Model):
 
     def receive_access_instructions(self):
         return {
-            'instructions': []  # Fetch instructions from system
+            'instructions': []
         }
 
-class RemoteMaintenanceRequest(models.Model):
+class RemoteMaintenanceRequest(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     service_provider = models.ForeignKey(ServiceProvider, on_delete=models.CASCADE)
@@ -106,28 +106,27 @@ class RemoteMaintenanceRequest(models.Model):
             'access_instructions': self.access_instructions
         }
 
-class PropertyOwnerDashboard(models.Model):
+class PropertyOwnerDashboard(TimeStampedModel):
     owner_id = models.AutoField(primary_key=True)
-    properties = models.ManyToManyField(Property, blank=True, null=True)
+    properties = models.ManyToManyField(Property)
     access_control_data = models.JSONField(blank=True, null=True)
 
     def monitor_access_status(self):
         return {
-            'access_status': []  # Fetch access status from system
+            'access_status': []
         }
 
     def adjust_access_settings(self, property: Property, settings: dict):
-        # Adjust access settings and schedules
         return "Access settings adjusted"
 
     def generate_access_reports(self):
         return {
-            'reports': []  # Generate and return access reports
+            'reports': []
         }
 
 class RemoteProperty(Property):
     access_points = models.JSONField(blank=True, null=True)
-    tenants = models.ManyToManyField(Tenant, related_name='tenant_properties', blank=True, null=True)
+    tenants = models.ManyToManyField(Tenant, related_name='tenant_properties')
 
     def update_access_points(self, points: list):
         self.access_points = points

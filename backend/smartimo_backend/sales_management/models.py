@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import SalesOpportunity, Property 
+from core.models import SalesOpportunity, Property, TimeStampedModel 
 from property_listing.models import RealEstateAgent
 from client_management.models import Client, Interaction
 
@@ -7,7 +7,7 @@ class Lead(Client):
     lead_source = models.CharField(max_length=50, choices=[('facebook', 'Facebook'), ('instagram', 'Instagram'), ('search_web', 'Search Web'), ('tik_tok', 'Tik Tok')], default='search_web')
     lead_status = models.CharField(max_length=50, choices=[('new', 'New'), ('contacted', 'Contacted'), ('qualified', 'Qualified')])
     property_type = models.CharField(max_length=50, choices=[('house', 'House'), ('office', 'Office'), ('apartment', 'Apartment')], default='house')
-    note= models.TextField(max_length=2000)
+    note= models.TextField(max_length=2000, blank=True, null=True)
 
     def create_lead(self, data):
         lead = Lead.objects.create(**data)
@@ -30,16 +30,16 @@ class Lead(Client):
             "status": self.status,
         }
 
-class Deal (models.Model):
+class Deal(TimeStampedModel):
     id = models.AutoField(primary_key=True)
-    title = models.CharField(max_length=50)
+    title = models.CharField(max_length=50, blank=True, null=True)
     property = models.ForeignKey(Property,on_delete=models.CASCADE)
     lead = models.ForeignKey(Lead, on_delete=models.CASCADE)
-    start_date = models.DateField(auto_now=True)
-    end_date = models.DateField (auto_now=True)
-    content_of_deal = models.TextField (max_length=2000)
-    description = models.TextField(max_length=2000)
-    is_approved = models.BooleanField(default=False)
+    start_date = models.DateField(auto_now=True, blank=True, null=True)
+    end_date = models.DateField (auto_now=True, blank=True, null=True)
+    content_of_deal = models.TextField (max_length=2000, blank=True, null=True)
+    description = models.TextField(max_length=2000, blank=True, null=True)
+    is_approved = models.BooleanField(default=False, blank=True, null=True)
     deal_type = models.CharField(choices=[('rent', 'Rent'), ('sell', 'Sell')], default='rent')
 
     def create_deal(self, data):
@@ -89,10 +89,10 @@ class TheSalesOpportunity(SalesOpportunity):
             "status": self.status,
         }
 
-class SalesPipeline(models.Model):
+class SalesPipeline(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     agent = models.ForeignKey(RealEstateAgent, on_delete=models.CASCADE)
-    stages = models.JSONField()
+    stages = models.JSONField(blank=True, null=True)
     
     def create_pipeline(self, data):
         pipeline = SalesPipeline.objects.create(**data)
@@ -114,13 +114,13 @@ class SalesPipeline(models.Model):
     def generate_sales_forecast(self):
         pass
 
-class Collaboration(models.Model):
+class Collaboration(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     opportunity = models.ForeignKey(TheSalesOpportunity, on_delete=models.CASCADE)
     agent = models.ForeignKey(RealEstateAgent, on_delete=models.CASCADE)
-    notes = models.TextField()
-    assigned_tasks = models.JSONField()
-    activity_feed = models.JSONField()
+    notes = models.TextField(blank=True, null=True)
+    assigned_tasks = models.JSONField(blank=True, null=True)
+    activity_feed = models.JSONField(blank=True, null=True)
 
     def add_collaboration_note(self, note):
         self.notes += f"\n{note}"
@@ -147,11 +147,11 @@ class Collaboration(models.Model):
         self.activity_feed = activities
         self.save()
 
-class SalesAnalytics(models.Model):
+class SalesAnalytics(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     agent = models.ForeignKey(RealEstateAgent, on_delete=models.CASCADE)
-    metrics = models.JSONField()
-    report_type = models.CharField(max_length=50)
+    metrics = models.JSONField(blank=True, null=True)
+    report_type = models.CharField(max_length=50, blank=True, null=True)
 
     def generate_report(self, report_type):
         pass

@@ -1,23 +1,22 @@
 from django.db import models
 from datetime import datetime
-from core.models import Property, User, Report
-from lease_rental_management.models import Tenant
+from core.models import Property, User, Report, TimeStampedModel
 
-class Project(models.Model):
+class Project(TimeStampedModel):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255)
-    location = models.CharField(max_length=255)
-    budget = models.DecimalField(max_digits=12, decimal_places=2)
-    start_date = models.DateField(auto_now_add=True)
-    end_date = models.DateField(auto_now_add=True)
-    expected_return = models.DecimalField(max_digits=12, decimal_places=2)
+    name = models.CharField(max_length=255, blank=True, null=True)
+    location = models.CharField(max_length=255, blank=True, null=True)
+    budget = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    start_date = models.DateField(auto_now_add=True, blank=True, null=True)
+    end_date = models.DateField(auto_now_add=True, blank=True, null=True)
+    expected_return = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
     status = models.CharField(max_length=50, choices=[
         ('planning', 'Planning'),
         ('under_construction', 'Under Construction'),
         ('completed', 'Completed'),
         ('on_hold', 'On Hold'),
     ], default='planning')
-    inspection_reports = models.JSONField()
+    inspection_reports = models.JSONField(blank=True, null=True)
 
     def update_status(self, new_status):
         self.status = new_status
@@ -44,7 +43,7 @@ class Project(models.Model):
         return self.inspection_reports
 
 class Inspector(User):
-    certifications = models.JSONField()
+    certifications = models.JSONField(blank=True, null=True)
     assigned_projects = models.ManyToManyField(Project)
 
     def perform_inspection(self, project_id):
@@ -68,14 +67,14 @@ class Inspector(User):
         return report
 
 
-class SecurityDevice(models.Model):
+class SecurityDevice(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     device_type = models.CharField(max_length=255, choices=[('camera', 'Camera'), ('motion', 'Motion'), ('sensor', 'Sensor'), ('door/window_sensor', 'Door/Window Sensor'), ('smart_lock', 'Smart Lock')], default='camera')
-    status = models.CharField(max_length=50, choices=[('active', 'Active'), ('inactive', 'Inactive')], default='inactive')
-    last_maintenance_date = models.DateField()
+    status = models.CharField(max_length=50, choices=[('active', 'Active'), ('inactive', 'Inactive'), ('configured', 'Configured')], default='inactive')
+    last_maintenance_date = models.DateField(blank=True, null=True)
 
-    def configure_device(self, device_id, settings):
+    def configure_device(self, device_id):
         device = SecurityDevice.objects.get(id=device_id)
         device.status = "configured"
         device.save()
@@ -93,13 +92,13 @@ class SecurityDevice(models.Model):
         device = SecurityDevice.objects.get(id=device_id)
         print(f"Alert of type {alert_type} sent for device {device_id}")
 
-class MaintenanceDevice(models.Model):
+class MaintenanceDevice(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     device_type = models.CharField(max_length=255, choices=[('HVAC_system', 'HVAC System'), ('water_heater', 'Water Heater'), ('electrical_panel', 'Electrical Panel')], default='HVAC_system')
     status = models.CharField(max_length=50, choices=[('operational', 'Operational'), ('malfunctioning', 'Malfunctioning')], default='operational')
-    last_maintenance_date = models.DateField()
-    performance_metrics = models.JSONField()
+    last_maintenance_date = models.DateField(blank=True, null=True)
+    performance_metrics = models.JSONField(blank=True, null=True)
 
     def monitor_device(self, device_id):
         device = MaintenanceDevice.objects.get(id=device_id)
@@ -120,43 +119,12 @@ class MaintenanceDevice(models.Model):
         device = MaintenanceDevice.objects.get(id=device_id)
         print(f"Maintenance alert of type {alert_type} sent for device {device_id}")
 
-# class TenantMaintenanceRequest(models.Model):
-#     id = models.AutoField(primary_key=True)
-#     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
-#     property = models.ForeignKey(Property, on_delete=models.CASCADE)
-#     description = models.TextField()
-#     status = models.CharField(max_length=50, choices=[(' submitted', ' submitted'), ('in_progress', 'In Progress'), ('completed', 'Completed')], default='in_progress')
-#     attachments = models.JSONField()
-
-#     def submit_request(self, tenant_id, property_id, description, attachments):
-#         request = TenantMaintenanceRequest.objects.create(
-#             tenant=tenant_id,
-#             property=property_id,
-#             description=description,
-#             status='submitted',
-#             attachments=attachments
-#         )
-#         return request
-
-#     def update_request_status(self, request_id, status):
-#         request = TenantMaintenanceRequest.objects.get(id=request_id)
-#         request.status = status
-#         request.save()
-
-#     def notify_tenant(self, request_id):
-#         request = TenantMaintenanceRequest.objects.get(id=request_id)
-#         print(f"Notification sent to tenant {request.tenant} for request {request_id}")
-
-#     def generate_request_report(self, tenant_id):
-#         requests = TenantMaintenanceRequest.objects.filter(id=tenant_id)
-#         report = [{"request_id": req.id, "status": req.status} for req in requests]
-#         return report
 
 class InspectionReport(Report):
     inspector = models.ForeignKey(Inspector, on_delete=models.CASCADE)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    findings = models.TextField()
-    compliance_status = models.CharField(max_length=50)
+    findings = models.TextField(blank=True, null=True)
+    compliance_status = models.CharField(max_length=50, blank=True, null=True)
 
     def conduct_virtual_inspection(self, inspector_id, property_id):
         inspector = Inspector.objects.get(inspector_id=inspector_id)
@@ -179,13 +147,13 @@ class InspectionReport(Report):
         else:
             return {"message": "No report found"}
 
-class ConstructionMonitoring(models.Model):
+class ConstructionMonitoring(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    camera_feeds = models.JSONField()
-    progress_photos = models.JSONField()
-    safety_compliance_checklists = models.JSONField()
+    camera_feeds = models.JSONField(blank=True, null=True)
+    progress_photos = models.JSONField(blank=True, null=True)
+    safety_compliance_checklists = models.JSONField(blank=True, null=True)
 
     def track_progress(self, monitoring_id):
         monitoring = ConstructionMonitoring.objects.get(id=monitoring_id)

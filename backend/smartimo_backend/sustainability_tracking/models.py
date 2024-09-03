@@ -1,15 +1,15 @@
 from django.db import models
-from core.models import Property, Resource, User
+from core.models import Property, Resource, User, TimeStampedModel
 from lease_rental_management.models import Tenant
 from django.core.exceptions import ObjectDoesNotExist
 
-class SustainabilityInitiative(models.Model):
+class SustainabilityInitiative(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    description = models.TextField()
-    implementation_date = models.DateField()
-    resource_savings = models.JSONField()
-    environmental_impact = models.JSONField()
+    description = models.TextField(blank=True, null=True)
+    implementation_date = models.DateField(blank=True, null=True)
+    resource_savings = models.JSONField(blank=True, null=True)
+    environmental_impact = models.JSONField(blank=True, null=True)
 
     def log_initiative(self, property_id, description, implementation_date, resource_savings, environmental_impact):
         property_instance = Property.objects.get(id=property_id)
@@ -56,13 +56,13 @@ class SustainabilityInitiative(models.Model):
             })
         return report
 
-class SustainabilityDashboard(models.Model):
+class SustainabilityDashboard(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    energy_consumption = models.JSONField()
-    water_usage = models.JSONField()
-    waste_generation = models.JSONField()
-    ghg_emissions = models.JSONField()
+    energy_consumption = models.JSONField(blank=True, null=True)
+    water_usage = models.JSONField(blank=True, null=True)
+    waste_generation = models.JSONField(blank=True, null=True)
+    ghg_emissions = models.JSONField(blank=True, null=True)
 
     def visualize_sustainability_data(self, dashboard_id):
         try:
@@ -79,7 +79,6 @@ class SustainabilityDashboard(models.Model):
     def set_targets(self, dashboard_id, targets):
         try:
             dashboard = SustainabilityDashboard.objects.get(id=dashboard_id)
-            # Targets is a dictionary with new target values
             dashboard.energy_consumption["target"] = targets.get("energy_consumption", dashboard.energy_consumption.get("target"))
             dashboard.water_usage["target"] = targets.get("water_usage", dashboard.water_usage.get("target"))
             dashboard.waste_generation["target"] = targets.get("waste_generation", dashboard.waste_generation.get("target"))
@@ -127,13 +126,13 @@ class SustainabilityDashboard(models.Model):
         except ObjectDoesNotExist:
             return {"error": "Dashboard not found"}
 
-class SustainabilityCertification(models.Model):
+class SustainabilityCertification(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     certification_type = models.CharField(max_length=255, choices=[('leed', 'Leed'), ('energy_star', 'Energy_start')], default='leed')
     status = models.CharField(max_length=255, choices=[('pending', 'Pending'), ('achieved', 'Achieved')], default='pending')
-    submission_deadline = models.DateField()
-    documentation = models.JSONField()
+    submission_deadline = models.DateField(blank=True, null=True)
+    documentation = models.JSONField(blank=True, null=True)
 
     def track_progress(self, certification_id):
         try:
@@ -231,13 +230,13 @@ class TenantSustainabilityResource(Resource):
             })
         return report
 
-class PropertySustainabilityRating(models.Model):
+class PropertySustainabilityRating(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    rating_type = models.CharField(max_length=255)
-    score = models.FloatField()
-    issued_by = models.CharField(max_length=255)
-    issued_date = models.DateField()
+    rating_type = models.CharField(max_length=255, blank=True, null=True)
+    score = models.FloatField(blank=True, null=True)
+    issued_by = models.CharField(max_length=255, blank=True, null=True)
+    issued_date = models.DateField(blank=True, null=True)
 
     def calculate_rating(self, property_id):
         property_instance = Property.objects.get(id=property_id)
@@ -276,10 +275,10 @@ class PropertySustainabilityRating(models.Model):
             })
         return report
 
-class SustainabilityForum(models.Model):
+class SustainabilityForum(TimeStampedModel):
     id = models.AutoField(primary_key=True)
-    topic = models.CharField(max_length=255)
-    message = models.TextField()
+    topic = models.CharField(max_length=255, blank=True, null=True)
+    message = models.TextField(blank=True, null=True)
     participants = models.ManyToManyField(Tenant, related_name='forums')
 
     def create_forum(self, topic, message):
@@ -314,8 +313,7 @@ class SustainabilityForum(models.Model):
             return {
                 "topic": forum.topic,
                 "message": forum.message,
-                "participants": [Tenant.user_id for Tenant.user_id in forum.participants.all()],
-                "timestamp": forum.timestamp
+                "participants": [Tenant.user_id for Tenant.user_id in forum.participants.all()]
             }
         except ObjectDoesNotExist:
             return {"error": "Forum not found"}

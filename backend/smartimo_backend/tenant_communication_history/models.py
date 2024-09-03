@@ -1,12 +1,12 @@
 from django.db import models
-from core.models import Property, Report
+from core.models import Property, Report, TimeStampedModel
 from datetime import datetime
 from lease_rental_management.models import Tenant, PropertyManager
 import csv
 from io import StringIO
 from django.http import HttpResponse
 
-class EmailCommunicationLog(models.Model):
+class EmailCommunicationLog(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
@@ -46,7 +46,7 @@ class EmailCommunicationLog(models.Model):
         }
 
 
-class PhoneCallLog(models.Model):
+class PhoneCallLog(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
@@ -85,7 +85,7 @@ class PhoneCallLog(models.Model):
         return logs
 
 
-class InPersonInteractionLog(models.Model):
+class InPersonInteractionLog(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
@@ -119,7 +119,7 @@ class InPersonInteractionLog(models.Model):
         self.save()
 
 
-class CommunicationSecurity(models.Model):
+class CommunicationSecurity(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     data_encryption = models.CharField(max_length=255, blank=True, null=True)
@@ -157,8 +157,8 @@ class CommunicationHistoryReport(Report):
         report = []
         for log in logs:
             report.append(log.view_email_details() if self.communication_type == 'email' else 
-                          log.view_call_logs() if self.communication_type == 'phone' else 
-                          log.view_interaction_logs())
+                            log.view_call_logs() if self.communication_type == 'phone' else 
+                            log.view_interaction_logs())
 
         return report
 
@@ -170,8 +170,8 @@ class CommunicationHistoryReport(Report):
             writer.writerow(["Communication Type", "Date", "Subject", "Details"])
             for entry in report:
                 writer.writerow([self.communication_type, entry['date_sent'] if self.communication_type == 'email' else entry['call_date'] if self.communication_type == 'phone' else entry['interaction_date'], 
-                                  entry['email_subject'] if self.communication_type == 'email' else entry['call_subject'] if self.communication_type == 'phone' else entry['interaction_subject'], 
-                                  entry['email_body'] if self.communication_type == 'email' else entry['notes']])
+                                    entry['email_subject'] if self.communication_type == 'email' else entry['call_subject'] if self.communication_type == 'phone' else entry['interaction_subject'], 
+                                    entry['email_body'] if self.communication_type == 'email' else entry['notes']])
             return HttpResponse(output.getvalue(), content_type='text/csv')
 
         elif format == 'PDF':

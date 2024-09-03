@@ -1,8 +1,9 @@
 from django.db import models
 from django.utils import timezone
 from lease_rental_management.models import Tenant
+from core.models import TimeStampedModel
 
-class TenantLoyaltyProgram(models.Model):
+class TenantLoyaltyProgram(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, blank=True, null=True)
     eligibility_criteria = models.JSONField(blank=True, null=True)
@@ -49,13 +50,13 @@ class TenantLoyaltyProgram(models.Model):
             "expiration_policies": self.expiration_policies,
         }
 
-class TenantLoyaltyStatus(models.Model):
+class TenantLoyaltyStatus(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     program = models.ForeignKey(TenantLoyaltyProgram, on_delete=models.CASCADE)
     points_balance = models.IntegerField(default=0, blank=True, null=True)
     reward_eligibility = models.JSONField(blank=True, null=True)
-    enrollment_date = models.DateField(default=timezone.now)
+    enrollment_date = models.DateField(default=timezone.now, blank=True, null=True)
 
     def enroll_tenant(self, tenant, program):
         self.tenant = tenant
@@ -81,7 +82,7 @@ class TenantLoyaltyStatus(models.Model):
             "enrollment_date": self.enrollment_date,
         }
 
-class LoyaltyReward(models.Model):
+class LoyaltyReward(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     program = models.ForeignKey(TenantLoyaltyProgram, on_delete=models.CASCADE)
     reward_name = models.CharField(max_length=255, blank=True, null=True)
@@ -134,11 +135,11 @@ class LoyaltyReward(models.Model):
             "availability_status": self.availability_status,
         }
 
-class RewardRedemption(models.Model):
+class RewardRedemption(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     reward = models.ForeignKey(LoyaltyReward, on_delete=models.CASCADE)
-    redemption_date = models.DateField(default=timezone.now)
+    redemption_date = models.DateField(default=timezone.now, blank=True, null=True)
     status = models.CharField(max_length=50, choices=[('pending', 'Pending'), ('completed', 'Completed')], default='pending')
 
     def redeem_reward(self, tenant, reward):
@@ -161,7 +162,7 @@ class RewardRedemption(models.Model):
             "status": self.status,
         }
 
-class LoyaltyProgramAnalytics(models.Model):
+class LoyaltyProgramAnalytics(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     program = models.ForeignKey(TenantLoyaltyProgram, on_delete=models.CASCADE)
     tenant_participation_rate = models.FloatField(blank=True, null=True)

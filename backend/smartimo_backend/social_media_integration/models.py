@@ -1,10 +1,9 @@
 from django.db import models
-from django.contrib.auth import get_user_model
 from datetime import datetime
-from core.models import User, Property
+from core.models import User, Property, TimeStampedModel
 from property_listing.models import RealEstateAgent, ThePropertyListing
 
-class SocialMediaAccount(models.Model):
+class SocialMediaAccount(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     platform = models.CharField(max_length=50, choices=[('facebook', 'Facebook'), ('twitter', 'Twitter') ('linkedin', 'LinkedIn'), ('instagram', 'Instagram')], default='facebook')
@@ -64,7 +63,7 @@ class SocialMediaPropertyListing(ThePropertyListing):
     def get_listing(self, listing_id):
         return SocialMediaPropertyListing.objects.get(id=listing_id)
 
-class SocialMediaCampaign(models.Model):
+class SocialMediaCampaign(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     platform = models.CharField(max_length=50, choices=[('facebook_ads', 'Facebook Ads'), ('twitter_ads', 'Twitter Ads') ('linkedin_ads', 'LinkedIn Ads'), ('instagram_ads', 'Instagram Ads')], default='facebook')
@@ -101,7 +100,7 @@ class SocialMediaCampaign(models.Model):
         # Track performance using the platform's API
         return {"performance": "data"}
 
-class SocialMediaEngagement(models.Model):
+class SocialMediaEngagement(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     platform = models.CharField(max_length=50, choices=[('facebook', 'Facebook'), ('twitter', 'Twitter') ('linkedin', 'LinkedIn'), ('instagram', 'Instagram')], default='facebook')
@@ -116,19 +115,16 @@ class SocialMediaEngagement(models.Model):
 
     def respond_to_comment(self, engagement_id, comment_id, response):
         engagement = SocialMediaEngagement.objects.get(engagement_id=engagement_id)
-        # Respond to comment
         return f"Response to comment {comment_id} added."
 
     def respond_to_message(self, engagement_id, message_id, response):
         engagement = SocialMediaEngagement.objects.get(engagement_id=engagement_id)
-        # Respond to message
         return f"Response to message {message_id} added."
 
     def schedule_post(self, user_id, platform, post_content, schedule_time):
-        # Schedule post to platform
         return f"Post scheduled on {platform} for {schedule_time}."
 
-class SocialMediaAnalytics(models.Model):
+class SocialMediaAnalytics(TimeStampedModel):
     analytics_id = models.AutoField(primary_key=True)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     platform = models.CharField(max_length=50, choices=[('facebook', 'Facebook'), ('twitter', 'Twitter') ('linkedin', 'LinkedIn'), ('instagram', 'Instagram')], default='facebook')
@@ -138,18 +134,14 @@ class SocialMediaAnalytics(models.Model):
     conversion_data = models.JSONField(default=dict, blank=True, null=True)
 
     def track_engagement_metrics(self, user_id, platform):
-        # Logic to track engagement metrics from the platform's API
-        return {"engagement_metrics": "data"}  # Example placeholder
+        return {"engagement_metrics": "data"}
 
     def analyze_audience_demographics(self, user_id, platform):
-        # Logic to analyze audience demographics from the platform's API
-        return {"audience_demographics": "data"}  # Example placeholder
+        return {"audience_demographics": "data"}
 
     def track_ad_performance(self, campaign_id):
-        # Logic to track ad performance from the platform's API
-        return {"ad_performance": "data"}  # Example placeholder
+        return {"ad_performance": "data"}
 
     def generate_analytics_report(self, user_id, platform):
-        # Logic to generate a detailed analytics report
-        return {"analytics_report": "data"}  # Example placeholder
+        return {"analytics_report": "data"}
 
