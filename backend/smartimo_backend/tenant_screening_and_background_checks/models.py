@@ -1,11 +1,11 @@
 from django.db import models
-from core.models import Report
+from core.models import Report, TimeStampedModel
 from lease_rental_management.models import Tenant
 from property_listing.models import PropertyOwner
 
-class PropertyManagementCompany(models.Model):
+class PropertyManagementCompany(TimeStampedModel):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, blank=True, null=True)
     founding_date = models.DateField(blank=True, null=True)
     bank_code = models.CharField(max_length=100, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
@@ -47,6 +47,7 @@ class ScreeningTenant(Tenant):
         self.email = email
         self.phone_number = phone_number
         self.address = address
+        self.application_status = "approved"
         self.save()
 
     def provide_consent(self, tenant_id):
@@ -59,7 +60,7 @@ class ScreeningTenant(Tenant):
         tenant.application_status = status
         tenant.save()
 
-class BackgroundCheck(models.Model):
+class BackgroundCheck(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     owner = models.ForeignKey(PropertyOwner, on_delete=models.CASCADE)
@@ -67,7 +68,7 @@ class BackgroundCheck(models.Model):
     criminal_record = models.TextField(blank=True, null=True)
     eviction_record = models.TextField(blank=True, null=True)
     rental_references = models.TextField(blank=True, null=True)
-    status = models.CharField(max_length=50, choices=[('pending', 'Pending'), ('completed', 'Completed')], default='pending')
+    status = models.CharField(max_length=50, choices=[('pending', 'Pending'), ('completed', 'Completed'), ('failed', 'Failed')], default='pending')
 
     def initiate_check(self, tenant_id, owner_id):
         tenant = Tenant.objects.get(id=tenant_id)
@@ -90,35 +91,31 @@ class BackgroundCheck(models.Model):
             'credit_report': background_check.credit_report,
             'criminal_record': background_check.criminal_record,
             'eviction_record': background_check.eviction_record,
-            'rental_references': background_check.rental_references
+            'rental_references': background_check.rental_references,
+            "status": background_check.status
         }
 
-class ScreeningService(models.Model):
+class ScreeningService(TimeStampedModel):
     id = models.AutoField(primary_key=True)
-    service_name = models.CharField(max_length=255)
+    service_name = models.CharField(max_length=255, blank=True, null=True)
     api_endpoint = models.URLField(blank=True, null=True)
     api_key = models.CharField(max_length=255, blank=True, null=True)
     supported_checks = models.JSONField(blank=True, null=True)
 
     def send_check_request(self, service_id, tenant_details, check_types):
-        # Send a background check request to the screening service
         service = ScreeningService.objects.get(id=service_id)
-        # Code to interact with the screening service API
-        pass
+        response = self.api_request(service.api_endpoint, tenant_details, check_types)
+        return response
 
     def receive_check_results(self, service_id, check_id):
-        # Receive and process background check results from the screening service
         service = ScreeningService.objects.get(id=service_id)
-        # Code to process results
         pass
 
     def verify_compliance(self, service_id):
-        # Verify compliance with data privacy and screening regulations
         service = ScreeningService.objects.get(id=service_id)
-        # Code to verify compliance
         pass
 
-class ScreeningTenantPortal(models.Model):
+class ScreeningTenantPortal(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     consent_form = models.TextField(blank=True, null=True)
@@ -164,8 +161,8 @@ class ScreeningReport(Report):
             criminal_summary=background_check.criminal_record, 
             eviction_summary=background_check.eviction_record,
             reference_verification=background_check.rental_references,
-            risk_assessment="Assess risk based on reports",  # Placeholder
-            recommendations="Recommendations based on risk assessment"  # Placeholder
+            risk_assessment="Assess risk based on reports",
+            recommendations="Recommendations based on risk assessment"
         )
 
     def get_report_details(self, report_id):
@@ -180,13 +177,11 @@ class ScreeningReport(Report):
             'recommendations': report.recommendations
         }
 
-    def share_report(self, report_id, stakeholders):
-        # Share the screening report with relevant stakeholders
+    def share_report(self, report_id):
         report = ScreeningReport.objects.get(id=report_id)
-        # Code to share the report with stakeholders
         pass
 
-class ScreeningWorkflow(models.Model):
+class ScreeningWorkflow(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     owner = models.ForeignKey(PropertyOwner, on_delete=models.CASCADE)
     criteria = models.JSONField(blank=True, null=True)
@@ -204,22 +199,28 @@ class ScreeningWorkflow(models.Model):
         )
 
     def trigger_workflow(self, tenant_id, property_id):
-        # Trigger the screening workflow for a specific tenant and property
         workflow = ScreeningWorkflow.objects.get(owner_id=tenant_id)
-        # Code to initiate the workflow
         pass
 
-    def update_workflow_status(self, workflow_id, status):
-        workflow = ScreeningWorkflow.objects.get(id=workflow_id)
-        workflow.status = status
+    def update_workflow(self, workflow_id, criteria=None, decision_rules=None, status=None, log=None):
+        workflow = ScreeningWorkflow.objects.get(workflow_id=workflow_id)
+        if criteria:
+            workflow.criteria = criteria
+        if decision_rules:
+            workflow.decision_rules = decision_rules
+        if status:
+            workflow.status = status
+        if log:
+            workflow.log = log
         workflow.save()
+        return workflow
 
     def track_workflow_activities(self, workflow_id):
         workflow = ScreeningWorkflow.objects.get(id=workflow_id)
         return workflow.log
 
 
-class PropertyManagementPackage(models.Model):
+class PropertyManagementPackage(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     company = models.ForeignKey(PropertyManagementCompany, on_delete=models.CASCADE)
     package_name = models.CharField(max_length=255, blank=True, null=True)

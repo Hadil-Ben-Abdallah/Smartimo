@@ -1,12 +1,13 @@
 from django.db import models
 from django.utils import timezone
 from vendor_management.models import Vendor, Contract
+from core.models import TimeStampedModel
 
-class VendorInvoice(models.Model):
+class VendorInvoice(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     invoice_number = models.CharField(max_length=100, unique=True, blank=True, null=True)
-    invoice_date = models.DateField()
+    invoice_date = models.DateField(blank=True, null=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     status = models.CharField(max_length=50, choices=[('pending', 'Pending'), ('approved', 'Approved'), ('paid', 'Paid')], default='pending')
     captured_data = models.JSONField(blank=True, null=True)
@@ -30,7 +31,7 @@ class VendorInvoice(models.Model):
         else:
             raise ValueError("Invalid status")
 
-class ApprovalWorkflow(models.Model):
+class ApprovalWorkflow(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     invoice = models.ForeignKey(VendorInvoice, on_delete=models.CASCADE)
     rules = models.JSONField(blank=True, null=True)
@@ -63,10 +64,10 @@ class ApprovalWorkflow(models.Model):
         self.current_stage = 'completed'
         self.save()
 
-class InvoiceTrackingDashboard(models.Model):
+class InvoiceTrackingDashboard(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey('PropertyManager', on_delete=models.CASCADE)
-    invoices = models.ManyToManyField(VendorInvoice, blank=True, null=True)
+    invoices = models.ManyToManyField(VendorInvoice)
     filters = models.JSONField(blank=True, null=True)
 
     def track_invoice(self, invoice_id):
@@ -89,7 +90,7 @@ class InvoiceTrackingDashboard(models.Model):
         invoice = VendorInvoice.objects.get(id=invoice_id)
         return invoice.status
 
-class ContractReconciliation(models.Model):
+class ContractReconciliation(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     invoice = models.ForeignKey(VendorInvoice, on_delete=models.CASCADE)
     contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
@@ -126,7 +127,7 @@ class ContractReconciliation(models.Model):
         else:
             return "No discrepancies to dispute"
 
-class PaymentProcessing(models.Model):
+class PaymentProcessing(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     invoice = models.ForeignKey(VendorInvoice, on_delete=models.CASCADE)
     payment_method = models.CharField(max_length=50, choices=[('electronic', 'Electronic'), ('check', 'Check'), ('wire_transfer', 'Wire Transfer')], default='electronic')

@@ -1,9 +1,9 @@
 from django.db import models
-from core.models import Notification
+from core.models import Notification, TimeStampedModel
 from lease_rental_management.models import Tenant, PropertyManager
 from tenant_screening_and_background_checks.models import ScreeningReport
 
-class TenantScreeningServiceIntegration(models.Model):
+class TenantScreeningServiceIntegration(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     service_provider = models.CharField(max_length=255, blank=True, null=True)
     api_key = models.CharField(max_length=255, blank=True, null=True)
@@ -25,7 +25,7 @@ class TenantScreeningServiceIntegration(models.Model):
         return validation_status
 
 
-class ScreeningWorkflowAutomation(models.Model):
+class ScreeningWorkflowAutomation(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     trigger_conditions = models.JSONField(blank=True, null=True)
@@ -52,7 +52,7 @@ class ScreeningWorkflowAutomation(models.Model):
             self.send_notifications(screening_request_id)
 
 
-class ScreeningAuthorizationForm(models.Model):
+class ScreeningAuthorizationForm(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     content = models.TextField(blank=True, null=True)
@@ -82,7 +82,7 @@ class ScreeningAlertNotification(Notification):
     screening_report = models.ForeignKey(ScreeningReport, on_delete=models.CASCADE)
     alert_type = models.CharField(max_length=255, blank=True, null=True)
 
-    def generate_alert(self, alert_type):
+    def generate_alert(self):
         if self.screening_report.credit_score < 600:
             self.alert_type = 'Negative Credit History'
         elif self.screening_report.criminal_summary:
@@ -97,7 +97,7 @@ class ScreeningAlertNotification(Notification):
         return f"Alert reviewed: {self.alert_type}"
 
 
-class TenantScreeningAuditTrail(models.Model):
+class TenantScreeningAuditTrail(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     activity_type = models.CharField(max_length=255, blank=True, null=True)

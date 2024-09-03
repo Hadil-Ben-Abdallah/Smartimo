@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import Property
+from core.models import Property, TimeStampedModel
 from lease_rental_management.models import Tenant
 
 class Vacancy(Property):
@@ -25,7 +25,7 @@ class Vacancy(Property):
         return cls.objects.all()
 
 
-class VacancyMarketingCampaign(models.Model):
+class VacancyMarketingCampaign(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     vacancy = models.ForeignKey(Vacancy, on_delete=models.CASCADE)
     platforms = models.JSONField(blank=True, null=True)
@@ -81,8 +81,8 @@ class VacancyMarketingCampaign(models.Model):
 
 
 class ProspectiveTenant(Tenant):
-    preferences = models.JSONField()
-    saved_listings = models.ManyToManyField(Vacancy, through='SavedListing', blank=True, null=True)
+    preferences = models.JSONField(blank=True, null=True)
+    saved_listings = models.ManyToManyField(Vacancy, through='SavedListing')
 
     def search_properties(self, search_criteria):
         return Vacancy.objects.filter(**search_criteria)
@@ -99,7 +99,7 @@ class ProspectiveTenant(Tenant):
         return cls.saved_listings.all()
 
 
-class ViewingAppointment(models.Model):
+class ViewingAppointment(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     vacancy = models.ForeignKey(Vacancy, on_delete=models.CASCADE)
     date_time = models.DateTimeField(blank=True, null=True)
@@ -132,7 +132,7 @@ class ViewingAppointment(models.Model):
         return cls.objects.all()
 
 
-class LeaseNegotiation(models.Model):
+class LeaseNegotiation(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     vacancy = models.ForeignKey(Vacancy, on_delete=models.CASCADE)
     prospective_tenant = models.ForeignKey(ProspectiveTenant, on_delete=models.CASCADE)
@@ -163,7 +163,7 @@ class LeaseNegotiation(models.Model):
         return cls.objects.filter(status='ongoing')
 
 
-class TenantScreening(models.Model):
+class TenantScreening(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     prospective_tenant = models.ForeignKey(ProspectiveTenant, on_delete=models.CASCADE)
     status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('completed', 'Completed')], default='pending')
@@ -190,7 +190,7 @@ class TenantScreening(models.Model):
         return cls.objects.all()
 
 
-class VacancyAnalytics(models.Model):
+class VacancyAnalytics(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     vacancy = models.ForeignKey(Vacancy, on_delete=models.CASCADE)
     vacancy_rate = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)

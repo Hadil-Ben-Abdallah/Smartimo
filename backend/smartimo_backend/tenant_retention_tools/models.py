@@ -1,9 +1,9 @@
 from django.db import models
 from lease_rental_management.models import Tenant
-from core.models import Feedback
+from core.models import Feedback, TimeStampedModel
 from complaints_and_resolution_system.models import Complaint
 
-class LoyaltyTier(models.Model):
+class LoyaltyTier(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, blank=True, null=True)
     min_points = models.IntegerField(blank=True, null=True)
@@ -23,10 +23,10 @@ class LoyaltyTier(models.Model):
             "benefits": self.benefits.split(', ')
         }
 
-class LoyaltyProgram(models.Model):
+class LoyaltyProgram(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, blank=True, null=True)
-    tiers = models.ManyToManyField(LoyaltyTier, related_name="programs", blank=True, null=True)
+    tiers = models.ManyToManyField(LoyaltyTier, related_name="programs")
     point_system = models.TextField(blank=True, null=True)
     reward_criteria = models.TextField(blank=True, null=True)
 
@@ -54,8 +54,8 @@ class LoyaltyProgram(models.Model):
 class TenantLoyalty(Tenant):
     loyalty_program = models.ForeignKey(LoyaltyProgram, on_delete=models.CASCADE)
     points = models.IntegerField(default=0, blank=True, null=True)
-    enrolled_tiers = models.ManyToManyField(LoyaltyTier, related_name="enrolled_tenants", blank=True, null=True)
-    maintenance_requests = models.ManyToManyField(LoyaltyTier, related_name="maintenance_requests", blank=True, null=True)
+    enrolled_tiers = models.ManyToManyField(LoyaltyTier, related_name="enrolled_tenants")
+    maintenance_requests = models.ManyToManyField(LoyaltyTier, related_name="maintenance_requests")
 
     def submit_complaint(self, complaint: str):
         Complaint.objects.create(tenant=self.user_id, description=complaint)
@@ -72,7 +72,7 @@ class TenantLoyalty(Tenant):
             "enrolled_tiers": [tier.get_tier_details() for tier in self.enrolled_tiers.all()],
         }
 
-class Incentive(models.Model):
+class Incentive(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     type = models.CharField(max_length=50, blank=True, null=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)

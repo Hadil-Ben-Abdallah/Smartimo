@@ -1,11 +1,11 @@
 from django.db import models
 from datetime import datetime, timedelta
-from core.models import Property
+from core.models import Property, TimeStampedModel
 from maintenance_and_service_requests.models import MaintenancePropertyManager
 from lease_rental_management.models import Tenant
 from tenant_portal_feedback_submission.models import FeedbackSubmission
 
-class TenantSurveyCreation(models.Model):
+class TenantSurveyCreation(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(MaintenancePropertyManager, on_delete=models.CASCADE)
     survey_template = models.TextField(blank=True, null=True)
@@ -35,7 +35,7 @@ class TenantSurveyCreation(models.Model):
             "response_rate": response_rate,
         }
 
-class SurveyAnalytics(models.Model):
+class SurveyAnalytics(TimeStampedModel):
     survey = models.ForeignKey(TenantSurveyCreation, on_delete=models.CASCADE)
     response_data = models.JSONField(blank=True, null=True)
     analysis_results = models.JSONField(null=True, blank=True)
@@ -68,14 +68,14 @@ class SurveyAnalytics(models.Model):
         }
         return comparison
 
-class TenantFollowUpActions(models.Model):
+class TenantFollowUpActions(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     survey = models.ForeignKey(TenantSurveyCreation, on_delete=models.CASCADE)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     action_description = models.TextField(blank=True, null=True)
     assigned_to = models.CharField(max_length=100, blank=True, null=True)
     status = models.CharField(max_length=50, choices= [('pending', 'Pending'), ('overdue', 'Overdue'), ('completed', 'Completed')],default='pending')
-    deadline = models.DateTimeField()
+    deadline = models.DateTimeField(blank=True, null=True)
 
     def create_action(self, action_description, assigned_to, deadline):
         self.action_description = action_description
@@ -97,7 +97,7 @@ class TenantFollowUpActions(models.Model):
         self.save()
         return {"action_id": self.id, "status": self.status}
 
-class TenantSatisfactionMetrics(models.Model):
+class TenantSatisfactionMetrics(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     metric_name = models.CharField(max_length=100, blank=True, null=True)

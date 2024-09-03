@@ -1,14 +1,14 @@
 from django.db import models
 from django.utils import timezone
 from tenant_satisfaction_surveys.models import TenantSatisfactionSurvey
-from core.models import Communication
+from core.models import Communication, TimeStampedModel
 from lease_rental_management.models import PropertyManager
 import json
 
-class TenantFeedbackAnalytics(models.Model):
+class TenantFeedbackAnalytics(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
-    generated_at = models.DateTimeField(default=timezone.now)
+    generated_at = models.DateTimeField(default=timezone.now, blank=True, null=True)
     survey = models.ForeignKey(TenantSatisfactionSurvey, on_delete=models.CASCADE)
     trends = models.JSONField(default=dict, blank=True, null=True)
     sentiment_analysis = models.JSONField(default=dict, blank=True, null=True)
@@ -40,7 +40,7 @@ class TenantFeedbackAnalytics(models.Model):
         sentiments = self.perform_sentiment_analysis(feedback)
         return f"Key Insights: {trends}, Sentiment: {sentiments}"
 
-class ImprovementInitiative(models.Model):
+class ImprovementInitiative(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     related_survey = models.ForeignKey(TenantSatisfactionSurvey, on_delete=models.CASCADE)
     initiated_by = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
@@ -91,8 +91,7 @@ class StakeholderCommunication(Communication):
         self.message = message
         self.save()
 
-    def track_communication_status(self, communication_id):
-        communication = StakeholderCommunication.objects.get(id=communication_id)
+    def track_communication_status(self):
         return {
             self.is_received: True,
             self.is_read: True

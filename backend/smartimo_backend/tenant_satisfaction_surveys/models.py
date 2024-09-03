@@ -1,9 +1,9 @@
 from django.db import models
 from django.utils import timezone
-from core.models import User, Property
+from core.models import Property, TimeStampedModel
 from lease_rental_management.models import Tenant, PropertyManager
 
-class TenantSatisfactionSurvey(models.Model):
+class TenantSatisfactionSurvey(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     created_by = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
@@ -58,7 +58,7 @@ class TenantSatisfactionSurvey(models.Model):
         self.save()
 
 
-class SurveyQuestion(models.Model):
+class SurveyQuestion(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     survey = models.ForeignKey(TenantSatisfactionSurvey, on_delete=models.CASCADE)
     question_text = models.CharField(max_length=255, blank=True, null=True)
@@ -85,12 +85,12 @@ class SurveyQuestion(models.Model):
         return self
 
 
-class TenantSurveyResponse(models.Model):
+class TenantSurveyResponse(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     survey = models.ForeignKey(TenantSatisfactionSurvey, on_delete=models.CASCADE)
     responses = models.JSONField(blank=True, null=True)
-    submission_date = models.DateTimeField(default=timezone.now)
+    submission_date = models.DateTimeField(default=timezone.now, blank=True, null=True)
 
     def submit_response(self, survey_id, tenant_id, responses):
         self.survey.id = survey_id
@@ -106,7 +106,7 @@ class TenantSurveyResponse(models.Model):
         pass
 
 
-class SurveyResponse(models.Model):
+class SurveyResponse(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     question = models.ForeignKey(SurveyQuestion, on_delete=models.CASCADE)
     response_text = models.TextField(blank=True, null=True)
@@ -123,7 +123,7 @@ class SurveyResponse(models.Model):
         return self
 
 
-class TenantSurveyAnalytics(models.Model):
+class TenantSurveyAnalytics(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     survey = models.ForeignKey(TenantSatisfactionSurvey, on_delete=models.CASCADE)
     average_rating = models.FloatField(null=True, blank=True)
@@ -132,7 +132,13 @@ class TenantSurveyAnalytics(models.Model):
     feedback_summary = models.TextField(blank=True, null=True)
 
     def generate_analytics_report(self):
-        pass
+        return {
+            "survey": self.survey.id,
+            "average_rating": self.average_rating,
+            "response_count": self.response_count,
+            "satisfaction_trends": self.satisfaction_trends,
+            "feedback-summary": self. feedback_summary
+        }
 
     def analyze_trends(self):
         pass
@@ -141,7 +147,7 @@ class TenantSurveyAnalytics(models.Model):
         return self.feedback_summary
 
 
-class SurveyCollaboration(models.Model):
+class SurveyCollaboration(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     team = models.ManyToManyField(PropertyManager, related_name='collaborations')
     survey = models.ForeignKey(TenantSatisfactionSurvey, on_delete=models.CASCADE)

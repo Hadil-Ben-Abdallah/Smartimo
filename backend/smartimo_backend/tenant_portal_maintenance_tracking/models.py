@@ -1,9 +1,9 @@
 from django.db import models
-from core.models import Property, Feedback
+from core.models import Property, Feedback, TimeStampedModel
 from lease_rental_management.models import Tenant
 from maintenance_and_service_requests.models import MaintenanceRequest, MaintenanceTechnician
 
-class MaintenanceTask(models.Model):
+class MaintenanceTask(TimeStampedModel):
     TASK_STATUS = (
         ('assigned', 'Assigned'),
         ('in_progress', 'In Progress'),
@@ -69,7 +69,7 @@ class MaintenanceFeedback(Feedback):
             'comments': feedback.comments,
         } for feedback in feedback_list]
 
-class MaintenanceAnalytics(models.Model):
+class MaintenanceAnalytics(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     period = models.CharField(max_length=50, null=True, blank=True)

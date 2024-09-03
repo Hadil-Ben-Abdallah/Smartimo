@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import Resource, Feedback
+from core.models import Resource, Feedback, TimeStampedModel
 from lease_rental_management.models import Tenant
 
 class TenantPortalResource(Resource):
@@ -121,7 +121,7 @@ class TenantPortalFeedback(Feedback):
             return TenantPortalFeedback.objects.filter(resource_id=resource_id)
         return TenantPortalFeedback.objects.all()
 
-class ContentManagement(models.Model):
+class ContentManagement(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     resource_updates = models.JSONField(default=dict, blank=True, null=True)
     feedback_reviews = models.JSONField(default=dict, blank=True, null=True)
