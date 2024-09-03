@@ -7,7 +7,6 @@ class Lead(Client):
     lead_source = models.CharField(max_length=50, choices=[('facebook', 'Facebook'), ('instagram', 'Instagram'), ('search_web', 'Search Web'), ('tik_tok', 'Tik Tok')], default='search_web')
     lead_status = models.CharField(max_length=50, choices=[('new', 'New'), ('contacted', 'Contacted'), ('qualified', 'Qualified')])
     property_type = models.CharField(max_length=50, choices=[('house', 'House'), ('office', 'Office'), ('apartment', 'Apartment')], default='house')
-    note= models.TextField(max_length=2000, blank=True, null=True)
 
     def create_lead(self, data):
         lead = Lead.objects.create(**data)

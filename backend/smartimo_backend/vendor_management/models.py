@@ -1,7 +1,8 @@
 from django.db import models
-from core.models import Communication, TimeStampedModel
+from core.models import Communication, TimeStampedModel, Property
 from lease_rental_management.models import PropertyManager
 from django.utils import timezone
+from client_management.models import Client
 
 
 class Vendor(TimeStampedModel):
@@ -97,14 +98,17 @@ class VendorsPropertyManager(PropertyManager):
 
 class Contract(TimeStampedModel):
     id = models.AutoField(primary_key=True)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     property_manager = models.ForeignKey(VendorsPropertyManager, on_delete=models.CASCADE)
-    scope_of_work = models.TextField(blank=True, null= True)
     pricing = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null= True)
     payment_terms = models.TextField(blank=True, null= True)
     sla = models.TextField(blank=True, null= True)
     document_version = models.IntegerField(default=1, blank=True, null= True)
-    expiry_date = models.DateField(blank=True, null= True)
+    uploaded_File = models.FileField(blank=True, null=True)
+    start_date = models.DateField(blank=True, null= True)
+    end_date = models.DateField(blank=True, null= True)
     status = models.CharField(max_length=20, blank=True, null= True)
 
     def create_contract(self):
@@ -117,24 +121,27 @@ class Contract(TimeStampedModel):
         self.save()
 
     def renew_contract(self):
-        self.expiry_date = timezone.now().date() + timezone.timedelta(days=365)
+        self.end_date = timezone.now().date() + timezone.timedelta(days=365)
 
     def track_contract_status(self):
         return {
             "status": self.status,
-            "expiry_date": self.expiry_date
+            "end_date": self.end_date
         }
 
     def get_contract_details(self):
         return {
+            "client": self.client,
+            "property": self.property,
             "vendor": self.vendor.id,
             "property_manager": self.property_manager.user_id,
-            "scope_of_work": self.scope_of_work,
             "pricing": self.pricing,
             "payment_terms": self.payment_terms,
             "sla": self.sla,
             "document_version": self.document_version,
-            "expiry_date": self.expiry_date,
+            "uploaded_File": self.uploaded_File,
+            "start_date": self.start_date,
+            "end_date": self.end_date,
             "status": self.status
         }
 

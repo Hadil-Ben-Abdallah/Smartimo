@@ -50,6 +50,7 @@ class Payment(TimeStampedModel):
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     credit_card_number = models.CharField(max_length=20, blank=True, null=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     reached_amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     remaining_amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     payment_date = models.DateField(blank=True, null=True)
@@ -71,6 +72,7 @@ class Payment(TimeStampedModel):
             "invoice": self.invoice.id,
             "tenant": self.tenant.user_id,
             "credit_card_number": self.credit_card_number,
+            "amount": self.amount,
             "reached_amount": self.reached_amount,
             "remaining_amount": self.remaining_amount,
             "payment_date": self.payment_date,

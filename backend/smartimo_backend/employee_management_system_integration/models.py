@@ -1,6 +1,6 @@
 from django.db import models
 from lease_rental_management.models import PropertyManager
-from core.models import TimeStampedModel
+from core.models import TimeStampedModel, User
 
 class Permission(TimeStampedModel):
     id = models.AutoField(primary_key=True)
@@ -26,10 +26,12 @@ class Permission(TimeStampedModel):
 class Role(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     role_name = models.CharField(max_length=255, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
     permissions = models.ManyToManyField(Permission, blank=True, null=True)
 
-    def define_role(self, name, permissions):
+    def define_role(self, name, description, permissions):
         self.role_name = name
+        self.description = description
         self.permissions.set(permissions)
         self.save()
         return self
@@ -42,11 +44,11 @@ class Role(TimeStampedModel):
     def assign_role(self, employee_id, role_id):
         employee = EmployeeProfile.objects.get(id=employee_id)
         role = Role.objects.get(id=role_id)
-        employee.role_id = role
+        employee.role.id = role
         employee.save()
 
 
-class EmployeeProfile(TimeStampedModel):
+class EmployeeProfile(User):
     employment_history = models.TextField(blank=True, null=True)
     performance_records = models.TextField(blank=True, null=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE)

@@ -39,7 +39,7 @@ class Property(TimeStampedModel):
     swiming_pool = models.BooleanField(default=False, blank=True, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     year_built = models.DateField(auto_now=True, blank=True, null=True)
-    status = models.CharField(max_length=50, blank=True, null=True)
+    status = models.CharField(max_length=50, choices=[('available', 'available'), ('under_offer', 'Under Offer')], default='available' , blank=True, null=True)
 
 
 class Notification(TimeStampedModel):
@@ -144,6 +144,7 @@ class User(TimeStampedModel):
         ('property_owner', 'Property Owner'),
         ('property_manager', 'Property Manager'),
         ('staff_member', 'Staff Member'),
+        ('employee', 'employee'),
         ('inspector', 'Inspector'),
         ('vendor', 'Vendor'),
         ('prospective_buyer_renter', 'Prospective Buyer Renter'),
