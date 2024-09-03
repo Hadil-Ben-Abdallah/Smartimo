@@ -1,7 +1,5 @@
 from django.db import models
-from django.utils import timezone
 from django.core.mail import send_mail
-from django.conf import settings
 from lease_rental_management.models import Tenant
 from tenant_portal_maintenance_tracking.models import MaintenanceFeedback
 from maintenance_and_service_requests.models import MaintenanceRequest

@@ -1,11 +1,10 @@
 from django.db import models
-from django.utils import timezone
-from core.models import Feedback
+from core.models import Feedback, TimeStampedModel
 import json
 from lease_rental_management.models import Tenant, PropertyManager
 
 
-class CommunityPoll(models.Model):
+class CommunityPoll(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
@@ -62,7 +61,7 @@ class CommunityPoll(models.Model):
             return cls.objects.filter(**filters)
         return cls.objects.all()
 
-class PollQuestion(models.Model):
+class PollQuestion(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     poll = models.ForeignKey(CommunityPoll, on_delete=models.CASCADE)
     question_text = models.CharField(max_length=255, blank=True, null=True)
@@ -104,7 +103,7 @@ class PollQuestion(models.Model):
             return cls.objects.filter(poll_id=poll_id)
         return cls.objects.all()
 
-class PollResponse(models.Model):
+class PollResponse(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     poll = models.ForeignKey(CommunityPoll, on_delete=models.CASCADE)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
@@ -139,7 +138,7 @@ class PollResponse(models.Model):
             return cls.objects.filter(poll_id=poll_id)
         return cls.objects.all()
 
-class PollAnalytics(models.Model):
+class PollAnalytics(TimeStampedModel):
     poll = models.ForeignKey(CommunityPoll, on_delete=models.CASCADE)
     summary_report = models.JSONField(blank=True, null=True)
     graphical_representation = models.JSONField(blank=True, null=True)
@@ -166,7 +165,7 @@ class PollAnalytics(models.Model):
     def export_data(self):
         return json.dumps(self.summary_report)
 
-class PollDataArchive(models.Model):
+class PollDataArchive(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     poll = models.ForeignKey(CommunityPoll, on_delete=models.CASCADE)
     archive_date = models.DateTimeField(auto_now_add=True, blank=True, null=True)

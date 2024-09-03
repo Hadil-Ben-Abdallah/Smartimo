@@ -1,8 +1,8 @@
 from django.db import models
-from core.models import Category, Feedback
+from core.models import Category, Feedback, TimeStampedModel
 from lease_rental_management.models import Tenant
 
-class FAQ(models.Model):
+class FAQ(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     question = models.TextField(blank=True, null=True)
@@ -60,7 +60,7 @@ class FAQFeedback(Feedback):
             'status': self.status
         }
 
-class FAQAnalytics(models.Model):
+class FAQAnalytics(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     faq = models.ForeignKey(FAQ, on_delete=models.CASCADE)
     page_views = models.PositiveIntegerField(default=0, blank=True, null=True)

@@ -9,7 +9,7 @@ class TenantNotification(Notification):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     type = models.CharField(max_length=255, choices=[('lease_renewal', 'Lease Renewal'), ('rent_increase', 'Rent Increase')], default='lease_renewal')
     delivery_method = models.CharField(max_length=50, choices=[('email', 'Email'), ('sms', 'SMS')], default='email')
-    frequency = models.CharField(max_length=50)
+    frequency = models.CharField(max_length=50, blank=True, null= True)
 
     def customize_preferences(self, new_preferences):
         self.frequency = new_preferences.get('frequency', self.frequency)
@@ -32,7 +32,6 @@ class TenantResource(Resource):
 
     def subscribe_to_updates(self, resource_id: int):
         try:
-            # Fetch the resource based on resource_id
             resource = TenantResource.objects.get(id=resource_id, tenant=self.tenant)
 
             resource.add_subscriber(self.tenant)

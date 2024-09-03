@@ -1,7 +1,8 @@
 from django.db import models
+from core.models import TimeStampedModel
 from lease_rental_management.models import PropertyManager
 
-class TenantPortalBranding(models.Model):
+class TenantPortalBranding(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     logo = models.URLField(max_length=255, null=True, blank=True)
     brand_colors = models.JSONField(null=True, blank=True)
@@ -34,7 +35,7 @@ class TenantPortalBranding(models.Model):
             "font_styles": self.font_styles,
         }
 
-class TenantPortalLayout(models.Model):
+class TenantPortalLayout(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     modules = models.JSONField(null=True, blank=True)
     navigation_structure = models.JSONField(null=True, blank=True)
@@ -58,7 +59,7 @@ class TenantPortalLayout(models.Model):
             module['responsive'] = True
         self.save()
 
-class TenantPortalSettings(models.Model):
+class TenantPortalSettings(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     default_communication_channel = models.CharField(max_length=50, null=True, blank=True)
     notification_preferences = models.JSONField(null=True, blank=True)
@@ -83,7 +84,7 @@ class TenantPortalSettings(models.Model):
             "language_settings": self.language_settings,
         }
 
-class CustomPage(models.Model):
+class CustomPage(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=255, null=True, blank=True)
     content = models.TextField(null=True, blank=True)
@@ -112,7 +113,7 @@ class CustomPage(models.Model):
             "engagement": 75,
         }
 
-class TenantEngagementAnalytics(models.Model):
+class TenantEngagementAnalytics(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     page_views = models.JSONField(default=dict, null=True, blank=True)

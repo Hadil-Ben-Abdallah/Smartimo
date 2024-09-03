@@ -1,6 +1,5 @@
 from django.db import models
-from django.contrib.auth import get_user_model
-from core.models import Property, Category,Feedback
+from core.models import Property, Category,Feedback, TimeStampedModel
 from lease_rental_management.models import PropertyManager, Tenant
 from feedback_and_review_system.models import FeedbackNotification
 from feedback_and_ratings_system_implementation.models import FeedbackAnalytics, FeedbackDashboard
@@ -26,13 +25,13 @@ class StaffMember(Tenant):
         )
         return message
 
-class Message(models.Model):
+class Message(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     recipient = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name='received_messages')
     sender = models.ForeignKey(StaffMember, on_delete=models.CASCADE, related_name='sent_messages')
     message_text = models.TextField(blank=True, null=True)
 
-class FeedbackSubmission(models.Model):
+class FeedbackSubmission(TimeStampedModel):
     STATUS_CHOICES = [
         ('open', 'Open'),
         ('in_progress', 'In Progress'),
@@ -55,7 +54,7 @@ class FeedbackSubmission(models.Model):
     priority_level = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='medium')
     assigned_to = models.ForeignKey(StaffMember, on_delete=models.SET_NULL)
     responses = models.JSONField(null=True, blank=True)
-    anonymous = models.BooleanField(default=False)
+    anonymous = models.BooleanField(default=False, blank=True, null=True)
     language_preference = models.CharField(max_length=10, choices=[('en', 'English'), ('es', 'Spanish'), ('fr', 'French')], default='en')
 
     def submit_feedback(self, tenant_id, property_id, category, details, staff_member_id, responses, anonymous=False):
@@ -99,7 +98,7 @@ class PortalFeedbackNotification(FeedbackNotification):
     submission = models.ForeignKey(FeedbackSubmission, on_delete=models.CASCADE)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
 
-    def customize_notification_settings(self, manager_id, channel, frequency, type):
+    def customize_notification_settings(self, channel, frequency, type):
         self.channel = channel
         self.status = frequency
         self.type = type

@@ -1,9 +1,9 @@
 from django.db import models
-from community_management_features.models import Community, Announcement
+from community_management_features.models import Community
 from lease_rental_management.models import Tenant, PropertyManager
-from core.models import Category
+from core.models import Category, TimeStampedModel
 
-class ForumTopic(models.Model):
+class ForumTopic(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=255, blank=True, null=True)
     content = models.TextField(blank=True, null=True)
@@ -68,7 +68,7 @@ class CommunityForum(Community):
         pass
 
 
-class ForumReply(models.Model):
+class ForumReply(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     topic = models.ForeignKey(ForumTopic, on_delete=models.CASCADE)
     content = models.TextField(blank=True, null=True)
@@ -91,7 +91,7 @@ class ForumReply(models.Model):
         print(f"{self.author.username} mentioned {Tenant.username} in a reply.")
 
 
-class ForumModeration(models.Model):
+class ForumModeration(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     forum = models.ForeignKey(CommunityForum, on_delete=models.CASCADE)
     action_type = models.CharField(max_length=255, choices=[('content', 'Content'), ('report', 'Report'), ('removal', 'Removal'), ('user_ban', 'User ban')], default='content')
@@ -120,7 +120,7 @@ class ForumModeration(models.Model):
             print(f"Reviewing report: {report.reason}")
 
 
-class ForumAnnouncement(models.Model):
+class ForumAnnouncement(TimeStampedModel):
     forum = models.ForeignKey(CommunityForum, on_delete=models.CASCADE)
 
     def create_announcement(self, title, description, post_date, expiration_date, is_archived, posted_by):

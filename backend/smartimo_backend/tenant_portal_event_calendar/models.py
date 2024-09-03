@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import Property, Notification, Feedback
+from core.models import Property, Notification, Feedback, TimeStampedModel
 from lease_rental_management.models import Tenant
 from task_calendar_management.models import Event
 from datetime import timezone
@@ -37,12 +37,12 @@ class CalendarEvent(Event):
         return CalendarEvent.objects.get(id=event_id)
 
 
-class RSVP(models.Model):
+class RSVP(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     event = models.ForeignKey(CalendarEvent, on_delete=models.CASCADE)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     response = models.CharField(max_length=50, blank=True, null=True)
-    responded_at = models.DateTimeField(auto_now_add=True)
+    responded_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     def submit_rsvp(self, event_id, tenant_id, response):
         rsvp, created = RSVP.objects.get_or_create(event=event_id, tenant=tenant_id)
@@ -59,7 +59,7 @@ class RSVP(models.Model):
         return rsvp
 
 
-class Calendar(models.Model):
+class Calendar(TimeStampedModel):
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     events = models.ManyToManyField(CalendarEvent, related_name='calendars')
     customization_settings = models.JSONField(default=dict, blank=True, null=True)

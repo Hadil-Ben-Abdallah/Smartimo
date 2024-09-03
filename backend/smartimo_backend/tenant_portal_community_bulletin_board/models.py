@@ -1,9 +1,9 @@
 from django.db import models
-from core.models import Notification, User
+from core.models import Notification, User, TimeStampedModel
 from django.utils import timezone
 from lease_rental_management.models import Tenant
 
-class Announcement(models.Model):
+class Announcement(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
@@ -54,7 +54,7 @@ class AnnouncementNotification(Notification):
             "date": self.date
         }
 
-class Reaction(models.Model):
+class Reaction(TimeStampedModel):
     REACTION_CHOICES = [
         ('like', 'Like'),
         ('love', 'Love'),
@@ -79,7 +79,7 @@ class Reaction(models.Model):
             summary[reaction.reaction_type] += 1
         return summary
 
-class Comment(models.Model):
+class Comment(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     announcement = models.ForeignKey(Announcement, on_delete=models.CASCADE)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)

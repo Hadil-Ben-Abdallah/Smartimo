@@ -1,6 +1,6 @@
 from django.db import models
 from datetime import datetime
-from core.models import Document, Notification
+from core.models import Document, Notification, TimeStampedModel
 from lease_rental_management.models import Tenant
 
 class TenantDocument(Document):
@@ -28,7 +28,7 @@ class TenantDocument(Document):
             query = query.filter(created_at__range=criteria['date_range'])
         return query
 
-class DocumentVersion(models.Model):
+class DocumentVersion(TimeStampedModel):
     document = models.ForeignKey(TenantDocument, on_delete=models.CASCADE)
     version_number = models.IntegerField(blank=True, null=True)
     file_path = models.CharField(max_length=255, blank=True, null=True)
