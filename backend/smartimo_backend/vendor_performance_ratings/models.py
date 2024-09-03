@@ -1,9 +1,9 @@
 from django.db import models
-from core.models import Feedback
+from core.models import Feedback, TimeStampedModel
 from lease_rental_management.models import PropertyManager
 from vendor_management.models import Vendor
 
-class VendorRating(models.Model):
+class VendorRating(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
@@ -36,7 +36,7 @@ class VendorRating(models.Model):
         self.feedback = feedback
         self.save()
 
-class VendorPerformance(models.Model):
+class VendorPerformance(TimeStampedModel):
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     average_responsiveness_rating = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)
     average_quality_rating = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)
@@ -92,7 +92,7 @@ class VendorFeedback(Feedback):
     def view_feedback(self):
         return self.rating, self.comments
 
-class VendorPerformanceDashboard(models.Model):
+class VendorPerformanceDashboard(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)

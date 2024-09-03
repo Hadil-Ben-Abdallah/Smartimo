@@ -1,13 +1,12 @@
 from django.db import models
-from django.utils import timezone
-from core.models import Property, User
+from core.models import Property, User, TimeStampedModel
 from property_listing.models import PropertyOwner
 from remote_property_monitoring.models import Project
 from client_management.models import Client
 from property_listing.models import RealEstateAgent
 from tenant_screening_and_background_checks.models import PropertyManagementCompany
 
-class VirtualTour(models.Model):
+class VirtualTour(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     tour_content = models.JSONField(blank=True, null=True)
@@ -34,7 +33,6 @@ class VirtualTour(models.Model):
 
     def embed_tour(self, tour_id, target):
         tour_instance = VirtualTour.objects.get(id=tour_id)
-        # Embed the virtual tour into the specified target
         return f"Virtual tour {tour_id} embedded into {target}"
     
     
@@ -71,9 +69,7 @@ class ProspectiveClient(Client):
     shortlisted_properties = models.ManyToManyField(VirtualProperty, related_name='shortlisted_by')
 
     def explore_virtual_tour(self, tour_id):
-        # Placeholder method to explore a virtual tour
         tour_instance = VirtualTour.objects.get(id=tour_id)
-        # Logic to present tour_instance to the client
         return tour_instance
 
     def shortlist_property(self, client_id, property_id):
@@ -83,7 +79,7 @@ class ProspectiveClient(Client):
         return property_instance
 
 
-class LiveVirtualTourSession(models.Model):
+class LiveVirtualTourSession(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     agent = models.ForeignKey(RealEstateAgent, on_delete=models.CASCADE)
@@ -106,12 +102,10 @@ class LiveVirtualTourSession(models.Model):
 
     def conduct_tour(self, session_id):
         session_instance = LiveVirtualTourSession.objects.get(id=session_id)
-        # Conduct the live session
         return f"Conducting live virtual tour session {session_id}"
 
     def record_session(self, session_id):
         session_instance = LiveVirtualTourSession.objects.get(id=session_id)
-        # Record the session
         return f"Recording live virtual tour session {session_id}"
 
 class PropertyDeveloper(User):
@@ -151,7 +145,7 @@ class PropertyDeveloper(User):
         self.save()
         return self
 
-class VirtualMarketingCampaign(models.Model):
+class VirtualMarketingCampaign(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     developer = models.ForeignKey(PropertyDeveloper, on_delete=models.CASCADE)
     campaign_name = models.CharField(max_length=255, blank=True, null=True)
@@ -179,7 +173,7 @@ class VirtualMarketingCampaign(models.Model):
         campaign_instance.save()
         return campaign_instance
 
-class VirtualTourServicePackage(models.Model):
+class VirtualTourServicePackage(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     company = models.ForeignKey(PropertyManagementCompany, on_delete=models.CASCADE)
     package_name = models.CharField(max_length=255, blank=True, null=True)
@@ -206,6 +200,5 @@ class VirtualTourServicePackage(models.Model):
 
     def offer_service_package(self, package_id, clients):
         package_instance = VirtualTourServicePackage.objects.get(id=package_id)
-        # Offer the package to clients
         return f"Offering service package {package_id} to clients"
 

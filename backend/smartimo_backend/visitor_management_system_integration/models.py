@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from core.models import Notification
+from core.models import Notification, TimeStampedModel
 from visitor_management_for_property_access.models import Visitor
 
 class TenantVisitor(Visitor):
@@ -36,7 +36,7 @@ class TenantVisitor(Visitor):
         self.send_confirmation_notification()
         return self.visitor_pass
 
-class CheckInCheckOut(models.Model):
+class CheckInCheckOut(TimeStampedModel):
     visitor = models.ForeignKey(TenantVisitor, on_delete=models.CASCADE)
     checkin_time = models.DateTimeField(null=True, blank=True)
     checkout_time = models.DateTimeField(null=True, blank=True)
@@ -84,7 +84,7 @@ class SecurityNotification(Notification):
         self.save()
         print(f"Alert resolved at {self.resolved_at}")
 
-class VisitorLog(models.Model):
+class VisitorLog(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     visitor = models.ForeignKey(TenantVisitor, on_delete=models.CASCADE)
     checkin = models.ForeignKey(CheckInCheckOut, on_delete=models.CASCADE)
@@ -112,7 +112,7 @@ class VisitorLog(models.Model):
     def retrieve_historical_logs(self, visitor_id):
         return VisitorLog.objects.filter(id=visitor_id).order_by('-timestamp')
 
-class AccessControlIntegration(models.Model):
+class AccessControlIntegration(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     system_name = models.CharField(max_length=255, blank=True, null=True)
     entry_points = models.JSONField(blank=True, null=True)

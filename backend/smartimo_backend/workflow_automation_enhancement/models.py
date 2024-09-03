@@ -1,9 +1,9 @@
 from django.db import models
-from core.models import Reminder, Notification, Report
+from core.models import Reminder, Notification, Report, TimeStampedModel
 from lease_rental_management.models import Tenant, PropertyManager
 from maintenance_and_service_requests.models import MaintenanceTechnician
 from property_listing.models import PropertyOwner
-from datetime import datetime, timedelta
+from datetime import timedelta
 from django.utils import timezone
 from django.core.mail import send_mail
 
@@ -109,7 +109,7 @@ class AutomatedFinancialReport(Report):
 class InspectionReminder(Reminder):
     property_manager = models.ForeignKey(PropertyManager, on_delete=models.CASCADE)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
-    maintenance_staff = models.ManyToManyField(MaintenanceTechnician, blank=True, null=True)
+    maintenance_staff = models.ManyToManyField(MaintenanceTechnician)
 
     def schedule_inspection(self, frequency_days=180):
         self.reminder_date = timezone.now() + timedelta(days=frequency_days)

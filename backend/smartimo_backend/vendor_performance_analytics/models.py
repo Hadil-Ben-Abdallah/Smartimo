@@ -1,11 +1,10 @@
 from django.db import models
 from django.utils import timezone
-from datetime import timedelta
-from core.models import Property, Feedback, Report
+from core.models import Property, Feedback, Report, TimeStampedModel
 from lease_rental_management.models import Tenant
 from vendor_management.models import Vendor
 
-class ServiceRequest(models.Model):
+class ServiceRequest(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     description = models.TextField(blank=True, null=True)
@@ -42,7 +41,7 @@ class ServiceRequest(models.Model):
         }
 
 
-class VendorServicePerformance(models.Model):
+class VendorServicePerformance(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
@@ -84,13 +83,13 @@ class VendorServicePerformance(models.Model):
         }
         return metrics
 
-class VendorResponseTime(models.Model):
+class VendorResponseTime(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     service_request = models.ForeignKey(ServiceRequest, on_delete=models.CASCADE)
     response_time = models.FloatField(blank=True, null=True)
 
-    def calculate_response_time(self, vendor_id, service_request_id):
+    def calculate_response_time(self, service_request_id):
         try:
             service_request = ServiceRequest.objects.get(id=service_request_id)
             acknowledgment_time = timezone.now()
@@ -106,7 +105,7 @@ class VendorResponseTime(models.Model):
         average_response_time = response_times.aggregate(models.Avg('response_time'))['response_time__avg']
         return average_response_time
 
-class VendorResolutionRate(models.Model):
+class VendorResolutionRate(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     service_request = models.ForeignKey(ServiceRequest, on_delete=models.CASCADE)
@@ -115,7 +114,6 @@ class VendorResolutionRate(models.Model):
 
     def calculate_resolution_rate(self, service_request_id):
         try:
-            service_request = ServiceRequest.objects.get(id=service_request_id)
             resolution_time = self.resolution_time
             sla_threshold = 24
             self.within_sla = resolution_time <= sla_threshold
@@ -174,14 +172,14 @@ class VendorPerformanceReport(Report):
     def export_report(self, report_id, format):
         pass
 
-class VendorPerformanceAlert(models.Model):
+class VendorPerformanceAlert(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     metric_type = models.CharField(max_length=50, blank=True, null=True)
     threshold_value = models.FloatField(blank=True, null=True)
     current_value = models.FloatField(blank=True, null=True)
     severity_level = models.CharField(max_length=50, choices=[('low', 'Low'), ('medium', 'Medium'), ('high', 'High')], default='low')
-    notification_settings = models.JSONField()
+    notification_settings = models.JSONField(blank=True, null=True)
 
     def create_alert(self, vendor_id, metric_type, threshold_value, severity_level):
         self.vendor = vendor_id

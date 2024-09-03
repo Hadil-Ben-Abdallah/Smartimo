@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import Property, Notification, Feedback
+from core.models import Property, Notification, Feedback, TimeStampedModel
 from property_listing.models import PropertyOwner, RealEstateAgent
 from django.core.mail import send_mail
 from datetime import datetime, timedelta
@@ -20,11 +20,11 @@ class VisitorProperty(Property):
             setattr(self, key, value)
         self.save()
 
-class Visitor(models.Model):
+class Visitor(TimeStampedModel):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
-    email = models.EmailField()
-    phone = models.CharField(max_length=15)
+    name = models.CharField(max_length=100, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    phone = models.CharField(max_length=15, blank=True, null=True)
     visit_purpose = models.CharField(max_length=100, choices=[('viewing', 'Viewing'), ('inspecting', 'Inspecting')], default='viewing')
 
     def check_in(self, property):
@@ -39,13 +39,13 @@ class Visitor(models.Model):
     def provide_feedback(self, feedback):
         Feedback.objects.create(visitor=self, **feedback)
 
-class Showing(models.Model):
+class Showing(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(VisitorProperty, on_delete=models.CASCADE)
     agent = models.ForeignKey(RealEstateAgent, on_delete=models.CASCADE)
     visitor = models.ForeignKey(Visitor, on_delete=models.CASCADE)
-    date = models.DateField()
-    time = models.TimeField()
+    date = models.DateField(blank=True, null=True)
+    time = models.TimeField(blank=True, null=True)
     status = models.CharField(max_length=20, choices=[('scheduled', 'Scheduled'), ('completed', 'Completed'), ('cancelled', 'Cancelled')])
 
     def send_invitation(self):
@@ -71,14 +71,14 @@ class Showing(models.Model):
         self.save()
 
 
-class AccessControl(models.Model):
+class AccessControl(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(VisitorProperty, on_delete=models.CASCADE)
     visitor = models.ForeignKey(Visitor, on_delete=models.CASCADE)
-    access_code = models.CharField(max_length=50)
-    access_start = models.DateTimeField()
-    access_end = models.DateTimeField()
-    permissions = models.JSONField()
+    access_code = models.CharField(max_length=50, blank=True, null=True)
+    access_start = models.DateTimeField(blank=True, null=True)
+    access_end = models.DateTimeField(blank=True, null=True)
+    permissions = models.JSONField(blank=True, null=True)
     
     def grant_access(self, details):
         for key, value in details.items():

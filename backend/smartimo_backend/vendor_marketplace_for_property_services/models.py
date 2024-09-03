@@ -1,13 +1,13 @@
 from django.db import models
 from django.utils import timezone
 from vendor_management.models import Vendor
-from core.models import Property
+from core.models import Property, TimeStampedModel
 
 
-class VendorMarketplace(models.Model):
+class VendorMarketplace(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     service_categories = models.JSONField(blank=True, null=True)
-    vendors = models.ManyToManyField(Vendor, blank=True, null=True)
+    vendors = models.ManyToManyField(Vendor)
 
     def search_vendors(self, service_type=None, location=None, rating=None):
         vendors = self.vendors.all()
@@ -31,7 +31,7 @@ class VendorMarketplace(models.Model):
         return Vendor.objects.get(pk=vendor_id)
 
 
-class QuoteResponse(models.Model):
+class QuoteResponse(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     quote_amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
@@ -51,12 +51,12 @@ class QuoteResponse(models.Model):
         self.save()
 
 
-class QuoteRequest(models.Model):
+class QuoteRequest(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     service_type = models.CharField(max_length=255, choices=[('maintenance', 'Maintenance'), ('cleaning', 'Cleaning')], default='maintenance')
     request_details = models.TextField(blank=True, null=True)
-    vendor_responses = models.ManyToManyField(QuoteResponse, blank=True, null=True)
+    vendor_responses = models.ManyToManyField(QuoteResponse)
 
     def submit_request(self, property_id, service_type, request_details):
         self.property.property_id = property_id
@@ -72,7 +72,7 @@ class QuoteRequest(models.Model):
         return response.vendor.id
 
 
-class VendorMarketplacePerformance(models.Model):
+class VendorMarketplacePerformance(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     performance_metrics = models.JSONField(blank=True, null=True)
@@ -96,7 +96,7 @@ class VendorMarketplacePerformance(models.Model):
         return report
 
 
-class ContractManagement(models.Model):
+class ContractManagement(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     contract_terms = models.TextField(blank=True, null=True)
@@ -123,7 +123,7 @@ class ContractManagement(models.Model):
             )
 
 
-class PaymentTransaction(models.Model):
+class PaymentTransaction(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     contract = models.ForeignKey(ContractManagement, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
