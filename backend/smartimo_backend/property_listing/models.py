@@ -42,11 +42,11 @@ class RealEstateAgent(User):
     agency = models.ForeignKey(Agency, on_delete=models.CASCADE, related_name='agent_agency')
 
     def view_listings(self):
-        return self.listings.all()
+        return ThePropertyListing.get_listing()
 
-    def edit_listing(self, listing_id, **kwargs):
+    def edit_listing(self, **kwargs):
         try:
-            listing = self.listings.get(id=listing_id)
+            listing = ThePropertyListing.get_listing()
             for attr, value in kwargs.items():
                 setattr(listing, attr, value)
             listing.save()
@@ -83,7 +83,7 @@ class ThePropertyListing(Property):
         }
 
 class PropertyOwner(User):
-    properties = models.ManyToManyField(ThePropertyListing, related_name='owner_properties')
+    properties = models.ForeignKey(ThePropertyListing, on_delete=models.CASCADE, related_name='owner_properties')
 
     def get_owner_details(self):
         return {
@@ -107,9 +107,20 @@ class PropertyOwner(User):
         except ThePropertyListing.DoesNotExist:
             return None
 
+class SavedListing(TimeStampedModel):
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    property = models.ForeignKey(ThePropertyListing, on_delete=models.CASCADE)
+
+    def save_listing(self):
+        self.save()
+
+    def get_saved_listings(self):
+        return self
+
 class ProspectiveBuyerRenter(User):
     preferences = models.JSONField(blank=True, null=True)
-    saved_listings = models.ManyToManyField('ThePropertyListing', related_name='saved_by')
+    saved_listings = models.ForeignKey(SavedListing, on_delete=models.CASCADE, related_name='saved_by')
 
     def search_properties(self):
         filters = self.preferences
@@ -121,17 +132,6 @@ class ProspectiveBuyerRenter(User):
 
     def subscribe_notifications(self):
         pass
-
-class SavedListing(TimeStampedModel):
-    id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(ProspectiveBuyerRenter, on_delete=models.CASCADE)
-    property = models.ForeignKey(ThePropertyListing, on_delete=models.CASCADE)
-
-    def save_listing(self):
-        self.save()
-
-    def get_saved_listings(self):
-        return self.user.saved_listings.all()
 
 class PropertyNotification(Notification):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
