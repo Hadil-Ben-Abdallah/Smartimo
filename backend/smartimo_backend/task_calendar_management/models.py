@@ -151,6 +151,7 @@ class Event(TimeStampedModel):
     date = models.DateField(blank=True, null=True)
     time = models.TimeField(blank=True, null=True)
     topic = models.CharField(max_length=255, blank=True, null=True)
+    description = models.TextField()
     location = models.CharField(max_length=255, blank=True, null=True)
     status = models.CharField(max_length=50, choices= [('scheduled', 'Scheduled'), ('cancelled', 'Cancelled'), ('completed', 'Completed')], default= 'pending')
 
@@ -163,6 +164,7 @@ class Event(TimeStampedModel):
             f"Dear participants,\n\n"
             f"You are invited to a event on {self.date} at {self.time}.\n\n"
             f"Topic: {self.topic}\n"
+            f"Description: {self.description}\n"
             f"Location: {self.location}\n\n"
             f"Please RSVP at your earliest convenience.\n\n"
             f"Thank you,\nThe Smartimo Team"
@@ -181,6 +183,7 @@ class Event(TimeStampedModel):
             f"Dear participants,\n\n"
             f"This is a reminder for our upcoming event on {self.date} at {self.time}.\n\n"
             f"Topic: {self.topic}\n"
+            f"Description: {self.description}\n"
             f"Location: {self.location}\n\n"
             f"Thank you,\nThe Smartimo Team"
         )
