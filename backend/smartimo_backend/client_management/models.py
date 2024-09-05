@@ -1,6 +1,6 @@
 from django.db import models
 from property_listing.models import RealEstateAgent
-from core.models import User, Notification, ClientInteraction, Reminder, TimeStampedModel
+from core.models import User, ClientInteraction, Reminder, TimeStampedModel, Notification
 
 class Client(User):
     preferences = models.JSONField(default=dict, blank=True, null=True)
@@ -47,7 +47,7 @@ class ClientReminder(Reminder):
         return Reminder.objects.filter(client_id=client_id)
 
 class ClientAnalytics(TimeStampedModel):
-    client_id = models.OneToOneField(Client, on_delete=models.CASCADE)
+    client = models.OneToOneField(Client, on_delete=models.CASCADE)
     engagement_metrics = models.JSONField(default=dict, blank=True, null=True)
     
     def generate_report(self):
@@ -65,21 +65,21 @@ class ClientAnalytics(TimeStampedModel):
             opportunities.append("Increase follow-ups with low response rate clients.")
         return opportunities
 
-class ClientRealEstateAgent(RealEstateAgent):
-    clients = models.ManyToManyField(Client, related_name='agents')
+# class ClientRealEstateAgent(RealEstateAgent):
+#     clients = models.ManyToManyField(Client, related_name='agents')
 
-    def view_clients(self):
-        return self.clients.all()
+#     def view_clients(self):
+#         return self.clients.all()
     
-    def assign_tag(self, client, tag):
-        client.tags.append(tag)
-        client.save()
+#     def assign_tag(self, client, tag):
+#         client.tags.append(tag)
+#         client.save()
     
-    def filter_clients(self, tag):
-        return self.clients.filter(tags__contains=[tag])
+#     def filter_clients(self, tag):
+#         return self.clients.filter(tags__contains=[tag])
     
-    def receive_notifications(self):
-        notifications = []
-        notifications = Notification.objects.filter(agent_id=self.id)
-        return notifications
+#     def receive_notifications(self):
+#         notifications = []
+#         notifications = Notification.objects.filter(agent_id=self.id)
+#         return notifications
 

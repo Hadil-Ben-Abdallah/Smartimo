@@ -1,6 +1,6 @@
 from ninja import Router
 from typing import List
-from .models import Client, Interaction, Reminder, ClientAnalytics, ClientRealEstateAgent
+from .models import Client, Interaction, Reminder, ClientAnalytics
 from .schemas import ClientSchema, InteractionSchema, ReminderSchema, ClientAnalyticsSchema
 
 router = Router()
@@ -70,20 +70,3 @@ def get_reminders(request, client_id: int):
 def generate_report(request, client_id: int):
     analytics = ClientAnalytics.objects.get(client_id=client_id)
     return analytics.generate_report()
-
-@router.get("/view-clients/{agent_id}", response=List[ClientSchema])
-def view_clients(request, agent_id: int):
-    agent = ClientRealEstateAgent.objects.get(id=agent_id)
-    return agent.view_clients()
-
-@router.post("/assign-tag/{client_id}/{tag}", response=ClientSchema)
-def assign_tag(request, client_id: int, tag: str):
-    client = Client.objects.get(id=client_id)
-    agent = ClientRealEstateAgent.objects.get(id=client.agent_id)
-    agent.assign_tag(client, tag)
-    return client
-
-@router.get("/filter-clients/{agent_id}/{tag}", response=List[ClientSchema])
-def filter_clients(request, agent_id: int, tag: str):
-    agent = ClientRealEstateAgent.objects.get(id=agent_id)
-    return agent.filter_clients(tag)

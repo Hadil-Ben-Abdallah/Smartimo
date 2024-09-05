@@ -40,6 +40,7 @@ class Agency(TimeStampedModel):
 
 class RealEstateAgent(User):
     agency = models.ForeignKey(Agency, on_delete=models.CASCADE, related_name='agent_agency')
+    clients_list = models.JSONField(default=list, blank=True, null=True)
 
     def view_listings(self):
         return ThePropertyListing.get_listing()
@@ -53,9 +54,21 @@ class RealEstateAgent(User):
             return listing
         except ThePropertyListing.DoesNotExist:
             return None
-
+    
+    # def view_clients(self):
+    #     return self.clients.all()
+    
+    # def assign_tag(self, client, tag):
+    #     client.tags.append(tag)
+    #     client.save()
+    
+    # def filter_clients(self, tag):
+    #     return self.clients.filter(tags__contains=[tag])
+    
     def receive_notifications(self):
-        return PropertyNotification.objects.filter(user_id=self.id).order_by('-id')
+        notifications = []
+        notifications = Notification.objects.filter(agent_id=self.user_id)
+        return notifications
 
 class ThePropertyListing(Property):
     agent = models.ForeignKey(RealEstateAgent, on_delete=models.CASCADE)
