@@ -55,15 +55,11 @@ class RealEstateAgent(User):
         except ThePropertyListing.DoesNotExist:
             return None
     
-    # def view_clients(self):
-    #     return self.clients.all()
+    def view_clients(self):
+        return self.clients_list.all()
     
-    # def assign_tag(self, client, tag):
-    #     client.tags.append(tag)
-    #     client.save()
-    
-    # def filter_clients(self, tag):
-    #     return self.clients.filter(tags__contains=[tag])
+    def filter_clients(self, tag):
+        return self.clients_list.filter(tags__contains=[tag])
     
     def receive_notifications(self):
         notifications = []

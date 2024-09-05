@@ -65,21 +65,3 @@ class ClientAnalytics(TimeStampedModel):
             opportunities.append("Increase follow-ups with low response rate clients.")
         return opportunities
 
-# class ClientRealEstateAgent(RealEstateAgent):
-#     clients = models.ManyToManyField(Client, related_name='agents')
-
-#     def view_clients(self):
-#         return self.clients.all()
-    
-#     def assign_tag(self, client, tag):
-#         client.tags.append(tag)
-#         client.save()
-    
-#     def filter_clients(self, tag):
-#         return self.clients.filter(tags__contains=[tag])
-    
-#     def receive_notifications(self):
-#         notifications = []
-#         notifications = Notification.objects.filter(agent_id=self.id)
-#         return notifications
-
